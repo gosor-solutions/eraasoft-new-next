@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --js --no-tailwind --app --src-dir --no-eslint --import-alias \"@/*\" --no-turbopack)"
+    ]
+  }
+}
