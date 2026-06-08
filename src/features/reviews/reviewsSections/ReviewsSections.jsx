@@ -1,7 +1,8 @@
 import EmptyState from "@/components/shared/EmptyState";
+import Pagination from "@/components/shared/Pagination";
 import ReviewCard from "../reviewCard/ReviewCard";
 
-export default function ReviewsSections({ testimonials = [] }) {
+export default function ReviewsSections({ testimonials = [], meta }) {
   if (testimonials.length === 0) {
     return (
       <section className="px-15 my-8" dir="rtl">
@@ -20,6 +21,7 @@ export default function ReviewsSections({ testimonials = [] }) {
           <ReviewCard item={testmonial} key={testmonial.id} />
         ))}
       </div>
+      <Pagination currentPage={meta?.current_page ?? 1} lastPage={meta?.last_page ?? 1} />
     </section>
   );
 }

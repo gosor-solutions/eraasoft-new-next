@@ -22,6 +22,7 @@ const liClass = `
 
 const navLinks = [
   { href: "/courses", label: "الدورات" },
+  { href: "/enroll", label: "سجّل الآن" },
   { href: "/reviews", label: "آراء الطلاب" },
   { href: "/about", label: "عن إيراسوفت" },
 ];
@@ -33,11 +34,11 @@ const navLinks2 = [
 ];
 
 export default function Footer({ settings = null }) {
-  const logo = settings?.site_logo ?? "/footer_logo.png";
+  const logo = settings?.site_info?.site_logo ?? "/footer_logo.png";
   const social = settings?.social_links ?? {};
-  const siteName = settings?.site_name ?? "EraaSoft";
+  const siteName = settings?.site_info?.site_name ?? "EraaSoft";
   const description =
-    settings?.meta_description ??
+    settings?.seo?.meta_description ??
     "ايراسوفت هي شركة رائدة في مجال الحلول البرمجية المتقدمة والتدريب المتخصص، تأسست بهدف تقديم خدمات شاملة ومبتكرة تلبي احتياجات الأفراد والشركات في عالم البرمجة وعلوم الكمبيوتر.";
 
   const socialIcons = [
@@ -88,21 +89,23 @@ export default function Footer({ settings = null }) {
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">تواصل معنا</h3>
           <ul className="flex flex-col gap-3">
-            {settings?.contact_email && (
+            {settings?.contact?.email && (
               <li className="text-white text-sm sm:text-base font-semibold break-all">
-                <a href={`mailto:${settings.contact_email}`} className="hover:text-[#BECBF2] transition-colors">
-                  {settings.contact_email}
+                <a href={`mailto:${settings.contact.email}`} className="hover:text-[#BECBF2] transition-colors">
+                  {settings.contact.email}
                 </a>
               </li>
             )}
-            {settings?.contact_phone && (
+            {settings?.contact?.phone && (
               <li className="text-white text-sm sm:text-base font-semibold">
-                <a href={`tel:${settings.contact_phone}`} className="hover:text-[#BECBF2] transition-colors">
-                  {settings.contact_phone}
+                <a href={`tel:${settings.contact.phone}`} className="hover:text-[#BECBF2] transition-colors">
+                  {settings.contact.phone}
                 </a>
               </li>
             )}
-            {settings?.address && <li className="text-white text-sm sm:text-base font-semibold">{settings.address}</li>}
+            {settings?.contact?.address && (
+              <li className="text-white text-sm sm:text-base font-semibold">{settings.contact.address}</li>
+            )}
             {!settings && (
               <li className="text-white text-sm sm:text-base font-semibold">
                 <a href="mailto:info@eraasoft.com" className="hover:text-[#BECBF2] transition-colors">

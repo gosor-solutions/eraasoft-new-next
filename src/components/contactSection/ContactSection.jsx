@@ -2,10 +2,20 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import LineSvg from "@/components/shared/LineSvg";
 
 export default function ContactSection() {
   return (
     <section className="my-16 sm:my-20 lg:my-30 px-5 sm:px-8 lg:px-13" dir="rtl">
+      <h2 className="headStyle mt-6 mb-10 sm:mt-8 sm:mb-14 lg:mt-10 lg:mb-20 flex justify-center">
+        تواصل
+        <span className="relative flex flex-col items-center justify-center">
+          <span className="ms-2">معنا</span>
+          <span className="absolute top-3 -right-5">
+            <LineSvg colorOne={"#2243A4"} colorTwo={"#2243A4"} svgId={"paint_contact"} svgWidth="200" svgHeight="170" strokeWidth="8" />
+          </span>
+        </span>
+      </h2>
 
       {/* ── Mobile & Tablet (< lg) ── */}
       <div className="block lg:hidden bg-(--primary-color) text-white rounded-3xl py-10 px-6 sm:px-10 text-center">

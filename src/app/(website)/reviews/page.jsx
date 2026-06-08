@@ -1,7 +1,7 @@
 import ReviewsSections from "@/features/reviews/reviewsSections/ReviewsSections";
 import JsonLd from "@/components/seo/JsonLd";
 import HeroCarousel from "@/components/shared/HeroCarusel";
-import { BASE_URL } from "@/lib/api";
+import { getTestimonials } from "@/services/Testimonials";
 
 export const metadata = {
   title: "آراء الطلاب",
@@ -17,19 +17,23 @@ const breadcrumb = {
   ],
 };
 
-export default async function ReviewsPage() {
+export default async function ReviewsPage({ searchParams }) {
+  const { page = "1" } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page, 10) || 1);
+
   let testimonials = [];
+  let meta = null;
   try {
-    const res = await fetch(`${BASE_URL}/testimonials`);
-    const data = await res.json();
-    testimonials = data?.data || [];
+    const result = await getTestimonials(currentPage);
+    testimonials = result?.data || [];
+    meta = result?.meta || null;
   } catch {}
 
   return (
     <>
       <JsonLd schema={breadcrumb} />
       <HeroCarousel head={"أراء طلابنا وتجاربهم مع إيراسوفت"} description={"نعتز بثقة طلابنا، ونسعى دائمًا لتقديم تجربة تعليمية مميزة تساهم في تطوير مهاراتهم وتحقيق أهدافهم المهنية."} />
-      <ReviewsSections testimonials={testimonials} />
+      <ReviewsSections testimonials={testimonials} meta={meta} />
     </>
   );
 }

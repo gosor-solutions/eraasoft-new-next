@@ -1,6 +1,5 @@
 import AboutSection from "@/components/aboutSection/AboutSection";
 import ArticalsSection from "@/components/articalsSection/ArticalsSection";
-import CompanyTeam from "@/components/companyTean/CompanyTeam";
 import ContactSection from "@/components/contactSection/ContactSection";
 import CourcesSection from "@/components/courcesSection/CourcesSection";
 import FaqsSection from "@/components/faqsSection/FaqsSection";
@@ -19,7 +18,6 @@ export default async function HomePage() {
   const courses = Array.isArray(data?.courses) ? data.courses : [];
   const articles = data?.articles || [];
   const testimonials = data?.testimonials || [];
-  const team = data?.team || [];
   const faqs = data?.faqs || [];
 
   return (
@@ -29,7 +27,6 @@ export default async function HomePage() {
       <Features />
       <CourcesSection courses={courses} />
       <TestimonialsCarousel testimonials={testimonials} />
-      <CompanyTeam employees={team} />
       <ArticalsSection articles={articles} />
       <FaqsSection faqs={faqs} />
       <ContactSection />
