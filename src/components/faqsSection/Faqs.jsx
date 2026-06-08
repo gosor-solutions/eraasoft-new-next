@@ -14,7 +14,9 @@ export default function Faqs({ faq }) {
         <ChevronDown className={`shrink-0 transition duration-300 ${open ? "rotate-180" : ""} text-yellow-400`} />
       </button>
 
-      {open && <p className="mt-3 sm:mt-4 text-sm sm:text-base lg:text-lg font-semibold text-[#4A5565] leading-7">{faq.answer}</p>}
+      <div className={`overflow-hidden transition-all duration-300 ease-linear ${open ? "max-h-96 mt-3 sm:mt-4" : "max-h-0"}`}>
+        <p className="text-sm sm:text-base lg:text-lg font-semibold text-[#4A5565] leading-7">{faq.answer}</p>
+      </div>
     </div>
   );
 }

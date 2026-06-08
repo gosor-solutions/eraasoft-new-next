@@ -8,9 +8,9 @@ export default function MobileArticleCard({ title, excerpt, image, slug }) {
         <Image src={image} alt={title} fill className="object-cover" />
       </div>
       <div className="p-4">
-        <h3 className="font-semibold text-sm sm:text-base text-gray-900 mb-2 line-clamp-2">
+        <Link href={`/articles/${slug}`} className="font-semibold text-sm sm:text-base text-gray-900 mb-2 line-clamp-2 hover:underline block">
           {title}
-        </h3>
+        </Link>
         <p className="text-xs sm:text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
           {excerpt}
         </p>

@@ -1,15 +1,26 @@
+import EmptyState from "@/components/shared/EmptyState";
 import CourceCard from "./CourceCard";
 
 export default function CourcesSection({ courses = [] }) {
   return (
-    <section className=" my-20 px-5 lg:px-8 py-10 min-h-screen bg-[#2243A41A] " dir="rtl">
+    <section className="my-20 px-5 lg:px-8 py-10 min-h-screen bg-[#2243A41A]" dir="rtl">
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12 text-center">
-          <h2 className="headStyle">الكورسات </h2>
+          <h2 className="headStyle">الكورسات</h2>
         </div>
-        {courses.map((course) => (
-          <CourceCard course={course} key={`${course?.id} cource ID`} />
-        ))}
+
+        {courses.length === 0 ? (
+          <div className="col-span-12">
+            <EmptyState
+              title="لا توجد دورات متاحة حالياً"
+              subtitle="نعمل على إضافة دورات جديدة — تابعنا لمعرفة آخر الإضافات"
+            />
+          </div>
+        ) : (
+          courses.map((course) => (
+            <CourceCard course={course} key={`${course?.id} cource ID`} />
+          ))
+        )}
       </div>
     </section>
   );

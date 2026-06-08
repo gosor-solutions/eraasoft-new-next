@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const liClass = `
   relative
@@ -19,110 +20,148 @@ const liClass = `
   before:to-[#2243A4]
 `;
 
-export default function Footer() {
+const navLinks = [
+  { href: "/courses", label: "الدورات" },
+  { href: "/reviews", label: "آراء الطلاب" },
+  { href: "/about", label: "عن إيراسوفت" },
+];
+
+const navLinks2 = [
+  { href: "/instructors", label: "المدربون" },
+  { href: "/articles", label: "المقالات" },
+  { href: "/contact", label: "تواصل معنا" },
+];
+
+export default function Footer({ settings = null }) {
+  const logo = settings?.site_logo ?? "/footer_logo.png";
+  const social = settings?.social_links ?? {};
+  const siteName = settings?.site_name ?? "EraaSoft";
+  const description =
+    settings?.meta_description ??
+    "ايراسوفت هي شركة رائدة في مجال الحلول البرمجية المتقدمة والتدريب المتخصص، تأسست بهدف تقديم خدمات شاملة ومبتكرة تلبي احتياجات الأفراد والشركات في عالم البرمجة وعلوم الكمبيوتر.";
+
+  const socialIcons = [
+    { href: social.facebook, icon: <FaFacebook />, label: "فيسبوك" },
+    { href: social.youtube, icon: <FaYoutube />, label: "يوتيوب" },
+    { href: social.linkedin, icon: <FaLinkedin />, label: "لينكدإن" },
+    { href: social.instagram, icon: <FaInstagram />, label: "إنستجرام" },
+    { href: social.x, icon: <FaXTwitter />, label: "إكس" },
+  ].filter((s) => Boolean(s.href));
+
   return (
     <footer className="px-4 sm:px-10 lg:px-20 py-8 sm:py-12 bg-[#0C1739] overflow-x-hidden" dir="rtl">
       <div className="grid grid-cols-12 gap-6 sm:gap-8 justify-between items-start">
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
-          <Image src={"/footer_logo.png"} alt="Footer Logo" width={130} height={44} />
-          <p className="text-sm font-semibold text-white leading-relaxed mt-3">
-            ايراسوفت هي شركة رائدة في مجال الحلول البرمجية المتقدمة والتدريب المتخصص، تأسست بهدف تقديم خدمات شاملة ومبتكرة تلبي احتياجات الأفراد والشركات في عالم البرمجة وعلوم الكمبيوتر.
-          </p>
+          <Image src={logo} alt={`شعار ${siteName}`} width={130} height={44} unoptimized={logo.startsWith("http")} />
+          <p className="text-sm font-semibold text-white leading-relaxed mt-3">{description}</p>
         </div>
+
 
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">تصفح</h3>
           <ul className="flex flex-col gap-3">
-            <li className={liClass}>
-              <Link href="/" className="text-white text-sm sm:text-base font-semibold">
-                الدورات
-              </Link>
-            </li>
-            <li className={liClass}>
-              <Link href={"/reviews"} className="text-white text-sm sm:text-base font-semibold">
-                اراء الطلاب
-              </Link>
-            </li>
-            <li className={liClass}>
-              <Link href={"/about"} className="text-white text-sm sm:text-base font-semibold">
-                عن ايراسوفت
-              </Link>
-            </li>
+            {navLinks.map(({ href, label }) => (
+              <li key={href} className={liClass}>
+                <Link href={href} className="text-white text-sm sm:text-base font-semibold">
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
+
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
-          <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">تصفح</h3>
+          <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">روابط سريعة</h3>
           <ul className="flex flex-col gap-3">
-            <li className={liClass}>
-              <Link href="/" className="text-white text-sm sm:text-base font-semibold">
-                الدورات
-              </Link>
-            </li>
-            <li className={liClass}>
-              <Link href={"/reviews"} className="text-white text-sm sm:text-base font-semibold">
-                اراء الطلاب
-              </Link>
-            </li>
-            <li className={liClass}>
-              <Link href={"/about"} className="text-white text-sm sm:text-base font-semibold">
-                عن ايراسوفت
-              </Link>
-            </li>
+            {navLinks2.map(({ href, label }) => (
+              <li key={href} className={liClass}>
+                <Link href={href} className="text-white text-sm sm:text-base font-semibold">
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
+
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
-          <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">تصفح</h3>
+          <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">تواصل معنا</h3>
           <ul className="flex flex-col gap-3">
-            <li className={liClass}>
-              <Link href="/" className="text-white text-sm sm:text-base font-semibold">
-                الدورات
-              </Link>
-            </li>
-            <li className={liClass}>
-              <Link href={"/reviews"} className="text-white text-sm sm:text-base font-semibold">
-                اراء الطلاب
-              </Link>
-            </li>
-            <li className={liClass}>
-              <Link href={"/about"} className="text-white text-sm sm:text-base font-semibold">
-                عن ايراسوفت
-              </Link>
-            </li>
+            {settings?.contact_email && (
+              <li className="text-white text-sm sm:text-base font-semibold break-all">
+                <a href={`mailto:${settings.contact_email}`} className="hover:text-[#BECBF2] transition-colors">
+                  {settings.contact_email}
+                </a>
+              </li>
+            )}
+            {settings?.contact_phone && (
+              <li className="text-white text-sm sm:text-base font-semibold">
+                <a href={`tel:${settings.contact_phone}`} className="hover:text-[#BECBF2] transition-colors">
+                  {settings.contact_phone}
+                </a>
+              </li>
+            )}
+            {settings?.address && <li className="text-white text-sm sm:text-base font-semibold">{settings.address}</li>}
+            {!settings && (
+              <li className="text-white text-sm sm:text-base font-semibold">
+                <a href="mailto:info@eraasoft.com" className="hover:text-[#BECBF2] transition-colors">
+                  info@eraasoft.com
+                </a>
+              </li>
+            )}
           </ul>
         </div>
+
 
         <div className="col-span-12">
           <div className="flex flex-col md:flex-row my-3 items-center w-full gap-5">
-            <div className="flex gap-3 shrink-0 self-start md:self-auto">
-              <Link href={"https://facebook.com"} className="bg-(--primary-color) rounded-xl p-2.5 text-xl text-white">
-                <FaFacebook />
-              </Link>
-              <Link href={"https://youtube.com"} className="bg-(--primary-color) rounded-xl p-2.5 text-xl text-white">
-                <FaYoutube />
-              </Link>
-              <Link href={"https://linkedin.com"} className="bg-(--primary-color) rounded-xl p-2.5 text-xl text-white">
-                <FaLinkedin />
-              </Link>
-              <Link href={"https://instgram.com"} className="bg-(--primary-color) rounded-xl p-2.5 text-xl text-white">
-                <FaInstagram />
-              </Link>
-            </div>
+            {socialIcons.length > 0 && (
+              <div className="flex gap-3 shrink-0 self-start md:self-auto flex-wrap">
+                {socialIcons.map(({ href, icon, label }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="bg-(--primary-color) rounded-xl p-2.5 text-xl text-white hover:opacity-80 transition-opacity">
+                    {icon}
+                  </Link>
+                ))}
+              </div>
+            )}
             <form className="flex flex-col md:flex-row md:gap-2 md:items-center w-full md:flex-1 md:max-w-150 md:mr-auto gap-1.5">
               <label htmlFor="subscribe" className="text-sm font-bold text-[#BECBF2] whitespace-nowrap">
-                اخر الاخبار
+                آخر الأخبار
               </label>
               <div className="flex flex-wrap items-center bg-white py-1.5 px-2 grow gap-2 rounded-[30px]">
-                <input type="text" id="subscribe" placeholder="البريد الالكتروني" className="grow outline-0 min-w-0 text-sm" />
-                <button className="main_button">اشترك</button>
+                <input type="email" id="subscribe" placeholder="البريد الإلكتروني" className="grow outline-0 min-w-0 text-sm" />
+                <button type="submit" className="main_button">
+                  اشترك
+                </button>
               </div>
             </form>
           </div>
         </div>
 
+
         <div className="col-span-12">
-          <p className="text-center text-white text-sm">EraaSoft &copy; 2026. All Copy Rights Reserved</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-3">
+            <p className="text-center text-white text-sm">
+              {siteName} &copy; {new Date().getFullYear()}. All Rights Reserved
+            </p>
+            <span className="hidden sm:inline text-white/40">|</span>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy-policy" className="text-[#BECBF2] text-sm hover:text-white transition-colors">
+                سياسة الخصوصية
+              </Link>
+              <span className="text-white/40">|</span>
+              <Link href="/terms" className="text-[#BECBF2] text-sm hover:text-white transition-colors">
+                الشروط والأحكام
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

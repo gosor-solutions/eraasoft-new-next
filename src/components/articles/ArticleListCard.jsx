@@ -1,16 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, Calendar, User } from "lucide-react";
+import { Eye, User } from "lucide-react";
 
 export default function ArticleListCard({ article }) {
-  const date = article?.published_at
-    ? new Date(article.published_at).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })
-    : null;
+  const date = article?.published_at ? new Date(article.published_at).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" }) : null;
 
   return (
-    <div className="col-span-12 md:col-span-6 lg:col-span-4 border border-(--primary-color) rounded-xl">
+    <div className="col-span-12 md:col-span-6 lg:col-span-4 min-[1400px]:col-span-3 border border-(--primary-color) rounded-xl">
       <div className="p-3 sm:p-4 rounded-xl bg-white h-full flex flex-col">
-
         {/* Image */}
         <div className="relative h-52 sm:h-60 rounded-xl overflow-hidden shrink-0">
           <Image src={article?.image} alt={article?.title} fill className="object-cover" />
@@ -23,13 +20,11 @@ export default function ArticleListCard({ article }) {
 
         {/* Content */}
         <div className="flex flex-col flex-1 pt-4 pb-2" dir="rtl">
-          <h2 className="font-semibold text-base sm:text-lg lg:text-xl line-clamp-2 min-h-12 sm:min-h-14 mb-2 leading-snug text-[#0A0A0A]">
-            {article?.title}
-          </h2>
+          <Link href={`/articles/${article.slug}`}>
+            <h2 className="font-semibold text-base sm:text-lg lg:text-xl line-clamp-2 min-h-12 sm:min-h-14 mb-2 leading-snug text-[#0A0A0A]">{article?.title}</h2>
+          </Link>
 
-          <p className="text-[#7F7F7F] text-sm sm:text-base line-clamp-2 mb-4 leading-relaxed flex-1">
-            {article?.excerpt}
-          </p>
+          <p className="text-[#7F7F7F] text-sm sm:text-base line-clamp-2 mb-4 leading-relaxed flex-1">{article?.excerpt}</p>
 
           {/* Author + Views */}
           <div className="flex items-center justify-between text-xs sm:text-sm text-[#9CA3AF] mb-4">
@@ -47,7 +42,6 @@ export default function ArticleListCard({ article }) {
             قراءة المقال
           </Link>
         </div>
-
       </div>
     </div>
   );

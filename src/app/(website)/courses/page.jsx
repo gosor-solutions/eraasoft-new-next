@@ -17,10 +17,16 @@ const breadcrumb = {
   ],
 };
 
-export default async function CoursesPage() {
+export default async function CoursesPage({ searchParams }) {
+  const { page = "1" } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page, 10) || 1);
+
   let courses = [];
+  let meta = null;
   try {
-    courses = (await getAllCources()) || [];
+    const result = await getAllCources(currentPage);
+    courses = result?.data || [];
+    meta = result?.meta || null;
   } catch {}
 
   return (
@@ -30,7 +36,7 @@ export default async function CoursesPage() {
         head={"ابدأ رحلتك نحو الاحتراف"}
         description={"سواء كنت في بداية طريقك أو تسعى لتطوير مهاراتك، توفر لك إيراسوفت محتوى تعليمي عالي الجودة يعتمد على التطبيق العملي ويمنحك الأدوات التي تحتاجها للتميز في مجالك."}
       />
-      <CourcesSection courses={courses} />
+      <CourcesSection courses={courses} meta={meta} />
     </>
   );
 }

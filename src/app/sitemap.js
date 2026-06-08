@@ -14,27 +14,49 @@ const staticRoutes = [
   { url: `${SITE_URL}/contact`, priority: 0.6, changeFrequency: "monthly" },
 ];
 
+async function fetchCourseRoutes(lastModified) {
+  try {
+    const res = await fetch(`${BASE_URL}/courses`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.data ?? []).map((course) => ({
+      url: `${SITE_URL}/courses/${course.slug}`,
+      lastModified,
+      priority: 0.8,
+      changeFrequency: "weekly",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+async function fetchArticleRoutes(lastModified) {
+  try {
+    const res = await fetch(`${BASE_URL}/articles`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.data ?? []).map((article) => ({
+      url: `${SITE_URL}/articles/${article.slug}`,
+      lastModified: article.updated_at ? new Date(article.updated_at) : lastModified,
+      priority: 0.7,
+      changeFrequency: "weekly",
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export default async function sitemap() {
   const lastModified = new Date();
 
-  let courseRoutes = [];
-  try {
-    const res = await fetch(`${BASE_URL}/courses`, { next: { revalidate: 3600 } });
-    if (res.ok) {
-      const json = await res.json();
-      courseRoutes = (json.data ?? []).map((course) => ({
-        url: `${SITE_URL}/courses/${course.slug}`,
-        lastModified,
-        priority: 0.8,
-        changeFrequency: "weekly",
-      }));
-    }
-  } catch {
-    // courses unavailable — skip dynamic routes
-  }
+  const [courseRoutes, articleRoutes] = await Promise.all([
+    fetchCourseRoutes(lastModified),
+    fetchArticleRoutes(lastModified),
+  ]);
 
   return [
     ...staticRoutes.map((r) => ({ ...r, lastModified })),
     ...courseRoutes,
+    ...articleRoutes,
   ];
 }

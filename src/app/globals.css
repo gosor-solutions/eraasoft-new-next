@@ -35,6 +35,10 @@ a {
   text-align: center;
 }
 
+.whats_app-button {
+  padding: 12px 24px;
+}
+
 @media (max-width: 768px) {
   .headStyle {
     font-size: 24px;
@@ -46,37 +50,95 @@ a {
 }
 
 /* ── Article content renderer ── */
-.article-content { line-height: 1.9; color: #374151; }
-.article-content h1, .article-content h2, .article-content h3, .article-content h4 {
-  font-weight: 700; color: #0a0a0a; margin: 2rem 0 0.75rem;
+.article-content {
+  line-height: 1.9;
+  color: #374151;
 }
-.article-content h1 { font-size: 2rem; }
-.article-content h2 { font-size: 1.5rem; }
-.article-content h3 { font-size: 1.25rem; }
-.article-content h4 { font-size: 1.1rem; }
-.article-content p  { margin: 0.9rem 0; }
-.article-content ul, .article-content ol { padding-right: 1.5rem; margin: 0.9rem 0; }
-.article-content li { margin: 0.35rem 0; }
-.article-content a  { color: #2243a4; text-decoration: underline; }
-.article-content img { width: 100%; border-radius: 12px; margin: 1.25rem 0; object-fit: cover; }
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  font-weight: 700;
+  color: #0a0a0a;
+  margin: 2rem 0 0.75rem;
+}
+.article-content h1 {
+  font-size: 2rem;
+}
+.article-content h2 {
+  font-size: 1.5rem;
+}
+.article-content h3 {
+  font-size: 1.25rem;
+}
+.article-content h4 {
+  font-size: 1.1rem;
+}
+.article-content p {
+  margin: 0.9rem 0;
+}
+.article-content ul,
+.article-content ol {
+  padding-right: 1.5rem;
+  margin: 0.9rem 0;
+}
+.article-content li {
+  margin: 0.35rem 0;
+}
+.article-content a {
+  color: #2243a4;
+  text-decoration: underline;
+}
+.article-content img {
+  width: 100%;
+  border-radius: 12px;
+  margin: 1.25rem 0;
+  object-fit: cover;
+}
 .article-content blockquote {
-  border-right: 4px solid #2243a4; padding-right: 1rem; margin: 1.25rem 0;
-  color: #606060; font-style: italic;
+  border-right: 4px solid #2243a4;
+  padding-right: 1rem;
+  margin: 1.25rem 0;
+  color: #606060;
+  font-style: italic;
 }
 .article-content code {
-  background: #f3f4f6; padding: 0.15rem 0.4rem; border-radius: 4px;
-  font-size: 0.88em; direction: ltr; display: inline-block;
+  background: #f3f4f6;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.88em;
+  direction: ltr;
+  display: inline-block;
 }
 .article-content pre {
-  background: #1e2030; color: #cdd6f4; padding: 1.5rem; border-radius: 12px;
-  overflow-x: auto; margin: 1.25rem 0; direction: ltr; text-align: left;
+  background: #1e2030;
+  color: #cdd6f4;
+  padding: 1.5rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  direction: ltr;
+  text-align: left;
 }
-.article-content pre code { background: none; padding: 0; }
-.article-content table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; }
-.article-content th, .article-content td {
-  border: 1px solid #e5e7eb; padding: 0.6rem 0.9rem; text-align: right;
+.article-content pre code {
+  background: none;
+  padding: 0;
 }
-.article-content th { background: #f9fafb; font-weight: 600; }
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+}
+.article-content th,
+.article-content td {
+  border: 1px solid #e5e7eb;
+  padding: 0.6rem 0.9rem;
+  text-align: right;
+}
+.article-content th {
+  background: #f9fafb;
+  font-weight: 600;
+}
 
 /* ── react-phone-number-input ── */
 .PhoneInput {

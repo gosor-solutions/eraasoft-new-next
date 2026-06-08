@@ -1,43 +1,172 @@
-import React from "react";
-import MainButton from "../mainBtn/MainButton";
-import MainInput from "../shared/MainInput";
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { z } from "zod";
+import { toast, ToastContainer } from "react-toastify";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import { sendContactMessage } from "@/services/Contact";
+
+const schema = z.object({
+  name: z.string().min(1, "الاسم مطلوب").min(3, "الاسم يجب أن يكون 3 أحرف على الأقل"),
+  email: z
+    .string()
+    .min(1, "البريد الالكتروني مطلوب")
+    .refine((v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "صيغة البريد الالكتروني غير صحيحة"),
+  phone: z
+    .string()
+    .min(1, "رقم التليفون مطلوب")
+    .refine((v) => isValidPhoneNumber(v), "رقم التليفون غير صحيح"),
+  message: z
+    .string()
+    .min(1, "الرسالة مطلوبة")
+    .min(10, "الرسالة يجب أن تكون 10 أحرف على الأقل"),
+});
+
+function parseZodErrors(error) {
+  const map = {};
+  error.issues.forEach((e) => {
+    const key = e.path[0];
+    if (!map[key]) map[key] = e.message;
+  });
+  return map;
+}
 
 export default function ContactPageSection() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+    website: "",
+  });
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const setField = (field) => (value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const result = schema.safeParse(formData);
+    if (!result.success) {
+      setFieldErrors(parseZodErrors(result.error));
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await sendContactMessage({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone,
+        message: formData.message.trim(),
+        website: formData.website,
+      });
+
+      if (res?.success) {
+        toast.success(res.message || "تم إرسال رسالتك بنجاح!", { position: "top-center" });
+        setFormData({ name: "", email: "", phone: "", message: "", website: "" });
+        setFieldErrors({});
+      } else {
+        toast.error(res?.message || "حدث خطأ، يرجى المحاولة مجدداً.", { position: "top-center" });
+      }
+    } catch {
+      toast.error("حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="bg-[#FAFAFA] px-5 lg:px-13 py-8" dir="rtl">
-      <div className="grid grid-cols-12 gap-4 lg:gap-15 shadow-md rounded-lg p-5">
-        {/* <div className="col-span-12 lg:col-span-5  min-h-50">
-          <div className="bg-[#BECBF2] pt-5 min-h-full">
-            <div className="relative">
-              <Image src={"/mon_person.png"} width={450} height={100} alt="contect Image" className="absolute top-[72px] left-0" />
-              <Image src={"/mob_frame.png"} width={200} height={100} alt="contect Image" className="absolute top-0 left-[140px] " />
+      <ToastContainer rtl />
+      <div className="shadow-md rounded-lg p-5 sm:p-8 max-w-2xl">
+        <h2 className="text-2xl font-bold mb-5">تواصل معنا</h2>
+
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+          {/* Honeypot – hidden from real users, bots may fill it */}
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={(e) => setField("website")(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            style={{ display: "none" }}
+          />
+
+          <Field label="الاسم" error={fieldErrors.name}>
+            <input
+              type="text"
+              placeholder="الاسم"
+              value={formData.name}
+              onChange={(e) => setField("name")(e.target.value)}
+              className={inputCls(fieldErrors.name)}
+            />
+          </Field>
+
+          <Field label="البريد الالكتروني" error={fieldErrors.email}>
+            <input
+              type="email"
+              placeholder="البريد الالكتروني"
+              value={formData.email}
+              onChange={(e) => setField("email")(e.target.value)}
+              className={inputCls(fieldErrors.email)}
+            />
+          </Field>
+
+          <Field label="رقم التليفون" error={fieldErrors.phone}>
+            <div className={`border rounded-full bg-white overflow-hidden ${fieldErrors.phone ? "border-red-400" : "border-[#D2D2D2]"}`}>
+              <PhoneInput
+                defaultCountry="EG"
+                value={formData.phone}
+                onChange={(value) => setField("phone")(value ?? "")}
+              />
             </div>
-          </div>
-        </div> */}
-        <div className="col-span-full lg:col-span-7  min-h-50">
-          <h2 className="text-2xl font-bold">تواصل معنا</h2>
-          <form className="my-5">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <MainInput type={"text"} name={"الاسم الاول"} placeholder={"الاسم الاول"} label={"الاسم الاول"} htmlFor="fName" />
-              <MainInput type={"text"} name={"اسم العائلة"} placeholder={"اسم العائلة"} label={"اسم العائلة"} htmlFor="lName" />
-              <MainInput type={"text"} name={"الايميل"} placeholder={"الايميل"} label={"الايميل"} htmlFor="email" />
-              <MainInput type={"text"} name={"رقم الهاتف"} placeholder={"رقم الهاتف"} label={"رقم الهاتف"} htmlFor="phone" />
-              <div className="lg:col-span-2">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="message" className="text-lg font-semibold">
-                    الرسالة
-                  </label>
-                  <textarea id="message" placeholder="اكتب رسالتك هنا" className="min-h-40 resize-none outline-0 border border-[#D2D2D2] py-3 px-5 rounded-2xl" />
-                </div>
-              </div>
-              <div className="lg:col-span-2">
-                <MainButton text={"تواصل معنا"} width={"w-full"} />
-              </div>
-            </div>
-          </form>
-        </div>
+          </Field>
+
+          <Field label="الرسالة" error={fieldErrors.message}>
+            <textarea
+              placeholder="اكتب رسالتك هنا"
+              value={formData.message}
+              onChange={(e) => setField("message")(e.target.value)}
+              className={`min-h-40 resize-none outline-none border py-3 px-5 rounded-2xl bg-white text-sm sm:text-base transition-colors ${
+                fieldErrors.message ? "border-red-400" : "border-[#D2D2D2] focus:border-[#2243A4]"
+              }`}
+            />
+          </Field>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="main_button w-full py-4 text-base sm:text-lg disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? "جاري الإرسال..." : "تواصل معنا"}
+          </button>
+        </form>
       </div>
     </section>
   );
+}
+
+function Field({ label, error, children }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      {label && <label className="text-base sm:text-lg font-semibold">{label}</label>}
+      {children}
+      {error && <p className="text-red-500 text-xs pr-4">{error}</p>}
+    </div>
+  );
+}
+
+function inputCls(error) {
+  return [
+    "outline-none border py-3 px-5 rounded-full bg-white text-sm sm:text-base transition-colors",
+    error ? "border-red-400" : "border-[#D2D2D2] focus:border-[#2243A4]",
+  ].join(" ");
 }

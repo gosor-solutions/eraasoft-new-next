@@ -13,7 +13,7 @@ export default function EraaCertificate() {
           </p>
         </div>
         <div className="col-span-12 md:col-span-6 lg:col-span-6">
-          <div className="h-80 rounded-lg overflow-hidden relative">
+          <div className="relative aspect-4/3 sm:aspect-3/2 rounded-lg overflow-hidden">
             <Image src="/certificate.png" alt="شهادة إيراسوفت المعتمدة من نقابة المهندسين" fill className="object-contain object-center" />
           </div>
         </div>

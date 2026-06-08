@@ -1,8 +1,6 @@
 import { BASE_URL } from "@/lib/api";
 
-export const getAllCources = async () => {
-  const res = await fetch(`${BASE_URL}/courses`);
-  const cources = await res.json();
-  // console.log(cources.data);
-  return cources?.data;
+export const getAllCources = async (page = 1) => {
+  const res = await fetch(`${BASE_URL}/courses?page=${page}`, { cache: "no-store" });
+  return res.json();
 };

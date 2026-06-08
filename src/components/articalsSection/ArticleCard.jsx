@@ -13,7 +13,7 @@ export default function ArticleCard({ title, excerpt, image, slug, isOpen, onHov
 
       {/* Text - only visible when open */}
       <div className={`flex-col justify-center px-5 py-4 transition-all duration-300 whitespace-nowrap ${isOpen ? "flex opacity-100 delay-200 w-full" : "hidden opacity-0 w-0"}`}>
-        <h3 className="text-2xl font-bold text-gray-900 leading-snug mb-2 line-clamp-2 whitespace-normal">{title}</h3>
+        <Link href={`/articles/${slug}`} className="text-2xl font-bold text-gray-900 leading-snug mb-2 line-clamp-2 whitespace-normal hover:underline block">{title}</Link>
         <p className="text-xl font-semibold text-gray-500 leading-relaxed mb-4 line-clamp-3 whitespace-normal">{excerpt}</p>
         <Link href={`/articles/${slug}`} className="flex items-center gap-1 text-sm font-semibold  text-(--primary-color) w-fit hover:underline">
           مشاهدة المقال

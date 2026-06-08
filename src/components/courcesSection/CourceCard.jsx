@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function CourceCard({ course }) {
   return (
-    <div className="col-span-12 md:col-span-6 lg:col-span-4 border border-(--primary-color) rounded-xl">
+    <div className="col-span-12 md:col-span-6 lg:col-span-4 min-[1400px]:col-span-3 border border-(--primary-color) rounded-xl">
       <div className="course_card p-3 sm:p-4 rounded-xl bg-white">
 
         {/* Image */}
@@ -37,9 +37,9 @@ export default function CourceCard({ course }) {
           </div>
 
           {/* Title */}
-          <h2 className="font-semibold text-lg sm:text-xl md:text-2xl lg:text-[28px] line-clamp-2 min-h-14 sm:min-h-16 lg:min-h-20 leading-snug">
+          <Link href={`/courses/${course?.slug}`} className="font-semibold text-lg sm:text-xl md:text-2xl lg:text-[28px] line-clamp-2 min-h-14 sm:min-h-16 lg:min-h-20 leading-snug hover:underline block">
             {course?.title}
-          </h2>
+          </Link>
 
           {/* Description */}
           <p className="text-[#7F7F7F] text-sm sm:text-base md:text-[16px] line-clamp-2 mt-1">

@@ -8,7 +8,7 @@ import { BookOpen, Users } from "lucide-react";
 export default function HeroSection() {
   return (
     <section className={`${Styles.heroSec} lg:min-h-screen`}>
-      <div className="px-5 sm:px-8">
+      <div className="px-5 sm:px-8 max-w-350 mx-auto">
         <div className="grid grid-cols-12 lg:min-h-screen">
           {/* ── Text content ── */}
           <div
