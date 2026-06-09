@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { z } from "zod";
 import { toast, ToastContainer } from "react-toastify";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
@@ -84,71 +85,85 @@ export default function ContactPageSection() {
   return (
     <section className="bg-[#FAFAFA] px-5 lg:px-13 py-8" dir="rtl">
       <ToastContainer rtl />
-      <div className="shadow-md rounded-lg p-5 sm:p-8 max-w-2xl">
-        <h2 className="text-2xl font-bold mb-5">تواصل معنا</h2>
+      <div className="shadow-md rounded-xl overflow-hidden max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2">
 
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-          {/* Honeypot – hidden from real users, bots may fill it */}
-          <input
-            type="text"
-            name="website"
-            value={formData.website}
-            onChange={(e) => setField("website")(e.target.value)}
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
-            style={{ display: "none" }}
-          />
+        {/* Form */}
+        <div className="p-5 sm:p-8">
+          <h2 className="text-2xl font-bold mb-5">تواصل معنا</h2>
 
-          <Field label="الاسم" error={fieldErrors.name}>
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
             <input
               type="text"
-              placeholder="الاسم"
-              value={formData.name}
-              onChange={(e) => setField("name")(e.target.value)}
-              className={inputCls(fieldErrors.name)}
+              name="website"
+              value={formData.website}
+              onChange={(e) => setField("website")(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ display: "none" }}
             />
-          </Field>
 
-          <Field label="البريد الالكتروني" error={fieldErrors.email}>
-            <input
-              type="email"
-              placeholder="البريد الالكتروني"
-              value={formData.email}
-              onChange={(e) => setField("email")(e.target.value)}
-              className={inputCls(fieldErrors.email)}
-            />
-          </Field>
-
-          <Field label="رقم التليفون" error={fieldErrors.phone}>
-            <div className={`border rounded-full bg-white overflow-hidden ${fieldErrors.phone ? "border-red-400" : "border-[#D2D2D2]"}`}>
-              <PhoneInput
-                defaultCountry="EG"
-                value={formData.phone}
-                onChange={(value) => setField("phone")(value ?? "")}
+            <Field label="الاسم" error={fieldErrors.name}>
+              <input
+                type="text"
+                placeholder="الاسم"
+                value={formData.name}
+                onChange={(e) => setField("name")(e.target.value)}
+                className={inputCls(fieldErrors.name)}
               />
-            </div>
-          </Field>
+            </Field>
 
-          <Field label="الرسالة" error={fieldErrors.message}>
-            <textarea
-              placeholder="اكتب رسالتك هنا"
-              value={formData.message}
-              onChange={(e) => setField("message")(e.target.value)}
-              className={`min-h-40 resize-none outline-none border py-3 px-5 rounded-2xl bg-white text-sm sm:text-base transition-colors ${
-                fieldErrors.message ? "border-red-400" : "border-[#D2D2D2] focus:border-[#2243A4]"
-              }`}
-            />
-          </Field>
+            <Field label="البريد الالكتروني" error={fieldErrors.email}>
+              <input
+                type="email"
+                placeholder="البريد الالكتروني"
+                value={formData.email}
+                onChange={(e) => setField("email")(e.target.value)}
+                className={inputCls(fieldErrors.email)}
+              />
+            </Field>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="main_button w-full py-4 text-base sm:text-lg disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? "جاري الإرسال..." : "تواصل معنا"}
-          </button>
-        </form>
+            <Field label="رقم التليفون" error={fieldErrors.phone}>
+              <div className={`border rounded-full bg-white overflow-hidden ${fieldErrors.phone ? "border-red-400" : "border-[#D2D2D2]"}`}>
+                <PhoneInput
+                  defaultCountry="EG"
+                  value={formData.phone}
+                  onChange={(value) => setField("phone")(value ?? "")}
+                />
+              </div>
+            </Field>
+
+            <Field label="الرسالة" error={fieldErrors.message}>
+              <textarea
+                placeholder="اكتب رسالتك هنا"
+                value={formData.message}
+                onChange={(e) => setField("message")(e.target.value)}
+                className={`min-h-40 resize-none outline-none border py-3 px-5 rounded-2xl bg-white text-sm sm:text-base transition-colors ${
+                  fieldErrors.message ? "border-red-400" : "border-[#D2D2D2] focus:border-[#2243A4]"
+                }`}
+              />
+            </Field>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="main_button w-full py-4 text-base sm:text-lg disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? "جاري الإرسال..." : "تواصل معنا"}
+            </button>
+          </form>
+        </div>
+
+        {/* Image */}
+        <div className="relative h-72 lg:h-full min-h-0">
+          <Image
+            src="/contact_us.png"
+            alt="تواصل معنا"
+            fill
+            className="object-cover"
+          />
+        </div>
+
       </div>
     </section>
   );

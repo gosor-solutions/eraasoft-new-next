@@ -1,4 +1,5 @@
 "use client";
+import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 import Image from "next/image";
 
@@ -52,31 +53,31 @@ export default function AboutCarousel() {
     <>
       <div ref={sliderRef} className="keen-slider">
         <div className="keen-slider__slide number-slide1">
-          <Image src={"/about_slide_one.png"} alt="slide image one" width={800} height={100} className="rounded-lg" />
+          <Image src={"/about_slide_one.png"} alt="إيراسوفت - الصورة الأولى" width={800} height={100} sizes="(max-width: 1024px) 100vw, 50vw" className="rounded-lg" />
         </div>
         <div className="keen-slider__slide number-slide2">
-          <Image src={"/about_slide_two.png"} alt="slide image two" width={800} height={100} className="rounded-lg" />
+          <Image src={"/about_slide_two.png"} alt="إيراسوفت - الصورة الثانية" width={800} height={100} sizes="(max-width: 1024px) 100vw, 50vw" className="rounded-lg" />
         </div>
         <div className="keen-slider__slide number-slide3">
-          <Image src={"/about_slide_three.png"} alt="slide image three" width={800} height={100} className="rounded-lg" />
+          <Image src={"/about_slide_three.png"} alt="إيراسوفت - الصورة الثالثة" width={800} height={100} sizes="(max-width: 1024px) 100vw, 50vw" className="rounded-lg" />
         </div>
         <div className="keen-slider__slide number-slide4">
-          <Image src={"/about_slide_four.png"} alt="slide image four" width={800} height={100} className="rounded-lg" />
+          <Image src={"/about_slide_four.png"} alt="إيراسوفت - الصورة الرابعة" width={800} height={100} sizes="(max-width: 1024px) 100vw, 50vw" className="rounded-lg" />
         </div>
       </div>
 
       <div ref={thumbnailRef} className="keen-slider thumbnail mt-3">
         <div className="keen-slider__slide number-slide1">
-          <Image src={"/about_slide_one.png"} alt="slide image one" width={200} height={200} className="rounded-lg" />
+          <Image src={"/about_slide_one.png"} alt="إيراسوفت - الصورة الأولى" width={200} height={200} sizes="25vw" className="rounded-lg" />
         </div>
         <div className="keen-slider__slide number-slide2">
-          <Image src={"/about_slide_two.png"} alt="slide image two" width={200} height={200} className="rounded-lg" />
+          <Image src={"/about_slide_two.png"} alt="إيراسوفت - الصورة الثانية" width={200} height={200} sizes="25vw" className="rounded-lg" />
         </div>
         <div className="keen-slider__slide number-slide3">
-          <Image src={"/about_slide_three.png"} alt="slide image three" width={200} height={200} className="rounded-lg" />
+          <Image src={"/about_slide_three.png"} alt="إيراسوفت - الصورة الثالثة" width={200} height={200} sizes="25vw" className="rounded-lg" />
         </div>
         <div className="keen-slider__slide number-slide4">
-          <Image src={"/about_slide_four.png"} alt="slide image four" width={200} height={200} className="rounded-lg" />
+          <Image src={"/about_slide_four.png"} alt="إيراسوفت - الصورة الرابعة" width={200} height={200} sizes="25vw" className="rounded-lg" />
         </div>
       </div>
     </>

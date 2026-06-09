@@ -19,6 +19,10 @@ const employeeRangeOptions = [
 
 const schema = z.object({
   companyName: z.string().min(1, "اسم الشركة مطلوب").min(2, "اسم الشركة يجب أن يكون حرفين على الأقل"),
+  companyEmail: z
+    .string()
+    .min(1, "البريد الالكتروني مطلوب")
+    .refine((v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "صيغة البريد الالكتروني غير صحيحة"),
   phone: z
     .string()
     .min(1, "رقم التليفون مطلوب")
@@ -42,6 +46,7 @@ function parseZodErrors(error) {
 export default function TrainingServicesForm() {
   const [formData, setFormData] = useState({
     companyName: "",
+    companyEmail: "",
     phone: "",
     employeeCount: "",
     companyWebsite: "",
@@ -68,9 +73,10 @@ export default function TrainingServicesForm() {
     try {
       const res = await sendTrainingRequest({
         company_name: formData.companyName.trim(),
+        email: formData.companyEmail.trim(),
         phone: formData.phone,
-        employee_count: formData.employeeCount,
-        company_website: formData.companyWebsite.trim() || null,
+        employee_number: formData.employeeCount,
+        website: formData.companyWebsite.trim() || null,
         honeypot: formData.honeypot,
       });
 
@@ -80,6 +86,7 @@ export default function TrainingServicesForm() {
         });
         setFormData({
           companyName: "",
+          companyEmail: "",
           phone: "",
           employeeCount: "",
           companyWebsite: "",
@@ -126,6 +133,17 @@ export default function TrainingServicesForm() {
 
             <Field label="اسم الشركة" error={fieldErrors.companyName}>
               <input type="text" placeholder="اسم الشركة" value={formData.companyName} onChange={(e) => setField("companyName")(e.target.value)} className={inputCls(fieldErrors.companyName)} />
+            </Field>
+
+            <Field label="البريد الالكتروني للشركة" error={fieldErrors.companyEmail}>
+              <input
+                type="email"
+                placeholder="info@company.com"
+                value={formData.companyEmail}
+                onChange={(e) => setField("companyEmail")(e.target.value)}
+                className={inputCls(fieldErrors.companyEmail)}
+                dir="ltr"
+              />
             </Field>
 
             <Field label="رقم تليفون المسؤل" error={fieldErrors.phone}>

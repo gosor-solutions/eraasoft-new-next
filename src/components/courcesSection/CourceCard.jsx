@@ -9,7 +9,7 @@ export default function CourceCard({ course }) {
 
         {/* Image */}
         <div className="image relative h-52 sm:h-64 md:h-72 lg:h-80 bg-red-700 rounded-xl overflow-hidden">
-          <Image src={course?.image} alt={course?.title || "صورة الكورس"} fill className="object-cover" />
+          <Image src={course?.image} alt={course?.title || "صورة الكورس"} fill sizes="(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 25vw" className="object-cover" />
           <div className="absolute top-3 left-3 sm:top-5 sm:left-5">
             <p className="bg-[#00000056] text-white rounded-3xl px-3 py-2 text-xs sm:text-sm shadow-lg">
               {course?.category?.title}
@@ -23,15 +23,15 @@ export default function CourceCard({ course }) {
           {/* Info bar */}
           <div className="w-full flex justify-between absolute -top-5 sm:-top-7 bg-white shadow-lg px-2 sm:px-3 py-2 sm:py-3 rounded-2xl">
             <div className="flex items-center gap-1 sm:gap-2">
-              <img src="/tv_icon.png" alt="Tv Icon" width="24" height="24" className="w-4 h-4 sm:w-auto sm:h-auto" />
+              <Image src="/tv_icon.png" alt="" width={24} height={24} className="w-4 h-4 sm:w-6 sm:h-6" />
               <p className="text-xs sm:text-sm whitespace-nowrap">{course?.weeks_number} أسبوع</p>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
-              <img src="/clock_icon.png" alt="clock Icon" width="24" height="24" className="w-4 h-4 sm:w-auto sm:h-auto" />
+              <Image src="/clock_icon.png" alt="" width={24} height={24} className="w-4 h-4 sm:w-6 sm:h-6" />
               <p className="text-xs sm:text-sm whitespace-nowrap">{course?.hours_number} ساعة</p>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
-              <img src="/code_icon.png" alt="code Icon" width="24" height="24" className="w-4 h-4 sm:w-auto sm:h-auto" />
+              <Image src="/code_icon.png" alt="" width={24} height={24} className="w-4 h-4 sm:w-6 sm:h-6" />
               <p className="text-xs sm:text-sm">{course?.course_projects_number}</p>
             </div>
           </div>

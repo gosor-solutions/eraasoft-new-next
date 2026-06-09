@@ -1,43 +1,17 @@
-"use client";
-
 import Image from "next/image";
-import { useCallback } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import Fade from "embla-carousel-fade";
-import Autoplay from "embla-carousel-autoplay";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function HeroCarousel({ head, description }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, containScroll: false }, [Fade(), Autoplay({ delay: 1000, stopOnInteraction: false })]);
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee";
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-
-  const slides = ["https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"];
-
-  const btnCls = "w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/20 border border-white/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 transition-colors";
+export default function HeroCarousel({ head, description, image }) {
+  const src = image || FALLBACK_IMAGE;
 
   return (
     <section dir="ltr" className="relative w-full h-75 md:h-100 lg:h-125 overflow-hidden">
-
-      <div className="absolute top-4 right-4 sm:top-5 sm:right-6 z-20 flex items-center gap-2"></div>
-
-      <div className="h-full" ref={emblaRef}>
-        <div className="flex h-full">
-          {slides.map((slide, index) => (
-            <div key={index} className="relative flex-[0_0_100%] min-w-0 h-full">
-              <Image src={slide} alt={`Hero Image ${index + 1}`} fill priority={index === 0} className="object-cover" />
-
-           
-              <div className="absolute inset-0 bg-black/35" />
-
-              <div className="absolute inset-0 flex items-center flex-col justify-center z-10 px-5">
-                <h1 className="text-white text-lg md:text-2xl lg:text-5xl font-bold">{head}</h1>
-                <p className="text-white text-center w-full md:w-[50%] lg:w-[50%] mt-6 text-lg md:text-xl lg:text-2xl leading-relaxed">{description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+      <Image src={src} alt={head || "صورة الصفحة"} fill priority sizes="100vw" className="object-cover" />
+      <div className="absolute inset-0 bg-black/35" />
+      <div className="absolute inset-0 flex items-center flex-col justify-center z-10 px-5">
+        <h1 className="text-white text-lg md:text-2xl lg:text-5xl font-bold">{head}</h1>
+        <p className="text-white text-center w-full md:w-[50%] lg:w-[50%] mt-6 text-lg md:text-xl lg:text-2xl leading-relaxed">{description}</p>
       </div>
     </section>
   );

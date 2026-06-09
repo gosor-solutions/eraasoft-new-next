@@ -8,10 +8,13 @@ const staticRoutes = [
   { url: SITE_URL, priority: 1.0, changeFrequency: "daily" },
   { url: `${SITE_URL}/courses`, priority: 0.9, changeFrequency: "daily" },
   { url: `${SITE_URL}/about`, priority: 0.8, changeFrequency: "monthly" },
+  { url: `${SITE_URL}/training-services`, priority: 0.8, changeFrequency: "monthly" },
   { url: `${SITE_URL}/reviews`, priority: 0.7, changeFrequency: "weekly" },
   { url: `${SITE_URL}/instructors`, priority: 0.7, changeFrequency: "monthly" },
   { url: `${SITE_URL}/articles`, priority: 0.7, changeFrequency: "weekly" },
   { url: `${SITE_URL}/contact`, priority: 0.6, changeFrequency: "monthly" },
+  { url: `${SITE_URL}/privacy-policy`, priority: 0.3, changeFrequency: "yearly" },
+  { url: `${SITE_URL}/terms`, priority: 0.3, changeFrequency: "yearly" },
 ];
 
 async function fetchCourseRoutes(lastModified) {

@@ -3,25 +3,52 @@ import HeroCarousel from "@/components/shared/HeroCarusel";
 import Pagination from "@/components/shared/Pagination";
 import EmptyState from "@/components/shared/EmptyState";
 import { getArticles } from "@/services/getArticles";
+import { getPageBySlug } from "@/services/getPages";
 
-export const metadata = {
-  title: "المقالات",
-  description: "اكتشف أحدث المقالات والمحتوى التقني من خبراء إيراسوفت",
-};
+export async function generateMetadata() {
+  try {
+    const res = await getPageBySlug("articles");
+    const page = res?.data;
+    return {
+      title: page?.seo?.meta_title ? { absolute: page.seo.meta_title } : page?.title,
+      description: page?.seo?.meta_description || page?.description,
+      keywords: page?.seo?.meta_keywords,
+      robots: {
+        index: page?.seo?.robots_index ?? true,
+        follow: page?.seo?.robots_follow ?? true,
+      },
+      alternates: { canonical: page?.seo?.canonical_url || undefined },
+      openGraph: {
+        title: page?.seo?.og_title || page?.title,
+        description: page?.seo?.og_description || page?.description,
+        images: page?.seo?.og_image ? [{ url: page.seo.og_image }] : [],
+      },
+    };
+  } catch {
+    return { title: "المقالات" };
+  }
+}
 
 export default async function ArticlesPage({ searchParams }) {
   const { page = "1" } = await searchParams;
   const currentPage = Math.max(1, parseInt(page, 10) || 1);
 
-  const data = await getArticles(currentPage);
-  const articles = data?.data || [];
-  const meta = data?.meta || null;
+  let articles = [];
+  let meta = null;
+  let pageData = null;
+  try {
+    const [data, pageRes] = await Promise.all([getArticles(currentPage), getPageBySlug("articles")]);
+    articles = data?.data || [];
+    meta = data?.meta || null;
+    pageData = pageRes?.data || null;
+  } catch {}
 
   return (
     <div className="bg-[#FAFAFA]">
       <HeroCarousel
-        head="المقالات"
-        description="اكتشف أحدث المقالات والمحتوى التقني من خبراء إيراسوفت"
+        head={pageData?.title || "المقالات"}
+        description={pageData?.description || ""}
+        image={pageData?.image || null}
       />
       <section className="px-5 sm:px-8 lg:px-13 py-10 sm:py-14" dir="rtl">
         {articles.length > 0 ? (

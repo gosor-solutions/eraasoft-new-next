@@ -28,10 +28,13 @@ export async function generateMetadata({ params }) {
     return {
       title: details?.title,
       description: details?.description,
+      keywords: details?.category?.title ? [details.category.title, "كورسات", "إيراسوفت"] : undefined,
+      robots: { index: true, follow: true },
+      alternates: { canonical: `https://eraasoft.com/courses/${slug.slug}` },
       openGraph: {
         title: details?.title,
         description: details?.description,
-        images: details?.image ? [{ url: details.image }] : [],
+        images: details?.image ? [{ url: details.image, width: 1200, height: 630, alt: details.title }] : [],
       },
     };
   } catch {

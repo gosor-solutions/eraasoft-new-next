@@ -1,4 +1,3 @@
-import "keen-slider/keen-slider.min.css";
 import "./globals.css";
 import { cairo } from "@/lib/font";
 import QueryProvider from "@/providers/QueryProvider";

@@ -5,7 +5,7 @@
   overflow: hidden;
 }
 
-/* ── circular backdrop ── */
+── circular backdrop ──
 .roketImageLayer {
   position: relative;
   border-radius: 50%;
@@ -15,25 +15,25 @@
 }
 
 /* ── hero image (laptop + rocket + hands) ── */
-.roket_image {
+/* .roket_image {
   position: absolute;
   bottom: -50%;
   left: 50%;
   transform: translateX(-50%);
   width: 380px;
   height: auto;
-}
+} */
 
 /* ── floating card shared ── */
-.blur {
+/* .blur {
   filter: drop-shadow(4px 8px 13.3px #0c0c0d1a);
   box-shadow: 4px 8px 13px 5px #0c0c0d1a;
   padding: 10px;
   width: fit-content;
   border-radius: 55px;
-}
+} */
 
-.eraaIcon {
+/* .eraaIcon {
   position: absolute;
   top: -28px;
   right: 40%;
@@ -45,17 +45,17 @@
   left: -10%;
   transform: rotate(15deg) translateY(-50%);
   z-index: 10;
-}
+} */
 
-.mark {
+/* .mark {
   position: absolute;
   right: -12px;
   top: 24px;
   transform: rotate(351deg);
-}
+} */
 
 /* ── sm: 480px ── */
-@media (min-width: 480px) {
+/* @media (min-width: 480px) {
   .roketImageLayer {
     width: 300px;
     height: 300px;
@@ -79,10 +79,10 @@
     top: 28px;
     right: -10px;
   }
-}
+} */
 
 /* ── md: 768px ── */
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .roketImageLayer {
     width: 360px;
     height: 360px;
@@ -113,10 +113,10 @@
   .reviews {
     left: -8%;
   }
-}
+} */
 
 /* ── lg: 1024px ── */
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .roketImageLayer {
     width: 400px;
     height: 400px;
@@ -147,4 +147,4 @@
   .reviews {
     left: -8%;
   }
-}
+} */

@@ -23,16 +23,18 @@ export default function AboutSection() {
           <div className="flex gap-2 sm:gap-3 items-start justify-center lg:justify-start">
             <Image
               src="/about_two.png"
-              alt="about image"
+              alt="فريق إيراسوفت"
               width={250}
               height={100}
+              sizes="(max-width: 1024px) 50vw, 20vw"
               className="rounded-2xl w-1/2 lg:w-45 xl:w-62.5 h-auto"
             />
             <Image
               src="/about_one.png"
-              alt="about image"
+              alt="مقر إيراسوفت"
               width={200}
               height={200}
+              sizes="(max-width: 1024px) 40vw, 16vw"
               className="rounded-2xl w-2/5 lg:w-37.5 xl:w-50 h-auto"
             />
           </div>
