@@ -13,6 +13,7 @@ export function getVideoEmbedUrl(url) {
 
   // ---------------- Facebook ----------------
   if (url.includes("facebook.com")) {
+    if (url.includes("plugins/video.php")) return url;
     return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=560`;
   }
 

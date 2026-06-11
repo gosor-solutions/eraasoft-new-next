@@ -1,23 +1,25 @@
 import HeroCarousel from "@/components/shared/HeroCarusel";
 import CourseMedia from "@/components/courceInfo/CourseVideo";
+import { getStudentProjects } from "@/services/StudentProjects";
+import Pagination from "@/components/shared/Pagination";
 
 export const metadata = {
   title: "مشاريع تخرج الطلاب",
   description: "استعرض مشاريع تخرج طلاب إيراسوفت وتعرّف على إنجازاتهم وأعمالهم البرمجية المتميزة.",
 };
 
-const GRADUATION_PROJECTS = [
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-  "https://www.youtube.com/embed/S_4ZzIq0CRs",
-];
+export default async function GraduationProjectsPage({ searchParams }) {
+  const { page = "1" } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page, 10) || 1);
 
-export default function GraduationProjectsPage() {
+  let projects = [];
+  let meta = null;
+  try {
+    const data = await getStudentProjects(currentPage);
+    projects = data?.data || [];
+    meta = data?.meta || null;
+  } catch {}
+
   return (
     <>
       <HeroCarousel
@@ -26,12 +28,13 @@ export default function GraduationProjectsPage() {
       />
       <section className="container mx-auto px-4 py-10" dir="rtl">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {GRADUATION_PROJECTS.map((url, index) => (
-            <div key={index} className="rounded-xl overflow-hidden">
-              <CourseMedia videoUrl={url} />
+          {projects.map((project) => (
+            <div key={project.id} className="rounded-xl overflow-hidden">
+              <CourseMedia videoUrl={project.video_link} />
             </div>
           ))}
         </div>
+        <Pagination currentPage={meta?.current_page ?? 1} lastPage={meta?.last_page ?? 1} />
       </section>
     </>
   );

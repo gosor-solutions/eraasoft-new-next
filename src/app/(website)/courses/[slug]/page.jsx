@@ -101,7 +101,7 @@ export default async function CourseDetailPage({ params }) {
         <CourceInfo course={courceDetails} />
         <CourceContent content={courceDetails?.content} />
         <StudentProjectsCarusel courceVideos={courceDetails?.projects_videos} />
-        <Features />
+        {/* <Features /> */}
       </section>
       <section className="py-5 bg-[#FAFAFA]">
         <TestimonialsCarousel testimonials={testimonials} />

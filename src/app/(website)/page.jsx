@@ -21,6 +21,7 @@ export default async function HomePage() {
   const articles = data?.articles || [];
   const testimonials = data?.testimonials || [];
   const faqs = data?.faqs || [];
+  const studentProjects = data?.studentProjects || [];
 
   return (
     <>
@@ -44,7 +45,7 @@ export default async function HomePage() {
         <FaqsSection faqs={faqs} />
       </FadeInSection>
       <FadeInSection variant="fadeIn" duration={0.6}>
-        <GraduationProjectsSection />
+        <GraduationProjectsSection projects={studentProjects} />
       </FadeInSection>
       <FadeInSection>
         <ContactSection />

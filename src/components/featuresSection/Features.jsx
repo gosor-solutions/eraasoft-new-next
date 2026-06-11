@@ -1,5 +1,5 @@
 import Image from "next/image";
-import SectionTitle from "../shared/SectionTitle";
+import LineSvg from "../shared/LineSvg";
 
 const features = [
   {
@@ -50,7 +50,15 @@ export default function Features() {
       <section className="px-8 my-8" dir="rtl">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
-            <SectionTitle title="ما الذي يميزنا" />
+            <h2 className="headStyle my-15 flex justify-center">
+              ما الذي
+              <span className="relative flex flex-col items-center justify-center">
+                <span className="ms-2">يميزنا</span>
+                <span className="absolute top-3 -right-5">
+                  <LineSvg colorOne={"#2243A4"} colorTwo={"#2243A4"} svgId={"paint1_linear"} svgWidth="200" svgHeight="170" strokeWidth="8" />
+                </span>
+              </span>
+            </h2>
           </div>
           {features.map((feature, index) => {
             const isPrimary = index % 2 !== 0;

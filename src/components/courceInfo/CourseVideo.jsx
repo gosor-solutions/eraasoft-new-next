@@ -8,17 +8,21 @@ export default function CourseMedia({ videoUrl, imageUrl, heightClass = "h-[500p
   const hasImage = imageUrl;
 
   const embedUrl = hasVideo ? getVideoEmbedUrl(videoUrl) : null;
-
+  console.log(embedUrl);
   return (
     <div className={`relative w-full ${heightClass} rounded-xl overflow-hidden border`}>
-      {/* 🎬 Video has priority */}
       {hasVideo ? (
-        <iframe src={embedUrl} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+        <iframe
+          loading="lazy"
+          src={embedUrl}
+          className="w-full h-full"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
       ) : hasImage ? (
-        /* 🖼 fallback image */
         <Image src={imageUrl} alt="Course Image" fill className="object-cover" priority />
       ) : (
-        /* 🟡 final fallback */
         <div className="w-full h-full flex items-center justify-center bg-gray-100">No preview available</div>
       )}
     </div>

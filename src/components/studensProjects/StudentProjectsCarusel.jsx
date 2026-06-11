@@ -15,7 +15,7 @@ export default function StudentProjectsCarusel({ courceVideos }) {
       ) : (
         <CarsoulComponent>
           {videos.map((video, idx) => (
-            <StudentProjectCard key={video ?? idx} video={video} />
+            <StudentProjectCard key={"index" + idx} video={video} />
           ))}
         </CarsoulComponent>
       )}
