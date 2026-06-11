@@ -9,7 +9,7 @@ export default function CarsoulComponent({ children }) {
   });
 
   const btnCls =
-    "w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-(--primary-color) text-(--primary-color) text-xl sm:text-2xl font-bold flex items-center justify-center hover:bg-(--primary-color) hover:text-white transition-colors";
+    "w-9 h-9 sm:w-11 sm:h-11 rounded-full pb-1 border border-(--primary-color) text-(--primary-color) text-xl sm:text-2xl font-bold flex items-center justify-center hover:bg-(--primary-color) hover:text-white transition-colors";
 
   return (
     <div className="px-5 sm:px-8 lg:px-15">

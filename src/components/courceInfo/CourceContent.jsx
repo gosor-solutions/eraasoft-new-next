@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import SectionTitle from "@/components/shared/SectionTitle";
 
 export default function CourceContent({ content = [] }) {
   const [activeTab, setActiveTab] = useState(0);
@@ -12,6 +13,7 @@ export default function CourceContent({ content = [] }) {
 
   return (
     <div className="mt-8" dir="rtl">
+      <SectionTitle title="محتوي الكورس" />
       {/* Desktop Layout */}
       <div className="hidden md:grid grid-cols-3 gap-0 border-[#2243A4] rounded-2xl overflow-hidden">
         <div className="p-4 flex flex-col gap-2">

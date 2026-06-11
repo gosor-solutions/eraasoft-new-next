@@ -6,11 +6,11 @@ import Features from "@/components/featuresSection/Features";
 import TestimonialsCarousel from "@/components/sliders/TestimonialsCarousel";
 import EraaCertificate from "@/components/eraaCertificate/EraaCertificate";
 import RelatedCources from "@/components/courceInfo/RelatedCources";
+import StudentProjectsCarusel from "@/components/studensProjects/StudentProjectsCarusel";
 import JsonLd from "@/components/seo/JsonLd";
 import { BASE_URL } from "@/lib/api";
 
 export async function generateStaticParams() {
-
   try {
     const res = await fetch(`${BASE_URL}/courses`);
     const data = await res.json();
@@ -46,9 +46,12 @@ export default async function CourseDetailPage({ params }) {
   const slug = await params;
   const [cource, testimonialsRes] = await Promise.all([
     getCourceDetails(slug),
-    fetch(`${BASE_URL}/testimonials`).then((r) => r.json()).catch(() => ({ data: [] })),
+    fetch(`${BASE_URL}/testimonials`)
+      .then((r) => r.json())
+      .catch(() => ({ data: [] })),
   ]);
   const courceDetails = cource.data;
+  console.log(courceDetails);
   const testimonials = testimonialsRes?.data || [];
 
   const courseSchema = {
@@ -97,6 +100,7 @@ export default async function CourseDetailPage({ params }) {
       <section dir="rtl" className="px-5 lg:px-13 py-5 bg-[#FAFAFA]">
         <CourceInfo course={courceDetails} />
         <CourceContent content={courceDetails?.content} />
+        <StudentProjectsCarusel courceVideos={courceDetails?.projects_videos} />
         <Features />
       </section>
       <section className="py-5 bg-[#FAFAFA]">

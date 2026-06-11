@@ -3,15 +3,14 @@
 import Image from "next/image";
 import { getVideoEmbedUrl } from "@/services/getVideoEmbedUrl";
 
-export default function CourseMedia({ videoUrl, imageUrl }) {
-  const hasVideo = videoUrl 
-  const hasImage = imageUrl 
+export default function CourseMedia({ videoUrl, imageUrl, heightClass = "h-[500px]" }) {
+  const hasVideo = videoUrl;
+  const hasImage = imageUrl;
 
   const embedUrl = hasVideo ? getVideoEmbedUrl(videoUrl) : null;
-  console.log(videoUrl);
 
   return (
-    <div className="relative w-full h-[500px] rounded-xl overflow-hidden border">
+    <div className={`relative w-full ${heightClass} rounded-xl overflow-hidden border`}>
       {/* 🎬 Video has priority */}
       {hasVideo ? (
         <iframe src={embedUrl} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />

@@ -6,13 +6,10 @@ export default function CourseBanner({ course }) {
 
   return (
     <div className="relative w-full overflow-hidden min-h-[60vh]" dir="rtl">
-      {/* Background image */}
-      <Image src={course?.image} alt={course?.title || "course banner"} fill className="object-cover" priority />
+      <Image src={course?.background_image} alt={course?.title || "course banner"} fill className="object-cover" priority />
 
-      {/* Overlay — lighter */}
       <div className="absolute inset-0 bg-black/45" />
 
-      {/* Content */}
       <div className="relative z-10 flex flex-col justify-center min-h-[60vh] px-5 sm:px-8 lg:px-13">
         <div className="flex flex-col max-w-3xl py-8">
           <h1 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-snug mb-4">{course?.title}</h1>

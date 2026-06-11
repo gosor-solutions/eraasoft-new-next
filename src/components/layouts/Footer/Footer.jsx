@@ -46,7 +46,7 @@ export default function Footer({ settings = null }) {
     { href: social.youtube, icon: <FaYoutube />, label: "يوتيوب" },
     { href: social.linkedin, icon: <FaLinkedin />, label: "لينكدإن" },
     { href: social.instagram, icon: <FaInstagram />, label: "إنستجرام" },
-    { href: social.x, icon: <FaXTwitter />, label: "إكس" },
+    // { href: social.x, icon: <FaXTwitter />, label: "إكس" },
   ].filter((s) => Boolean(s.href));
 
   return (

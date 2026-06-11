@@ -4,7 +4,6 @@ const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1500530855697-b586d89b
 
 export default function HeroCarousel({ head, description, image }) {
   const src = image || FALLBACK_IMAGE;
-
   return (
     <section dir="ltr" className="relative w-full h-75 md:h-100 lg:h-125 overflow-hidden">
       <Image src={src} alt={head || "صورة الصفحة"} fill priority sizes="100vw" className="object-cover" />

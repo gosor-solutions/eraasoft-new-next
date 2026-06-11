@@ -6,6 +6,8 @@ import FaqsSection from "@/components/faqsSection/FaqsSection";
 import Features from "@/components/featuresSection/Features";
 import HeroSection from "@/components/HeroSection/HeroSection";
 import TestimonialsCarousel from "@/components/sliders/TestimonialsCarousel";
+import FadeInSection from "@/components/shared/FadeInSection";
+import GraduationProjectsSection from "@/components/studensProjects/GraduationProjectsSection";
 import { getHome } from "@/services/Home";
 
 export default async function HomePage() {
@@ -23,13 +25,30 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
-      <AboutSection />
-      <Features />
-      <CourcesSection courses={courses} />
-      <TestimonialsCarousel testimonials={testimonials} />
-      <ArticalsSection articles={articles} />
-      <FaqsSection faqs={faqs} />
-      <ContactSection />
+      <FadeInSection>
+        <AboutSection />
+      </FadeInSection>
+      <FadeInSection>
+        <Features />
+      </FadeInSection>
+      <FadeInSection>
+        <CourcesSection courses={courses} />
+      </FadeInSection>
+      <FadeInSection variant="fadeIn" duration={0.6}>
+        <TestimonialsCarousel testimonials={testimonials} />
+      </FadeInSection>
+      <FadeInSection>
+        <ArticalsSection articles={articles} />
+      </FadeInSection>
+      <FadeInSection>
+        <FaqsSection faqs={faqs} />
+      </FadeInSection>
+      <FadeInSection variant="fadeIn" duration={0.6}>
+        <GraduationProjectsSection />
+      </FadeInSection>
+      <FadeInSection>
+        <ContactSection />
+      </FadeInSection>
     </>
   );
 }

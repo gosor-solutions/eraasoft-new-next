@@ -8,7 +8,7 @@ import MaintenancePage from "@/components/maintenance/MaintenancePage";
 
 export async function generateMetadata() {
   const settings = await getSettings();
-
+  // console.log(settings);
   if (!settings) {
     return {
       title: { default: "إيراسوفت", template: "%s | إيراسوفت" },
@@ -17,28 +17,29 @@ export async function generateMetadata() {
   }
 
   return {
-    metadataBase: new URL(settings.canonical_url ?? "https://eraasoft.com"),
+    metadataBase: new URL(settings?.seo?.canonical_url ?? "https://eraasoft.com"),
     title: {
-      default: settings.meta_title,
-      template: `%s | ${settings.site_name}`,
+      default: settings?.seo?.meta_title,
+      template: `%s | ${settings?.site_info?.site_name}`,
     },
-    description: settings.meta_description,
-    keywords: settings.meta_keywords?.split(",").map((k) => k.trim()),
+    description: settings?.seo?.meta_description,
+    keywords: settings?.seo?.meta_keywords?.split(",").map((k) => k.trim()),
     openGraph: {
       type: "website",
-      siteName: settings.site_name,
-      title: settings.meta_title,
-      description: settings.meta_description,
-      images: [{ url: settings.og_image, width: 1200, height: 630, alt: settings.site_name }],
+      locale: settings?.open_graph?.og_locale,
+      siteName: settings?.open_graph?.og_site_name ?? settings?.site_info?.site_name,
+      title: settings?.seo?.meta_title,
+      description: settings?.seo?.meta_description,
+      images: [{ url: settings?.open_graph?.og_image, width: 1200, height: 630, alt: settings?.site_info?.site_name }],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: settings.meta_title,
-      description: settings.meta_description,
-      images: [settings.og_image],
-    },
-    icons: { icon: settings.site_favicon, shortcut: settings.site_favicon },
-    alternates: { canonical: settings.canonical_url, languages: settings.hreflang_regions },
+    // twitter: {
+    //   card: "summary_large_image",
+    //   title: settings.meta_title,
+    //   description: settings.meta_description,
+    //   images: [settings.og_image],
+    // },
+    icons: { icon: settings?.site_info?.site_favicon, shortcut: settings?.site_info?.site_favicon },
+    alternates: { canonical: settings?.seo?.canonical_url, languages: settings?.seo?.hreflang_regions },
     robots: {
       index: true,
       follow: true,
@@ -50,20 +51,20 @@ export async function generateMetadata() {
 export default async function RootLayout({ children }) {
   const [settings, maintenance] = await Promise.all([getSettings(), getMaintenance()]);
 
-  const gaId = settings?.google_analytics_id ?? null;
-  const gtmId = settings?.google_tag_manager_id ?? null;
+  const gaId = settings?.tracking?.google_analytics_id ?? null;
+  const gtmId = settings?.tracking?.google_tag_manager_id ?? null;
 
   const organizationSchema = settings
     ? {
         "@context": "https://schema.org",
         "@type": "Organization",
-        name: settings.site_name,
-        url: settings.canonical_url,
-        logo: { "@type": "ImageObject", url: settings.site_logo },
-        email: settings.contact_email,
-        telephone: settings.contact_phone,
-        address: { "@type": "PostalAddress", addressLocality: settings.address, addressCountry: "EG" },
-        sameAs: Object.values(settings.social_links ?? {}),
+        name: settings?.site_info?.site_name,
+        url: settings?.seo?.canonical_url,
+        logo: { "@type": "ImageObject", url: settings?.site_info?.site_logo },
+        email: settings?.contact?.email,
+        telephone: settings?.contact?.phone,
+        address: { "@type": "PostalAddress", addressLocality: settings?.contact?.address, addressCountry: "EG" },
+        sameAs: Object.values(settings?.social_links ?? {}),
       }
     : null;
 
@@ -71,12 +72,12 @@ export default async function RootLayout({ children }) {
     ? {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: settings.site_name,
-        url: settings.canonical_url,
+        name: settings?.site_info?.site_name,
+        url: settings?.seo?.canonical_url,
         inLanguage: "ar",
         potentialAction: {
           "@type": "SearchAction",
-          target: `${settings.canonical_url}/courses?q={search_term_string}`,
+          target: `${settings?.seo?.canonical_url}/courses?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
       }
