@@ -1,6 +1,15 @@
 @import "tailwindcss";
 @import "react-toastify/dist/ReactToastify.css";
 
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-18px); }
+}
+
+.hero-image-float {
+  animation: hero-float 4s ease-in-out infinite;
+}
+
 :root {
   --background: #ffffff;
   --primary-color: #2243a4;

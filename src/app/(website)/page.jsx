@@ -9,6 +9,7 @@ import TestimonialsCarousel from "@/components/sliders/TestimonialsCarousel";
 import FadeInSection from "@/components/shared/FadeInSection";
 import GraduationProjectsSection from "@/components/studensProjects/GraduationProjectsSection";
 import { getHome } from "@/services/Home";
+import Parteners from "@/components/partners/Parteners";
 
 export default async function HomePage() {
   let data = {};
@@ -27,14 +28,21 @@ export default async function HomePage() {
     <>
       <HeroSection />
       <FadeInSection>
-        <AboutSection />
-      </FadeInSection>
-      <FadeInSection>
-        <Features />
-      </FadeInSection>
-      <FadeInSection>
         <CourcesSection courses={courses} />
       </FadeInSection>
+      <FadeInSection>
+        <AboutSection />
+      </FadeInSection>
+      <FadeInSection variant="fadeIn" duration={0.6}>
+        <GraduationProjectsSection projects={studentProjects} />
+      </FadeInSection>
+      <FadeInSection variant="fadeIn" duration={0.6}>
+        <Parteners />
+      </FadeInSection>
+      {/* <FadeInSection>
+        <Features />
+      </FadeInSection> */}
+
       <FadeInSection variant="fadeIn" duration={0.6}>
         <TestimonialsCarousel testimonials={testimonials} />
       </FadeInSection>
@@ -44,9 +52,7 @@ export default async function HomePage() {
       <FadeInSection>
         <FaqsSection faqs={faqs} />
       </FadeInSection>
-      <FadeInSection variant="fadeIn" duration={0.6}>
-        <GraduationProjectsSection projects={studentProjects} />
-      </FadeInSection>
+
       <FadeInSection>
         <ContactSection />
       </FadeInSection>

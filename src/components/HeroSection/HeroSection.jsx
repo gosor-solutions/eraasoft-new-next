@@ -17,7 +17,7 @@ export default function HeroSection() {
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[56px] text-white font-bold leading-[1.4] lg:leading-[1.3]">
                 خطوتك الأولى نحو النجاح <br /> تبدأ مع{" "}
                 <span className="relative inline-block pb-5">
-                  إيراسوفت
+                  EraaSoft
                   <span className="absolute bottom-0 left-0 right-0">
                     <LineSvg colorOne={"#E6C238"} colorTwo={"#806C1F"} svgId={"paint0_linear"} svgWidth="160" svgHeight="18" strokeWidth="6" />
                   </span>
@@ -27,8 +27,9 @@ export default function HeroSection() {
 
             <div className={`${Styles.description} mb-6 sm:mb-8 md:mb-10`}>
               <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-200 max-w-2xl leading-relaxed">
-                اكتشف كورسات متخصصة في البرمجة، التصميم، والتسويق، وطور مهاراتك مع تجربة تعليمية سهلة واحترافية.
+                ابدأ رحلتك في البرمجة، تحليل البيانات، والذكاء الاصطناعي مع مسارات تعليمية متخصصة ومشاريع عملية تؤهلك لسوق العمل.
               </p>
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-yellow-400 mt-4 font-bold  max-w-2xl">#بنساعدك_توصل _لحلمك</p>
             </div>
 
             <div className={`${Styles.hero_buttons} flex flex-wrap items-center gap-3 sm:gap-4 mb-6 sm:mb-9`}>

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function CourceCard({ course }) {
   return (
-    <div className="col-span-12 md:col-span-6 lg:col-span-4 min-[1400px]:col-span-3 border border-(--primary-color) rounded-xl">
+    <div className="col-span-12 md:col-span-6 lg:col-span-3 min-[1400px]:col-span-3 border border-(--primary-color) rounded-xl">
       <div className="course_card p-3 sm:p-4 rounded-xl bg-white">
         <div className="image relative h-52 sm:h-64 md:h-72 lg:h-80 rounded-xl overflow-hidden">
           <Image src={course?.image} alt={course?.title || "صورة الكورس"} fill sizes="(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 25vw" className="object-cover object-center" />

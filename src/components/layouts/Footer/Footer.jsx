@@ -28,7 +28,7 @@ const navLinks = [
 ];
 
 const navLinks2 = [
-  { href: "/instructors", label: "المدربون" },
+  { href: "/instructors", label: "فريق العمل " },
   { href: "/articles", label: "المقالات" },
   { href: "/contact", label: "تواصل معنا" },
 ];
@@ -57,7 +57,6 @@ export default function Footer({ settings = null }) {
           <p className="text-sm font-semibold text-white leading-relaxed mt-3">{description}</p>
         </div>
 
-
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">تصفح</h3>
           <ul className="flex flex-col gap-3">
@@ -71,7 +70,6 @@ export default function Footer({ settings = null }) {
           </ul>
         </div>
 
-
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">روابط سريعة</h3>
           <ul className="flex flex-col gap-3">
@@ -84,7 +82,6 @@ export default function Footer({ settings = null }) {
             ))}
           </ul>
         </div>
-
 
         <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <h3 className="text-[#BECBF2] text-base sm:text-lg font-bold mb-4">تواصل معنا</h3>
@@ -103,9 +100,7 @@ export default function Footer({ settings = null }) {
                 </a>
               </li>
             )}
-            {settings?.contact?.address && (
-              <li className="text-white text-sm sm:text-base font-semibold">{settings.contact.address}</li>
-            )}
+            {settings?.contact?.address && <li className="text-white text-sm sm:text-base font-semibold">{settings.contact.address}</li>}
             {!settings && (
               <li className="text-white text-sm sm:text-base font-semibold">
                 <a href="mailto:info@eraasoft.com" className="hover:text-[#BECBF2] transition-colors">
@@ -115,7 +110,6 @@ export default function Footer({ settings = null }) {
             )}
           </ul>
         </div>
-
 
         <div className="col-span-12">
           <div className="flex flex-col md:flex-row my-3 items-center w-full gap-5">
@@ -147,7 +141,6 @@ export default function Footer({ settings = null }) {
             </form>
           </div>
         </div>
-
 
         <div className="col-span-12">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-3">

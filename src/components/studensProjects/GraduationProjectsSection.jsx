@@ -1,5 +1,6 @@
 import Link from "next/link";
 import LineSvg from "@/components/shared/LineSvg";
+import EmptyState from "@/components/shared/EmptyState";
 import CarsoulComponent from "@/components/sliders/CarsoulComponent";
 import CourseMedia from "@/components/courceInfo/CourseVideo";
 
@@ -18,12 +19,22 @@ function GraduationProjectsTitle() {
 }
 
 export default function GraduationProjectsSection({ projects = [] }) {
+  if (projects.length === 0) {
+    return (
+      <section className="my-10 px-5" dir="rtl">
+        <EmptyState
+          title="لا توجد مشاريع تخرج حالياً"
+          subtitle="سيتم إضافة مشاريع الطلاب قريباً — ترقّب أعمالهم المميزة"
+        />
+      </section>
+    );
+  }
 
   return (
     <section className="my-10">
       <GraduationProjectsTitle />
       <CarsoulComponent >
-        {projects.map((project) => (
+        {projects?.map((project) => (
           <div key={project.id} className="rounded-xl overflow-hidden flex-[0_0_90%] sm:flex-[0_0_48%] lg:flex-[0_0_23%]">
             <CourseMedia videoUrl={project.video_link} />
           </div>
