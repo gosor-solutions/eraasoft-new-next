@@ -8,7 +8,6 @@ import MaintenancePage from "@/components/maintenance/MaintenancePage";
 
 export async function generateMetadata() {
   const settings = await getSettings();
-  // console.log(settings);
   if (!settings) {
     return {
       title: { default: "إيراسوفت", template: "%s | إيراسوفت" },

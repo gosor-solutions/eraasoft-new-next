@@ -7,7 +7,8 @@ export const getPages = async () => {
     throw new Error("Failed to fetch pages data");
   }
 
-  return res.json();
+  const json = await res.json();
+  return json
 };
 
 export const getPageBySlug = async (slug) => {
@@ -17,5 +18,6 @@ export const getPageBySlug = async (slug) => {
     throw new Error("Failed to fetch page data");
   }
 
-  return res.json();
+  const json = await res.json();
+  return json
 };

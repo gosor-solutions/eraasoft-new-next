@@ -4,7 +4,6 @@ import CarsoulComponent from "../sliders/CarsoulComponent";
 import StudentProjectCard from "./StudentProjectCard";
 
 export default function StudentProjectsCarusel({ courceVideos }) {
-  console.log(courceVideos);
   const videos = (courceVideos ?? []).filter(Boolean);
 
   return (

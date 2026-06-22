@@ -8,7 +8,5 @@ export const getHome = async () => {
   }
 
   const home = await res.json();
-  console.log(home?.data);
-
   return home;
 };

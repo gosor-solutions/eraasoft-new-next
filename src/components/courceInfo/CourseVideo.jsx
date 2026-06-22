@@ -8,7 +8,6 @@ export default function CourseMedia({ videoUrl, imageUrl, heightClass = "h-[500p
   const hasImage = imageUrl;
 
   const embedUrl = hasVideo ? getVideoEmbedUrl(videoUrl) : null;
-  console.log(embedUrl);
   return (
     <div className={`relative w-full ${heightClass} rounded-xl overflow-hidden border`}>
       {hasVideo ? (

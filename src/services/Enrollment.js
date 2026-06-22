@@ -9,5 +9,5 @@ export const enrollInCourse = async (payload) => {
     },
     body: JSON.stringify(payload),
   });
-  return res.json();
+  return await res.json();
 };

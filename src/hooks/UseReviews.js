@@ -12,7 +12,6 @@ export default function useReviews() {
         throw new Error("Failed to fetch reviews");
       }
       const testimonials = await res.json();
-      console.log(testimonials);
       return testimonials;
     },
   });

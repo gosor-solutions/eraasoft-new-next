@@ -51,7 +51,6 @@ export default async function CourseDetailPage({ params }) {
       .catch(() => ({ data: [] })),
   ]);
   const courceDetails = cource.data;
-  console.log(courceDetails);
   const testimonials = testimonialsRes?.data || [];
 
   const courseSchema = {

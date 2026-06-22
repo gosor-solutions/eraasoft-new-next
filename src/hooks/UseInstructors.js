@@ -10,8 +10,7 @@ export default function useInstructor() {
       if (!res.ok) {
         throw new Error("Failed to fetch instructors");
       }
-      const team = res.json();
-      console.log(team);
+      const team = await res.json();
       return team;
     },
   });
