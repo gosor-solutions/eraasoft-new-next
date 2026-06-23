@@ -2,6 +2,7 @@ import AboutSection from "@/components/aboutSection/AboutSection";
 import ArticalsSection from "@/components/articalsSection/ArticalsSection";
 import ContactSection from "@/components/contactSection/ContactSection";
 import CourcesSection from "@/components/courcesSection/CourcesSection";
+import HomeFreeCourses from "@/components/freeCourses/HomeFreeCourses";
 import FaqsSection from "@/components/faqsSection/FaqsSection";
 import Features from "@/components/featuresSection/Features";
 import HeroSection from "@/components/HeroSection/HeroSection";
@@ -19,6 +20,7 @@ export default async function HomePage() {
   } catch {}
 
   const courses = Array.isArray(data?.courses) ? data.courses : [];
+  const freeCourses = Array.isArray(data?.freeCourses) ? data.freeCourses : [];
   const articles = data?.articles || [];
   const testimonials = data?.testimonials || [];
   const faqs = data?.faqs || [];
@@ -29,6 +31,9 @@ export default async function HomePage() {
       <HeroSection />
       <FadeInSection>
         <CourcesSection courses={courses} />
+      </FadeInSection>
+      <FadeInSection>
+        <HomeFreeCourses freeCourses={freeCourses} />
       </FadeInSection>
       <FadeInSection>
         <AboutSection />

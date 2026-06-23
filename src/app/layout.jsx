@@ -1,6 +1,7 @@
 import "./globals.css";
 import { cairo } from "@/lib/font";
 import QueryProvider from "@/providers/QueryProvider";
+import AuthProvider from "@/providers/AuthProvider";
 import { getSettings, getMaintenance } from "@/services/Settings";
 import Script from "next/script";
 import JsonLd from "@/components/seo/JsonLd";
@@ -101,7 +102,9 @@ export default async function RootLayout({ children }) {
           </noscript>
         )}
 
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </QueryProvider>
 
         {organizationSchema && <JsonLd schema={organizationSchema} />}
         {websiteSchema && <JsonLd schema={websiteSchema} />}
