@@ -9,55 +9,36 @@ import Image from "next/image";
 import Link from "next/link";
 import EmptyState from "@/components/shared/EmptyState";
 import HeroCarousel from "@/components/shared/HeroCarusel";
+import Loading from "@/components/shared/Loading";
+
+import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "use-debounce";
 
 export default function FreeCoursesPage() {
   const { token, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
-  const [courses, setCourses] = useState([]);
-  const [meta, setMeta] = useState(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [debouncedSearch] = useDebounce(search, 300);
 
   useEffect(() => {
-    if (authLoading) return;
-    if (!token) {
+    if (!authLoading && !token) {
       router.push("/login");
-      return;
     }
+  }, [token, authLoading, router]);
 
-    const fetchCourses = async () => {
-      setIsDataLoading(true);
-      setError(null);
-      try {
-        const res = await getFreeCourses({ search, page, perPage: 12 }, token);
-        if (res.success) {
-          setCourses(res.data || []);
-          setMeta(res.meta || null);
-        }
-      } catch (err) {
-        console.error(err);
-        setError("فشل تحميل الدورات المجانية. يرجى المحاولة مرة أخرى.");
-      } finally {
-        setIsDataLoading(false);
-      }
-    };
+  const { data: responseData, isLoading: isDataLoading, error } = useQuery({
+    queryKey: ["free-courses", debouncedSearch, page],
+    queryFn: () => getFreeCourses({ search: debouncedSearch, page, perPage: 12 }, token),
+    enabled: !!token && !authLoading,
+  });
 
-    const timer = setTimeout(() => {
-      fetchCourses();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [token, authLoading, search, page, router]);
+  const courses = responseData?.success ? (responseData.data || []) : [];
+  const meta = responseData?.success ? (responseData.meta || null) : null;
 
   if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50" dir="rtl">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#2243A4]"></div>
-      </div>
-    );
+    return <Loading minHeight="min-h-screen bg-gray-50" />;
   }
 
   if (!token) return null;
@@ -89,13 +70,11 @@ export default function FreeCoursesPage() {
         </div>
 
         {isDataLoading && courses.length === 0 ? (
-          <div className="min-h-[30vh] flex items-center justify-center">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#2243A4]"></div>
-          </div>
+          <Loading minHeight="min-h-[30vh]" />
         ) : error ? (
           <div className="bg-red-50 border-r-4 border-red-500 p-4 rounded-xl flex items-start gap-3 max-w-lg mx-auto">
             <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
-            <div className="text-sm text-red-700 font-medium">{error}</div>
+            <div className="text-sm text-red-700 font-medium">{error?.message || "فشل تحميل الدورات المجانية. يرجى المحاولة مرة أخرى."}</div>
           </div>
         ) : courses.length > 0 ? (
           <>

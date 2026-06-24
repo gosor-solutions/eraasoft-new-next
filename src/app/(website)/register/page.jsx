@@ -8,9 +8,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthLayout from "@/components/shared/AuthLayout";
 import PhoneInputField from "@/components/shared/PhoneInputField";
+import { sendRegisterOtp } from "@/services/Auth";
 
 export default function RegisterPage() {
-  const { client, register, isLoading: authLoading } = useAuth();
+  const { client, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -22,16 +23,31 @@ export default function RegisterPage() {
     password_confirmation: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // OTP flow states
+  const [resendTimer, setResendTimer] = useState(0);
 
   useEffect(() => {
     if (client) {
       router.push("/profile");
     }
   }, [client, router]);
+
+  // Resend OTP cooldown timer
+  useEffect(() => {
+    let interval = null;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [resendTimer]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,8 +58,8 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, phone: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSendOtp = async (e) => {
+    if (e) e.preventDefault();
     setError(null);
     setFieldErrors({});
     setIsSubmitting(true);
@@ -56,15 +72,18 @@ export default function RegisterPage() {
     }
 
     try {
-      await register(formData);
-      toast.success("تم إنشاء الحساب بنجاح!", { position: "top-center" });
+      const res = await sendRegisterOtp(formData);
+      toast.success(res?.message || "تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح", { position: "top-center" });
+      // Save data to sessionStorage to verify on the OTP page
+      sessionStorage.setItem("register_formData", JSON.stringify(formData));
+      router.push("/register/otp");
     } catch (err) {
       console.error(err);
       if (err?.errors) {
         setFieldErrors(err.errors);
       }
-      setError(err?.message || "حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى.");
-      toast.error(err?.message || "حدث خطأ أثناء التسجيل.", { position: "top-center" });
+      setError(err?.message || "حدث خطأ أثناء إرسال رمز التحقق. يرجى المحاولة مرة أخرى.");
+      toast.error(err?.message || "حدث خطأ أثناء إرسال رمز التحقق.", { position: "top-center" });
     } finally {
       setIsSubmitting(false);
     }
@@ -73,7 +92,7 @@ export default function RegisterPage() {
   if (client) return null;
 
   return (
-    <AuthLayout mode="register" welcomeTitle="مرحباً بك!">
+    <AuthLayout mode="register">
       <ToastContainer rtl />
 
       {error && (
@@ -83,11 +102,11 @@ export default function RegisterPage() {
         </div>
       )}
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4" onSubmit={handleSendOtp}>
         {/* Name Fields (Side by Side on Desktop) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor="first_name" className="text-sm font- bold text-[#111827]">
+            <label htmlFor="first_name" className="text-sm font-bold text-[#111827]">
               الاسم الأول
             </label>
             <div className="relative">
@@ -103,9 +122,6 @@ export default function RegisterPage() {
                   } rounded-[24px]   focus:outline-none focus:ring-2 transition-all duration-200 text-sm`}
                 placeholder="الاسم الأول"
               />
-              {/* <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                <User size={18} />
-              </div> */}
             </div>
             {fieldErrors.first_name && (
               <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.first_name[0]}</p>
@@ -113,7 +129,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="last_name" className="text-sm font- bold text-[#111827]">
+            <label htmlFor="last_name" className="text-sm font-bold text-[#111827]">
               اسم العائلة
             </label>
             <div className="relative">
@@ -129,9 +145,6 @@ export default function RegisterPage() {
                   } rounded-[24px]   focus:outline-none focus:ring-2 transition-all duration-200 text-sm`}
                 placeholder="اسم العائلة"
               />
-              {/* <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                <User size={18} />
-              </div> */}
             </div>
             {fieldErrors.last_name && (
               <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.last_name[0]}</p>
@@ -141,7 +154,7 @@ export default function RegisterPage() {
 
         {/* Email Field */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-sm font- bold text-[#111827]">
+          <label htmlFor="email" className="text-sm font-bold text-[#111827]">
             البريد الإلكتروني
           </label>
           <div className="relative">
@@ -156,9 +169,6 @@ export default function RegisterPage() {
                 } rounded-[24px]   focus:outline-none focus:ring-2 transition-all duration-200 text-sm`}
               placeholder="البريد الإلكتروني"
             />
-            {/* <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-              <Mail size={18} />
-            </div> */}
           </div>
           {fieldErrors.email && (
             <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.email[0]}</p>
@@ -175,14 +185,14 @@ export default function RegisterPage() {
 
         {/* Password Field */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="text-sm font- bold text-[#111827]">
+          <label htmlFor="password" className="text-sm font-bold text-[#111827]">
             كلمة المرور
           </label>
           <div className="relative">
             <input
               id="password"
               name="password"
-              type={showPassword ? "text" : "password"}
+              type={"password"}
               required
               minLength={8}
               value={formData.password}
@@ -191,13 +201,6 @@ export default function RegisterPage() {
                 } rounded-[24px]   focus:outline-none focus:ring-2 transition-all duration-200 text-sm`}
               placeholder="••••••••"
             />
-            {/* <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button> */}
           </div>
           {fieldErrors.password && (
             <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.password[0]}</p>
@@ -212,7 +215,7 @@ export default function RegisterPage() {
             <input
               id="password_confirmation"
               name="password_confirmation"
-              type={showPassword ? "text" : "password"}
+              type={"password"}
               required
               value={formData.password_confirmation}
               onChange={handleChange}

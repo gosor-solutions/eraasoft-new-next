@@ -22,6 +22,28 @@ export const registerClient = async (data) => {
 };
 
 /**
+ * Send OTP for email verification before registration.
+ * @param {Object} data - Registration fields (excluding otp).
+ */
+export const sendRegisterOtp = async (data) => {
+  const res = await fetch(`${BASE_URL}/client/register/send-otp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+  if (!res.ok) {
+    throw result;
+  }
+  return result;
+};
+
+
+/**
  * Authenticate client.
  * @param {Object} data - Credentials (email, password).
  */

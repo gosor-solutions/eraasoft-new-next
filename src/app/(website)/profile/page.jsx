@@ -6,23 +6,35 @@ import { useAuth } from "@/providers/AuthProvider";
 import {
   User,
   Camera,
-  LogOut,
   AlertCircle,
   Save,
   BookOpen,
-  Edit2,
 } from "lucide-react";
 import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getMyFreeCourseEnrollments } from "@/services/FreeCourses";
+import Link from "next/link";
+import { Play } from "lucide-react";
+import Loading from "@/components/shared/Loading";
+
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProfilePage() {
-  const { client, isLoading, updateProfile, logout } = useAuth();
+  const { client, token, isLoading, updateProfile } = useAuth();
   const router = useRouter();
 
   const fileInputRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState("personal"); // "personal" | "courses"
+
+  const { data: enrolledCoursesRes, isLoading: loadingCourses, error: coursesError } = useQuery({
+    queryKey: ["free-course-enrollments"],
+    queryFn: () => getMyFreeCourseEnrollments(token),
+    enabled: activeTab === "courses" && !!token,
+  });
+  const enrolledCourses = enrolledCoursesRes?.success ? (enrolledCoursesRes.data || []) : [];
+  const coursesErrorMessage = coursesError ? (coursesError.message || "فشل تحميل الكورسات المسجلة.") : null;
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -137,6 +149,10 @@ export default function ProfilePage() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return <Loading minHeight="min-h-screen bg-gray-50" />;
+  }
 
   return (
     <main className="min-h-screen bg-slate-50/50 pb-20 relative overflow-hidden" dir="rtl">
@@ -376,14 +392,108 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "courses" && (
-              <div className="rounded-3xl min-h-[300px] flex flex-col items-center justify-center text-center">
-                <Image
-                  src={"/no_courses.png"}
-                  alt="no courses"
-                  className="object-cover w-full h-full"
-                  width={800}
-                  height={500}
-                />
+              <div className="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 border-b border-slate-200/60 pb-5">
+                  الدورات المجانية المشترك بها
+                </h2>
+
+                {loadingCourses ? (
+                  <Loading minHeight="min-h-[250px]" />
+                ) : coursesError ? (
+                  <div className="bg-red-50 border-r-4 border-red-500 p-4 rounded-xl flex items-start gap-3">
+                    <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
+                    <div className="text-sm text-red-700 font-medium">{coursesErrorMessage}</div>
+                  </div>
+                ) : enrolledCourses.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-6">
+                    {enrolledCourses.map((enrollment) => {
+                      const course = enrollment.course;
+                      const progress = enrollment.progress_percent || 0;
+                      return (
+                        <div
+                          key={enrollment.enrollment_id}
+                          className="bg-white rounded-2xl border border-slate-150 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 p-4 sm:p-5 flex flex-col sm:flex-row gap-5"
+                        >
+                          {/* Course Thumbnail */}
+                          <div className="relative w-full sm:w-48 h-32 rounded-xl overflow-hidden shrink-0 bg-blue-50/50 flex items-center justify-center text-[#2243A4]">
+                            {course.image ? (
+                              <Image
+                                src={course.image}
+                                alt={course.title}
+                                fill
+                                className="object-cover"
+                              />
+                            ) : (
+                              <Play size={32} />
+                            )}
+                          </div>
+
+                          {/* Course Info */}
+                          <div className="flex-1 flex flex-col justify-between py-1">
+                            <div>
+                              <h3 className="font-bold text-lg text-slate-900 leading-snug line-clamp-1 hover:text-[#2243A4] transition-colors">
+                                {course.title}
+                              </h3>
+                              <p className="text-slate-500 text-sm mt-1.5 line-clamp-2 leading-relaxed">
+                                {course.description ? course.description.replace(/<[^>]*>/g, '') : ''}
+                              </p>
+                              {enrollment.enrolled_at && (
+                                <p className="text-slate-400 text-xs mt-2 font-medium">
+                                  تاريخ التسجيل: {new Date(enrollment.enrolled_at).toLocaleDateString("ar-EG")}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Progress Section */}
+                            <div className="mt-4 sm:mt-0 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                              <div className="flex-1 max-w-xs">
+                                <div className="flex justify-between items-center mb-1 text-xs font-semibold text-slate-600">
+                                  <span>تقدم الدورة</span>
+                                  <span>{Math.round(progress)}%</span>
+                                </div>
+                                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                  <div
+                                    className="bg-[#22C55E] h-full rounded-full transition-all duration-500"
+                                    style={{ width: `${progress}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+
+                              <Link
+                                href={`/free-courses/${course.slug}`}
+                                className="inline-flex justify-center items-center gap-1.5 px-6 py-2.5 rounded-full bg-[#2243A4] hover:bg-[#19327D] text-white text-sm font-bold transition-colors cursor-pointer text-center"
+                              >
+                                <span>متابعة التعلم</span>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-center bg-white rounded-2xl border border-slate-100 p-6">
+                    <div className="max-w-[320px] mb-6">
+                      <Image
+                        src={"/no_courses.png"}
+                        alt="no courses"
+                        className="object-contain w-full h-auto"
+                        width={300}
+                        height={200}
+                      />
+                    </div>
+                    <h3 className="font-bold text-slate-800 text-lg">لم تسجل في أي دورة بعد</h3>
+                    <p className="text-slate-500 text-sm mt-1.5 max-w-sm">
+                      ابدأ رحلتك التعليمية الآن مجاناً عبر تصفح قائمة الدورات المجانية المتاحة.
+                    </p>
+                    <Link
+                      href="/free-courses"
+                      className="mt-6 px-6 py-3 rounded-full bg-[#2243A4] hover:bg-[#19327D] text-white text-sm font-bold shadow-md hover:shadow-lg transition-all duration-150 cursor-pointer"
+                    >
+                      تصفح الدورات المجانية
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
           </div>

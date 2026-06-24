@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/lib/api";
+import { fetchWithAuth } from "@/lib/api";
 
 /**
  * Get paginated list of published free courses.
@@ -6,25 +6,15 @@ import { BASE_URL } from "@/lib/api";
  * @param {string} token - Client authentication token.
  */
 export const getFreeCourses = async ({ search = "", perPage = 12, page = 1 } = {}, token) => {
-  const url = new URL(`${BASE_URL}/free-courses`);
-  if (search) url.searchParams.append("search", search);
-  if (perPage) url.searchParams.append("per_page", perPage);
-  if (page) url.searchParams.append("page", page);
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  if (perPage) params.append("per_page", perPage);
+  if (page) params.append("page", page);
 
-  const res = await fetch(url.toString(), {
+  return fetchWithAuth(`/free-courses?${params.toString()}`, {
     method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Accept": "application/json",
-    },
-    cache: "no-store",
+    token,
   });
-
-  const result = await res.json();
-  if (!res.ok) {
-    throw result;
-  }
-  return result;
 };
 
 /**
@@ -33,18 +23,44 @@ export const getFreeCourses = async ({ search = "", perPage = 12, page = 1 } = {
  * @param {string} token - Client authentication token.
  */
 export const getFreeCourseDetail = async (slug, token) => {
-  const res = await fetch(`${BASE_URL}/free-courses/${slug}`, {
+  return fetchWithAuth(`/free-courses/${slug}`, {
     method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Accept": "application/json",
-    },
-    cache: "no-store",
+    token,
   });
+};
 
-  const result = await res.json();
-  if (!res.ok) {
-    throw result;
-  }
-  return result;
+/**
+ * Enroll in a free course.
+ * @param {number|string} freeCourseId - The ID of the free course.
+ * @param {string} token - Client authentication token.
+ */
+export const enrollInFreeCourse = async (freeCourseId, token) => {
+  return fetchWithAuth(`/free-courses/${freeCourseId}/enroll`, {
+    method: "POST",
+    token,
+  });
+};
+
+/**
+ * Get enrolled free courses for the authenticated user.
+ * @param {string} token - Client authentication token.
+ */
+export const getMyFreeCourseEnrollments = async (token) => {
+  return fetchWithAuth(`/free-courses/my-enrollments`, {
+    method: "GET",
+    token,
+  });
+};
+
+/**
+ * Update video progress inside a free course.
+ * @param {number|string} freeCourseId - The ID of the free course.
+ * @param {number|string} videoId - The ID of the video watched.
+ * @param {string} token - Client authentication token.
+ */
+export const updateVideoProgress = async (freeCourseId, videoId, token) => {
+  return fetchWithAuth(`/free-courses/${freeCourseId}/progress/${videoId}`, {
+    method: "POST",
+    token,
+  });
 };

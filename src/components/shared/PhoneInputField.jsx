@@ -15,6 +15,7 @@ export default function PhoneInputField({ label, value, onChange, error }) {
       <div className="w-full dir-ltr">
         <PhoneInput
           defaultCountry="eg"
+          preferredCountries={["eg", "sa", "ae", "kw", "qa", "bh", "om", "lb", "jo"]}
           value={value}
           onChange={onChange}
           className="flex items-center gap-3 w-full border-0 bg-transparent"
