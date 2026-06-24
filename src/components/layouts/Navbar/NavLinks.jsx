@@ -18,22 +18,16 @@ const baseLinks = [
 export default function NavLinks({ pathName, state, setOpenModal }) {
   const { client, logout } = useAuth();
 
-  // Desktop links: if logged in, include Free Courses
-  const desktopLinks = [...baseLinks];
-  // if (client) {
-  //   desktopLinks.splice(2, 0, { label: "الدورات المجانية", href: "/free-courses" });
-  // }
-
   return (
     <>
       {/* Desktop Navigation */}
       <nav className="hidden md:block">
-        <ul className="flex gap-6 flex-row-reverse">
-          {desktopLinks.map((link) => (
+        <ul className="flex gap-6 flex-row">
+          {baseLinks.map((link) => (
             <li key={link.label}>
               <Link
                 href={link.href}
-                className={`text-[16px] font-medium transition-colors hover:text-[--primary-color] ${pathName === link.href ? "text-[--primary-color] font-semibold" : "text-gray-700"
+                className={`text-[16px] font-medium transition-colors hover:text-(--primary-color) ${pathName === link.href ? "text-(--primary-color) font-semibold" : "text-gray-700"
                   }`}
               >
                 {link.label}
@@ -82,7 +76,7 @@ export default function NavLinks({ pathName, state, setOpenModal }) {
                 <Link
                   href={link.href}
                   onClick={() => setOpenModal(false)}
-                  className={`flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-[15px] font-medium transition-all hover:bg-blue-50 hover:text-[--primary-color] ${pathName === link.href ? "bg-blue-50 text-[--primary-color] font-semibold" : "text-gray-700"
+                  className={`flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-[15px] font-medium transition-all hover:bg-blue-50 hover:text-(--primary-color) ${pathName === link.href ? "bg-blue-50 text-(--primary-color) font-semibold" : "text-gray-700"
                     }`}
                 >
                   {link.label}
@@ -95,7 +89,7 @@ export default function NavLinks({ pathName, state, setOpenModal }) {
               <Link
                 href="/free-courses"
                 onClick={() => setOpenModal(false)}
-                className={`flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-[15px] font-medium transition-all hover:bg-blue-50 hover:text-[--primary-color] ${pathName === "/free-courses" ? "bg-blue-50 text-[--primary-color] font-semibold" : "text-gray-700"
+                className={`flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-[15px] font-medium transition-all hover:bg-blue-50 hover:text-(--primary-color) ${pathName === "/free-courses" ? "bg-blue-50 text-(--primary-color) font-semibold" : "text-gray-700"
                   }`}
               >
                 <BookOpen size={18} className="text-gray-400" />
@@ -108,7 +102,7 @@ export default function NavLinks({ pathName, state, setOpenModal }) {
                   <Link
                     href="/profile"
                     onClick={() => setOpenModal(false)}
-                    className={`flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-[15px] font-medium transition-all hover:bg-blue-50 hover:text-[--primary-color] ${pathName === "/profile" ? "bg-blue-50 text-[--primary-color] font-semibold" : "text-gray-700"
+                    className={`flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-[15px] font-medium transition-all hover:bg-blue-50 hover:text-(--primary-color) ${pathName === "/profile" ? "bg-blue-50 text-(--primary-color) font-semibold" : "text-gray-700"
                       }`}
                   >
                     <Settings size={18} className="text-gray-400" />
@@ -137,7 +131,7 @@ export default function NavLinks({ pathName, state, setOpenModal }) {
             <Link
               href="/login"
               onClick={() => setOpenModal(false)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-semibold text-white bg-[--primary-color] hover:bg-blue-700 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-semibold text-white bg-(--primary-color) hover:bg-blue-700 transition-colors"
             >
               <LogIn size={18} />
               <span>تسجيل الدخول</span>

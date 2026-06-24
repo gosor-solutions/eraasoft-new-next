@@ -65,7 +65,7 @@ export default function Navbar({ logo = null, contactPhone = null }) {
               <div className="hidden md:block">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 border border-gray-200 hover:border-[--primary-color] rounded-full p-1 pl-3 pr-1 transition-all duration-200 bg-gray-50 hover:bg-white cursor-pointer"
+                  className="flex items-center gap-2 border border-gray-200 hover:border-(--primary-color) rounded-full p-1 pl-3 pr-1 transition-all duration-200 bg-gray-50 hover:bg-white cursor-pointer"
                 >
                   <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
                     {client.avatar ? (
@@ -98,14 +98,7 @@ export default function Navbar({ logo = null, contactPhone = null }) {
                       <SettingsIcon size={16} className="text-gray-400" />
                       <span>الملف الشخصي</span>
                     </Link>
-                    <Link
-                      href="/free-courses"
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
-                      <BookOpen size={16} className="text-gray-400" />
-                      <span>الدورات المجانية</span>
-                    </Link>
+
                     <button
                       onClick={() => {
                         setDropdownOpen(false);
@@ -123,7 +116,7 @@ export default function Navbar({ logo = null, contactPhone = null }) {
               <div className="hidden md:block">
                 <Link
                   href="/login"
-                  className="inline-flex items-center justify-center px-5 py-2 rounded-full border border-[--primary-color] text-[--primary-color] hover:bg-[--primary-color] hover:text-white transition-all duration-300 font-medium text-sm"
+                  className="inline-flex items-center justify-center px-5 py-2 rounded-full border border-(--primary-color) text-(--primary-color) hover:bg-(--primary-color) hover:text-white transition-all duration-300 font-medium text-sm"
                 >
                   تسجيل الدخول
                 </Link>

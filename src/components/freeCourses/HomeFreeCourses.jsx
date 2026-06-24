@@ -14,7 +14,7 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
     <section className="px-4 lg:px-15 my-16 py-12 bg-gradient-to-b from-blue-50/20 via-white to-transparent rounded-3xl" dir="rtl">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div className="space-y-2">
-          <span className="text-sm font-bold text-[--primary-color] tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full">
+          <span className="text-sm font-bold text-(--primary-color) tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full">
             تعلم مجاناً
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">الدورات المجانية</h2>
@@ -24,7 +24,7 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
         </div>
         <Link
           href="/free-courses"
-          className="inline-flex items-center gap-2 font-bold text-sm text-[--primary-color] hover:text-blue-700 transition-colors group cursor-pointer"
+          className="inline-flex items-center gap-2 font-bold text-sm text-(--primary-color) hover:text-blue-700 transition-colors group cursor-pointer"
         >
           <span>عرض جميع الدورات المجانية</span>
           <ArrowLeft size={16} className="transform group-hover:-translate-x-1 transition-transform" />
@@ -48,7 +48,7 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-blue-50 text-[--primary-color]">
+                <div className="w-full h-full flex items-center justify-center bg-blue-50 text-(--primary-color)">
                   <BookOpen size={48} />
                 </div>
               )}
@@ -58,7 +58,7 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
                 </span>
               )}
               <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/95 rounded-full flex items-center justify-center text-[--primary-color] shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                <div className="w-12 h-12 bg-white/95 rounded-full flex items-center justify-center text-(--primary-color) shadow-lg transform scale-90 group-hover:scale-100 transition-transform duration-300">
                   <Play size={20} fill="currentColor" className="mr-0.5" />
                 </div>
               </div>
@@ -67,7 +67,7 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
             {/* Content Details */}
             <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
               <div className="space-y-2">
-                <h3 className="font-bold text-lg text-gray-900 group-hover:text-[--primary-color] transition-colors line-clamp-1">
+                <h3 className="font-bold text-lg text-gray-900 group-hover:text-(--primary-color) transition-colors line-clamp-1">
                   {course.title}
                 </h3>
                 <p className="text-gray-500 text-sm line-clamp-2 leading-relaxed">
@@ -81,7 +81,7 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
                 </span>
                 <Link
                   href={client ? `/free-courses/${course.slug}` : "/login"}
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-[--primary-color] hover:text-blue-700 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm font-bold text-(--primary-color) hover:text-blue-700 transition-colors"
                 >
                   شاهد الآن
                 </Link>
