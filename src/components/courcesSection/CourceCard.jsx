@@ -29,21 +29,33 @@ export default function CourceCard({ course }) {
             </div>
           </div>
 
-          {/* Title */}
-          <Link
-            href={`/courses/${course?.slug}`}
-            className="font-semibold text-lg sm:text-xl md:text-2xl lg:text-[28px] line-clamp-2 min-h-14 sm:min-h-16 lg:min-h-20 leading-snug hover:underline block">
-            {course?.title}
-          </Link>
+          <div className="min-h-14 sm:min-h-30 lg:min-h-32">
+            {(course?.is_free || Number(course?.final_price) === 0 || !course?.final_price) && (
+              <span className="inline-block bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+                مجاني
+              </span>
+            )}
+            {/* Title */}
+            <Link
+            dir="ltr"
+              href={`/courses/${course?.slug}`}
+              className="font-semibold text-lg sm:text-xl md:text-2xl lg:text-[28px] line-clamp-2  leading-snug hover:underline block">
+              {course?.title}
+            </Link>
 
-          {/* Description */}
-          <p className="text-[#7F7F7F] text-sm sm:text-base md:text-[16px] line-clamp-2 mt-1">{course?.description}</p>
+            {/* Description */}
+            <p className="text-[#7F7F7F] text-sm sm:text-base md:text-[16px] line-clamp-2 mt-1">{course?.description}</p>
+          </div>
 
           {/* Price */}
-          <p className="text-(--primary-color) text-2xl sm:text-3xl lg:text-[32px] font-bold mt-2">{course?.final_price} ج.م</p>
+          {!(course?.is_free || Number(course?.final_price) === 0 || !course?.final_price) ? (
+            <p className="text-(--primary-color) text-2xl sm:text-3xl lg:text-[32px] font-bold my-6">{course?.final_price} ج.م</p>
+          ) : (
+            <div className="my-6 h-[48px] flex items-center"></div>
+          )}
 
           {/* Actions */}
-          <div className="flex gap-2 sm:gap-3 mt-3">
+          <div className="flex gap-2 sm:gap-3 ">
             <Link href={`/booking/${course?.slug}`} className="main_button grow cursor-pointer text-sm sm:text-base py-3 sm:py-4">
               اشترك الآن
             </Link>

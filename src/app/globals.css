@@ -1,13 +1,27 @@
 @import "tailwindcss";
 @import "react-toastify/dist/ReactToastify.css";
 
+@keyframes hero-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(250px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
 @keyframes hero-float {
   0%, 100% { transform: translateY(0px); }
   50%       { transform: translateY(-18px); }
 }
 
 .hero-image-float {
-  animation: hero-float 4s ease-in-out infinite;
+  opacity: 0;
+  animation: 
+    hero-fade-in-up 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+    hero-float 4s ease-in-out 1.2s infinite;
 }
 
 :root {
@@ -39,7 +53,7 @@ a {
 .main_button {
   background-color: var(--primary-color);
   color: #fff;
-  border-radius: 16px;
+  border-radius: 9999px;
   padding: 16px 24px;
   text-align: center;
   cursor: pointer;

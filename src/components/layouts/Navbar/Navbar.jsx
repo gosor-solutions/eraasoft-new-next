@@ -51,11 +51,10 @@ export default function Navbar({ logo = null, contactPhone = null }) {
               href={`https://wa.me/${contactPhone.replace(/\D/g, "")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden min-[1100px]:flex items-center gap-2 main_button whats_app-button py-2 px-4 text-sm"
+              className="hidden min-[1100px]:flex items-center justify-center bg-[#25D366] hover:bg-[#22c35e] text-white rounded-full p-2.5 transition-colors"
               aria-label="تواصل معنا على واتساب"
             >
               <WhatsAppIcon />
-              <span>واتساب</span>
             </a>
           )}
 

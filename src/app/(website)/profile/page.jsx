@@ -230,8 +230,35 @@ export default function ProfilePage() {
 
         {/* Desktop Layout Grid */}
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+
+          {/* Desktop Navigation Sidebar (Right in RTL, Order 1 to align properly) */}
+          <div className="hidden md:block md:col-span-1 order-1">
+            <div className="bg-white min-h-60 p-4 rounded-3xl border border-slate-100 shadow-sm space-y-2 sticky top-6">
+              <button
+                onClick={() => setActiveTab("personal")}
+                className={`w-full flex items-center gap-3 py-3 px-5 rounded-full text-sm font-bold transition-all duration-150 ${activeTab === "personal"
+                  ? "bg-[#2243a4] text-white shadow-md shadow-blue-500/10"
+                  : "text-slate-700 hover:bg-slate-50"
+                  }`}
+              >
+                <User size={18} />
+                <span>البيانات الشخصية</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("courses")}
+                className={`w-full flex items-center gap-3 py-3 px-5 rounded-full text-sm font-bold transition-all duration-150 ${activeTab === "courses"
+                  ? "bg-[#2243a4] text-white shadow-md shadow-blue-500/10"
+                  : "text-slate-700 hover:bg-slate-50"
+                  }`}
+              >
+                <BookOpen size={18} />
+                <span>الكورسات المسجلة</span>
+              </button>
+            </div>
+          </div>
+
           {/* Main Content Area (Left/Center in LTR, Left in RTL) */}
-          <div className="md:col-span-2 order-2 md:order-1">
+          <div className="md:col-span-2 order-2">
             {activeTab === "personal" && (
               <div className="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm">
                 <div className="flex items-center justify-between border-b border-slate-200/60 pb-5 mb-6">
@@ -392,11 +419,7 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "courses" && (
-              <div className="bg-[#F8FAFC] p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 border-b border-slate-200/60 pb-5">
-                  الدورات المجانية المشترك بها
-                </h2>
-
+              <div className="bg-[#F8FAFC] rounded-3xl border border-slate-100 shadow-sm space-y-6">
                 {loadingCourses ? (
                   <Loading minHeight="min-h-[250px]" />
                 ) : coursesError ? (
@@ -472,57 +495,23 @@ export default function ProfilePage() {
                     })}
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-center bg-white rounded-2xl border border-slate-100 p-6">
-                    <div className="max-w-[320px] mb-6">
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <div className="w-full">
                       <Image
                         src={"/no_courses.png"}
                         alt="no courses"
                         className="object-contain w-full h-auto"
-                        width={300}
-                        height={200}
+                        width={800}
+                        height={500}
                       />
                     </div>
-                    <h3 className="font-bold text-slate-800 text-lg">لم تسجل في أي دورة بعد</h3>
-                    <p className="text-slate-500 text-sm mt-1.5 max-w-sm">
-                      ابدأ رحلتك التعليمية الآن مجاناً عبر تصفح قائمة الدورات المجانية المتاحة.
-                    </p>
-                    <Link
-                      href="/free-courses"
-                      className="mt-6 px-6 py-3 rounded-full bg-[#2243A4] hover:bg-[#19327D] text-white text-sm font-bold shadow-md hover:shadow-lg transition-all duration-150 cursor-pointer"
-                    >
-                      تصفح الدورات المجانية
-                    </Link>
                   </div>
                 )}
               </div>
             )}
           </div>
 
-          {/* Desktop Navigation Sidebar (Right in RTL, Order 1 to align properly) */}
-          <div className="hidden md:block md:col-span-1 order-1 md:order-2">
-            <div className="bg-white min-h-60 p-4 rounded-3xl border border-slate-100 shadow-sm space-y-2 sticky top-6">
-              <button
-                onClick={() => setActiveTab("personal")}
-                className={`w-full flex items-center gap-3 py-3 px-5 rounded-full text-sm font-bold transition-all duration-150 ${activeTab === "personal"
-                  ? "bg-[#2243a4] text-white shadow-md shadow-blue-500/10"
-                  : "text-slate-700 hover:bg-slate-50"
-                  }`}
-              >
-                <User size={18} />
-                <span>البيانات الشخصية</span>
-              </button>
-              <button
-                onClick={() => setActiveTab("courses")}
-                className={`w-full flex items-center gap-3 py-3 px-5 rounded-full text-sm font-bold transition-all duration-150 ${activeTab === "courses"
-                  ? "bg-[#2243a4] text-white shadow-md shadow-blue-500/10"
-                  : "text-slate-700 hover:bg-slate-50"
-                  }`}
-              >
-                <BookOpen size={18} />
-                <span>الكورسات المسجلة</span>
-              </button>
-            </div>
-          </div>
+
         </div>
       </div>
     </main>

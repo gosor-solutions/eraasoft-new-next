@@ -11,7 +11,7 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
   if (!freeCourses || freeCourses.length === 0) return null;
 
   return (
-    <section className="px-4 lg:px-15 my-16 py-12 bg-gradient-to-b from-blue-50/20 via-white to-transparent rounded-3xl" dir="rtl">
+    <section className="px-4 lg:px-15 py-12 bg-gradient-to-b from-blue-50/20 via-white to-transparent rounded-3xl" dir="rtl">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div className="space-y-2">
           <span className="text-sm font-bold text-(--primary-color) tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full">

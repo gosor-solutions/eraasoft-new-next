@@ -20,14 +20,15 @@ function GraduationProjectsTitle() {
 
 export default function GraduationProjectsSection({ projects = [] }) {
   if (projects.length === 0) {
-    return (
-      <section className="my-10 px-5" dir="rtl">
-        <EmptyState
-          title="لا توجد مشاريع تخرج حالياً"
-          subtitle="سيتم إضافة مشاريع الطلاب قريباً — ترقّب أعمالهم المميزة"
-        />
-      </section>
-    );
+    return null;
+    // return (
+    //   <section className="my-10 px-5" dir="rtl">
+    //     <EmptyState
+    //       title="لا توجد مشاريع تخرج حالياً"
+    //       subtitle="سيتم إضافة مشاريع الطلاب قريباً — ترقّب أعمالهم المميزة"
+    //     />
+    //   </section>
+    // );
   }
 
   return (

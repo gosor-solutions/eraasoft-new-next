@@ -37,8 +37,8 @@ export default function CourceFeatures({ course }) {
       <div className="flex flex-col gap-3 mt-4">
         <h5 className="font-bold text-lg my-3">تشمل هذه الدورة:</h5>
         {course?.features?.map((feature) => (
-          <div className="flex items-center gap-3" key={feature}>
-            <div className="w-10 h-10 bg-[#2243A41A] text-(--primary-color) rounded-full flex justify-center items-center">
+          <div dir="ltr" className="flex flex-row items-start gap-3" key={feature}>
+            <div className="w-10 h-10 shrink-0 bg-[#2243A41A] text-(--primary-color) rounded-full flex justify-center items-center">
               <Check />
             </div>
             <p>{feature}</p>

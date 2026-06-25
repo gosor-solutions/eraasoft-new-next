@@ -5,7 +5,6 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import {
   getFreeCourseDetail,
-  enrollInFreeCourse,
   getMyFreeCourseEnrollments,
   updateVideoProgress,
 } from "@/services/FreeCourses";
@@ -20,8 +19,6 @@ import {
   BookOpen,
   Star,
   CheckCircle2,
-  Lock,
-  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -67,6 +64,7 @@ export default function FreeCourseDetailPage() {
   const overallProgress = matchedEnrollment?.progress_percent || 0;
 
   const sortedVideos = course?.videos ? [...course.videos].sort((a, b) => a.order - b.order) : [];
+  
   const completedVideoIds = sortedVideos
     .filter((v) => v.is_completed || v.completed || v.is_watched || v.watched)
     .map((v) => v.id);
@@ -85,21 +83,6 @@ export default function FreeCourseDetailPage() {
   }, [course, activeVideo]);
 
   // Mutations
-  const enrollMutation = useMutation({
-    mutationFn: () => enrollInFreeCourse(course.id, token),
-    onSuccess: (res) => {
-      if (res.success) {
-        toast.success("تم الاشتراك في الدورة بنجاح! يمكنك الآن مشاهدة جميع الدروس وتتبع تقدمك.");
-        queryClient.invalidateQueries({ queryKey: ["free-course-enrollments"] });
-        queryClient.invalidateQueries({ queryKey: ["free-course-detail", slug] });
-      }
-    },
-    onError: (err) => {
-      console.error(err);
-      toast.error(err?.message || "حدث خطأ أثناء الاشتراك في الدورة. يرجى المحاولة مرة أخرى.");
-    }
-  });
-
   const updateProgressMutation = useMutation({
     mutationFn: (videoId) => updateVideoProgress(course.id, videoId, token),
     onSuccess: (res) => {
@@ -115,20 +98,23 @@ export default function FreeCourseDetailPage() {
     }
   });
 
-  const handleEnroll = () => {
-    if (enrollMutation.isPending) return;
-    enrollMutation.mutate();
-  };
-
   const handleMarkAsWatched = (videoId) => {
     if (updateProgressMutation.isPending) return;
     updateProgressMutation.mutate(videoId);
   };
 
-  const isEnrolling = enrollMutation.isPending;
   const isUpdatingProgress = updateProgressMutation.isPending;
 
-  if (authLoading || courseLoading || enrollmentsLoading || !course) {
+  // Enforce enrollment: Redirect if not enrolled
+  useEffect(() => {
+    if (!authLoading && !courseLoading && !enrollmentsLoading && course) {
+      if (!isEnrolled) {
+        router.push("/free-courses");
+      }
+    }
+  }, [authLoading, courseLoading, enrollmentsLoading, course, isEnrolled, router]);
+
+  if (authLoading || courseLoading || enrollmentsLoading || !course || !isEnrolled) {
     return <Loading minHeight="min-h-screen bg-gray-50" />;
   }
 
@@ -200,7 +186,7 @@ export default function FreeCourseDetailPage() {
       <section className="px-5 lg:px-13 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Right Area: Playlist Index */}
-          <div className="lg:col-span-1 space-y-6 lg:order-2">
+          <div className="lg:col-span-1 space-y-6 ">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-fit">
               <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -217,7 +203,6 @@ export default function FreeCourseDetailPage() {
                   return (
                     <button
                       key={video.id}
-                      disabled={!isEnrolled && idx > 0} // Lock videos after first one if not enrolled
                       onClick={() => setActiveVideo(video)}
                       className={`w-full text-right p-4 transition-all duration-150 flex items-start gap-3 hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${isActive ? "bg-blue-50/60 border-r-4 border-[#2243A4]" : ""
                         }`}
@@ -241,12 +226,11 @@ export default function FreeCourseDetailPage() {
                           >
                             {video.title}
                           </p>
-                          {!isEnrolled && idx > 0 && <Lock size={12} className="text-gray-400 shrink-0" />}
                         </div>
                         {video.duration && (
                           <span className="inline-flex items-center gap-1 text-[11px] text-gray-400 font-medium">
                             <Clock size={10} />
-                            {video.duration}
+                            {video.duration} دقيقة
                           </span>
                         )}
                       </div>
@@ -257,91 +241,59 @@ export default function FreeCourseDetailPage() {
             </div>
           </div>
 
-          {/* Left Area: Video Player or Lock Screen */}
+          {/* Left Area: Video Player */}
           <div className="lg:col-span-2 space-y-8 lg:order-1">
-            {isEnrolled || (activeVideo && sortedVideos.indexOf(activeVideo) === 0) ? (
-              // Enrolled state or playing first video (allowed preview)
-              activeVideo ? (
-                <div className="space-y-5">
-                  <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-black border border-gray-100">
-                    <iframe
-                      src={getVideoEmbedUrl(activeVideo.url)}
-                      title={activeVideo.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      className="absolute inset-0 w-full h-full"
-                    />
-                  </div>
-                  <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2243A4]">
-                        <Play size={12} fill="currentColor" />
-                        <span>
-                          الدرس الحالي: {activeVideo.order + 1} من {sortedVideos.length}
-                        </span>
-                      </div>
-                      <h2 className="text-xl font-bold text-gray-900">{activeVideo.title}</h2>
-                      {activeVideo.duration && (
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
-                          <Clock size={12} />
-                          <span>مدة الدرس: {activeVideo.duration}</span>
-                        </div>
-                      )}
+            {activeVideo ? (
+              <div className="space-y-5">
+                <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-black border border-gray-100">
+                  <iframe
+                    src={getVideoEmbedUrl(activeVideo.url)}
+                    title={activeVideo.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                  />
+                </div>
+                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#2243A4]">
+                      <Play size={12} fill="currentColor" />
+                      <span>
+                        الدرس الحالي: {activeVideo.order + 1} من {sortedVideos.length}
+                      </span>
                     </div>
-
-                    {isEnrolled ? (
-                      completedVideoIds.includes(activeVideo.id) ? (
-                        <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
-                          <CheckCircle2 size={14} />
-                          <span>مكتمل</span>
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => handleMarkAsWatched(activeVideo.id)}
-                          disabled={isUpdatingProgress}
-                          className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-colors cursor-pointer disabled:opacity-50"
-                        >
-                          {isUpdatingProgress ? "جاري التحديث..." : "تحديد كمكتمل"}
-                        </button>
-                      )
-                    ) : (
-                      <button
-                        onClick={handleEnroll}
-                        disabled={isEnrolling}
-                        className="px-5 py-2.5 rounded-full bg-[#2243A4] hover:bg-[#19327D] text-white text-xs font-bold shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
-                      >
-                        <Sparkles size={14} className="text-yellow-300" />
-                        <span>اشترك لتتبع تقدمك</span>
-                      </button>
+                    <h2 className="text-xl font-bold text-gray-900">{activeVideo.title}</h2>
+                    {activeVideo.duration && (
+                      <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
+                        <Clock size={12} />
+                        <span>مدة الدرس: {activeVideo.duration}</span>
+                      </div>
                     )}
                   </div>
+
+                  {completedVideoIds.includes(activeVideo.id) ? (
+                    <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
+                      <CheckCircle2 size={14} />
+                      <span>مكتمل</span>
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleMarkAsWatched(activeVideo.id)}
+                      disabled={isUpdatingProgress}
+                      className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {isUpdatingProgress ? "جاري التحديث..." : "تحديد كمكتمل"}
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <div className="aspect-video rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
-                  <div className="text-center space-y-2">
-                    <AlertCircle size={48} className="mx-auto text-gray-300" />
-                    <p className="text-sm font-medium">لا توجد دروس متوفرة حالياً.</p>
-                  </div>
-                </div>
-              )
+              </div>
             ) : (
-              // Locked screen if not enrolled and trying to watch locked lessons
-              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-slate-900 border border-gray-100 flex flex-col items-center justify-center text-center p-6 text-white space-y-4">
-                <div className="bg-white/10 p-4 rounded-full border border-white/20">
-                  <Lock size={36} className="text-[#2243A4]" />
+              <div className="aspect-video rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
+                <div className="text-center space-y-2">
+                  <AlertCircle size={48} className="mx-auto text-gray-300" />
+                  <p className="text-sm font-medium">لا توجد دروس متوفرة حالياً.</p>
                 </div>
-                <h3 className="font-bold text-lg">هذا الدرس مغلق</h3>
-                <p className="text-gray-300 text-sm max-w-sm">
-                  الرجاء الاشتراك في هذه الدورة المجانية لتتمكن من الوصول لكامل محتواها ومتابعة الدروس.
-                </p>
-                <button
-                  onClick={handleEnroll}
-                  disabled={isEnrolling}
-                  className="px-6 py-3 rounded-full bg-[#2243A4] hover:bg-[#19327D] text-white text-sm font-bold shadow-lg transition-all cursor-pointer"
-                >
-                  {isEnrolling ? "جاري الاشتراك..." : "اشترك الآن مجاناً"}
-                </button>
               </div>
             )}
 
