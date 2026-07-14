@@ -27,8 +27,8 @@ export default function CourcesSection({ courses = [] }) {
           </div>
         ) : (
           // TODO: remove the reverse
-          courses.reverse().map((course) => (
-            <CourceCard course={course} key={`${course?.id} cource ID`} />
+          courses.reverse().map((course, index) => (
+            <CourceCard course={course} key={`${course?.id} cource ID`} delay={(index % 4) * 0.08} />
           ))
         )}
       </div>

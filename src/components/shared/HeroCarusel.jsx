@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee";
+const FALLBACK_IMAGE = "/default_bg.webp";
 
 export default function HeroCarousel({ head, description, image }) {
   const src = image || FALLBACK_IMAGE;

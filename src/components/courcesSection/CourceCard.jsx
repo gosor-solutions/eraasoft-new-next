@@ -1,11 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
+import FadeInSection from "@/components/shared/FadeInSection";
 
-export default function CourceCard({ course }) {
-
+export default function CourceCard({ course, delay = 0 }) {
   return (
-    <div className="col-span-12 md:col-span-6 lg:col-span-3 min-[1400px]:col-span-3 border border-(--primary-color) rounded-xl relative course-card-container">
-      <div className="course_card p-3 sm:p-4 rounded-xl bg-white transition-colors duration-200">
+    <FadeInSection
+      delay={delay}
+      className="col-span-12 md:col-span-6 lg:col-span-3 min-[1400px]:col-span-3 border border-(--primary-color) rounded-xl"
+    >
+      <div className="course_card p-3 sm:p-4 rounded-xl bg-white">
         <div className="image relative h-52 sm:h-64 md:h-72 lg:h-80 rounded-xl overflow-hidden">
           <Image src={course?.image} alt={course?.title || "صورة الكورس"} fill sizes="(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 25vw" className="object-cover object-center" />
           <div className="absolute top-3 left-3 sm:top-5 sm:left-5">
@@ -59,7 +62,6 @@ export default function CourceCard({ course }) {
           </div>
         </div>
       </div>
-    </div>
-
+    </FadeInSection>
   );
 }

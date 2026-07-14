@@ -9,6 +9,7 @@ import RelatedCources from "@/components/courceInfo/RelatedCources";
 import StudentProjectsCarusel from "@/components/studensProjects/StudentProjectsCarusel";
 import JsonLd from "@/components/seo/JsonLd";
 import { BASE_URL } from "@/lib/api";
+import FadeInSection from "@/components/shared/FadeInSection";
 
 export async function generateStaticParams() {
   try {
@@ -97,14 +98,24 @@ export default async function CourseDetailPage({ params }) {
       <JsonLd schema={breadcrumb} />
       <CourseBanner course={courceDetails} />
       <section dir="rtl" className="px-5 lg:px-13 py-5 bg-[#FAFAFA]">
-        <CourceInfo course={courceDetails} />
-        <CourceContent content={courceDetails?.content} />
-        <StudentProjectsCarusel courceVideos={courceDetails?.projects_videos} />
+        <FadeInSection>
+          <CourceInfo course={courceDetails} />
+        </FadeInSection>
+        <FadeInSection>
+          <CourceContent content={courceDetails?.content} />
+        </FadeInSection>
+        <FadeInSection>
+          <StudentProjectsCarusel courceVideos={courceDetails?.projects_videos} />
+        </FadeInSection>
         {/* <Features /> */}
       </section>
       <section className="py-5 bg-[#FAFAFA]">
-        <TestimonialsCarousel testimonials={testimonials} />
-        <EraaCertificate />
+        <FadeInSection>
+          <TestimonialsCarousel testimonials={testimonials} />
+        </FadeInSection>
+        <FadeInSection>
+          <EraaCertificate />
+        </FadeInSection>
         <RelatedCources relatedCources={courceDetails?.related_courses} />
       </section>
     </>
