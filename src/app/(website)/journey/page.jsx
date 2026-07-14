@@ -118,7 +118,7 @@ export default function JourneyPage() {
 
                     {/* Arrow representation pointing Left (RTL Flow) */}
                     {idx < STAGES.length - 1 && (
-                      <div className="flex-1 flex items-center justify-center text-yellow-500 font-extrabold text-4xl mx-3 animate-pulse">
+                      <div className="flex-1 flex items-center justify-center text-yellow-500 font-extrabold text-4xl -mt-24 mx-3 animate-pulse">
                         ←
                       </div>
                     )}
@@ -494,6 +494,33 @@ const STAGES = [
         "points": [
           "الحفاظ على تقييم يتراوح بين 90% و100%.",
           "استيفاء متطلبات المشاركة في ورش العمل، ومعسكرات إيراسوفت، ومحاكاة يوم العمل."
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "titleAr": "EraaSoft Community",
+    icon: Sparkles,
+    "sections": [
+      {
+        "title": "ما هو مجتمع إيراسوفت؟",
+        "paragraph": "بيئة تفاعلية تربط الطلاب والخريجين بشبكة واسعة من الشركات الشريكة وأصحاب الأعمال لتوفير فرص التدريب والتوظيف والدعم المهني المستمر."
+      },
+      {
+        "title": "فرص العمل والتوظيف",
+        "points": [
+          "توفير فرص تدريب وتوظيف حقيقية بالتعاون مع شركاء النجاح.",
+          "ربط الخريجين المتميزين بأصحاب الأعمال مباشرة.",
+          "المشاركة الفعالة في ملتقيات التوظيف السنوية واللقاءات الوظيفية."
+        ]
+      },
+      {
+        "title": "الشراكات والنمو المستمر",
+        "points": [
+          "الاستفادة من الشراكات المعتمدة والاتفاقيات مع كبرى شركات البرمجيات.",
+          "جلسات إرشاد وتوجيه مستمر لدعم نموك المهني بعد التخرج.",
+          "تسهيل سبل التواصل مع مجتمع الخريجين لتبادل الخبرات والمشاريع المشتركة."
         ]
       }
     ]
