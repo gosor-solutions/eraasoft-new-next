@@ -8,6 +8,7 @@ import { useAuth } from "@/providers/AuthProvider";
 const baseLinks = [
   { label: "الرئيسية", href: "/" },
   { label: "الدورات", href: "/courses" },
+  { label: "الرحلة التعليمية", href: "/journey" },
   { label: "اراء الطلاب", href: "/reviews" },
   { label: "الدورات المجانية", href: "/free-courses" },
   { label: "المقالات", href: "/articles" },

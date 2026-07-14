@@ -8,8 +8,8 @@ export default function RelatedCources({ relatedCources }) {
     <section dir="rtl" className="px-5 lg:px-15">
       <SectionTitle title="دورات ذات صلة" />
       <div className="grid grid-cols-12 gap-4">
-        {relatedCources?.map((course) => (
-          <CourceCard course={course} key={course.id} />
+        {relatedCources?.map((course, index) => (
+          <CourceCard course={course} key={course.id} delay={(index % 4) * 0.08} />
         ))}
       </div>
     </section>
