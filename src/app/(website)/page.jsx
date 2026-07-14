@@ -1,4 +1,5 @@
 import AboutSection from "@/components/aboutSection/AboutSection";
+import SyndicateSection from "@/components/syndicateSection/SyndicateSection";
 import ArticalsSection from "@/components/articalsSection/ArticalsSection";
 import ContactSection from "@/components/contactSection/ContactSection";
 import CourcesSection from "@/components/courcesSection/CourcesSection";
@@ -37,6 +38,9 @@ export default async function HomePage() {
       </FadeInSection>
       <FadeInSection>
         <AboutSection />
+      </FadeInSection>
+      <FadeInSection>
+        <SyndicateSection />
       </FadeInSection>
       <FadeInSection variant="fadeIn" duration={0.6}>
         <GraduationProjectsSection projects={studentProjects} />
