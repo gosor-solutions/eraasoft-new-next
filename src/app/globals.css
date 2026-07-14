@@ -229,3 +229,23 @@ a {
   direction: ltr;
   text-align: left;
 }
+
+.booking-btn{
+  padding: 10px 12px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+.booking-btn:hover{
+  transform: scale(1.02);
+  background-color: #193799;
+  /* padding: 10px 16px; */
+}
+
+/* Card hover effects, only when booking button is NOT hovered */
+.course-card-container:hover:not(:has(.booking-btn:hover)) .course_card {
+  background-color: #eff7ff;
+}
+
+.course-card-container:hover:not(:has(.booking-btn:hover)) .course-card-title {
+  text-decoration: underline;
+}
