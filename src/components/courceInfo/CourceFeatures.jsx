@@ -24,8 +24,8 @@ export default function CourceFeatures({ course }) {
       <Link href={`/booking/${course?.slug}`} className="main_button w-full text-center block">
         اشترك الآن
       </Link>
-      <h3 className="text-(--primary-color) font-bold mt-6 mb-3">المدرب</h3>
-      <div className="flex gap-3 items-center justify-start bg-[#2243A41A] p-5 rounded-2xl">
+      {/* <h3 className="text-(--primary-color) font-bold mt-6 mb-3">المدرب</h3> */}
+      {/* <div className="flex gap-3 items-center justify-start bg-[#2243A41A] p-5 rounded-2xl">
         <div className="relative w-15 h-15 rounded-full overflow-hidden border">
           <Image src={course?.instructor?.image} alt={course?.instructor?.name || "صورة المدرب"} fill className="object-cover object-center" />
         </div>
@@ -33,7 +33,7 @@ export default function CourceFeatures({ course }) {
           <h4 className="font-bold text-lg">{course?.instructor?.name}</h4>
           <p className="text-sm text-[#606060]">{course?.instructor?.position}</p>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col gap-3 mt-4">
         <h5 className="font-bold text-lg my-3">تشمل هذه الدورة:</h5>
         {course?.features?.map((feature) => (
