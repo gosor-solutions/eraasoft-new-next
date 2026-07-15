@@ -33,14 +33,12 @@ export default function SyndicateSection() {
           </div>
         </div>
 
-        {/* Left side: Image of certificate */}
-        <div className="col-span-12 lg:col-span-5 order-2 relative w-full h-full rounded-xl overflow-hidden">
+        <div className=" col-span-12 lg:col-span-5 order-2 relative w-full h-full rounded-xl overflow-hidden">
           <Image 
-            src="/certificate.png" 
+            src="/engineering.jpeg" 
             alt="اعتماد نقابة المهندسين المصرية" 
             fill 
-            className="object-contain object-center"
-            sizes="(max-width: 1024px) 100vw, 40vw"
+            className="scale-150 object-contain object-center"
             priority
           />
         </div>
