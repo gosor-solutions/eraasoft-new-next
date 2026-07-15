@@ -10,13 +10,13 @@ import HeroCarousel from "@/components/shared/HeroCarusel";
 export default function JourneyClient({ pageData, initialStages = [] }) {
   const STAGES = initialStages.length > 0 ? initialStages.map((stage) => {
     return {
-      id: stage.order || stage.id,
-      titleAr: stage.title,
-      image: stage.image,
+      id: stage?.order || stage?.id,
+      titleAr: stage?.title,
+      image: stage?.image,
       sections: [
         {
-          title: stage.subtitle,
-          points: stage.points || []
+          title: stage?.subtitle,
+          points: stage?.points || []
         }
       ]
     };
@@ -41,11 +41,11 @@ export default function JourneyClient({ pageData, initialStages = [] }) {
   };
 
   const renderIcon = (stage, size = 40, className = "") => {
-    if (!stage.image) return null;
+    if (!stage?.image) return null;
     return (
       <img 
-        src={stage.image} 
-        alt={stage.titleAr} 
+        src={stage?.image} 
+        alt={stage?.titleAr} 
         className={`object-contain ${className}`}
         style={{ width: size, height: size }} 
       />
@@ -127,7 +127,7 @@ export default function JourneyClient({ pageData, initialStages = [] }) {
                         mt-5 text-sm xl:text-base font-black transition-colors duration-200 text-center h-20
                         ${isActive ? 'text-yellow-400' : 'text-white/80 group-hover:text-white'}
                       `}>
-                        {stage.titleAr}
+                        {stage?.titleAr}
                       </span>
                     </button>
 
@@ -164,7 +164,7 @@ export default function JourneyClient({ pageData, initialStages = [] }) {
                   </span>
                 </div>
                 <h3 className="text-yellow-400 font-black text-xl mt-5 text-center">
-                  {activeData.titleAr}
+                  {activeData?.titleAr}
                 </h3>
               </div>
 
@@ -198,20 +198,20 @@ export default function JourneyClient({ pageData, initialStages = [] }) {
           {/* White Header Box with Yellow Dash */}
           <div className="bg-white text-[#2243a4] font-black text-xl md:text-3xl py-4 px-6 md:px-10 rounded-lg shadow-xl mb-12 inline-flex items-center gap-4 w-full md:w-auto">
             <span className="w-3 h-10 bg-yellow-500 rounded-sm shrink-0"></span>
-            <span>{activeData.titleAr}</span>
+            <span>{activeData?.titleAr}</span>
           </div>
 
           <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-12">
             {/* Big & Bold Text Content */}
             <div className="flex-1 space-y-10">
-              {activeData.sections.map((section, idx) => (
+              {activeData?.sections?.map((section, idx) => (
                 <div key={idx} className="space-y-4">
                   <h3 className="text-yellow-400 font-black text-2xl md:text-3xl tracking-wide">
-                    {section.title}
+                    {section?.title}
                   </h3>
-                  {section.paragraph && (
+                  {section?.paragraph && (
                     <p className="text-white font-extrabold text-base md:text-lg leading-relaxed">
-                      {section.paragraph}
+                      {section?.paragraph}
                     </p>
                   )}
                   {section.points && section.points.length > 0 && (
