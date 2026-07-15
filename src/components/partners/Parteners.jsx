@@ -31,7 +31,7 @@ const partenersImages = [
   {
     imageSrc: "/partners/orange.png",
     alt: "Partener Six",
-    width: 200
+    width: 400
   },
   {
     imageSrc: "/partners/out-of-the-box.jpeg",
@@ -45,7 +45,7 @@ export default function Parteners() {
       <div className="grid grid-cols-14 gap-4">
         {partenersImages.map((image) => (
           <div key={image.alt} className="col-span-7 md:col-span-3 lg:col-span-2">
-            <div className="bg-white rounded-xl p-8 flex items-center justify-center h-full grayscale hover:grayscale-0 transition-all duration-300">
+            <div className="bg-white rounded-xl p-4 sm:p-8 flex items-center justify-center h-full grayscale hover:grayscale-0 transition-all duration-300">
               <Image src={image.imageSrc} alt={image.alt} width={image.width} height={0} className="object-contain" />
             </div>
           </div>

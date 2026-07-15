@@ -8,12 +8,12 @@ export default function SyndicateSection() {
       <div className="max-w-7xl mx-auto grid grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Right side: Text details */}
         <div className="col-span-12 lg:col-span-7 order-1">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 w-[90vw] md:w-full">
             <span className="text-[#2243A4] font-semibold text-sm sm:text-base tracking-wider uppercase">
               اعتماد رسمي موثق
             </span>
             
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#111111] leading-tight flex flex-wrap gap-2 items-center">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#111111] leading-tight flex flex-wrap gap-2 items-center">
               <span>نحن معتمدون من</span>
               <span className="inline-flex flex-col items-center relative">
                 <span className="text-[#2243A4]">نقابة المهندسين</span>
@@ -33,12 +33,12 @@ export default function SyndicateSection() {
           </div>
         </div>
 
-        <div className=" col-span-12 lg:col-span-5 order-2 relative w-full h-full rounded-xl overflow-hidden">
+        <div className="col-span-12 lg:col-span-5 order-2 relative w-[90vw] md:w-full aspect-[4/3] lg:aspect-auto lg:h-full min-h-[250px] sm:min-h-[350px] rounded-xl overflow-hidden">
           <Image 
             src="/engineering.jpeg" 
             alt="اعتماد نقابة المهندسين المصرية" 
             fill 
-            className="scale-150 object-contain object-center"
+            className="scale-100 lg:scale-150 object-contain object-center"
             priority
           />
         </div>

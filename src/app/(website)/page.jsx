@@ -5,13 +5,14 @@ import ContactSection from "@/components/contactSection/ContactSection";
 import CourcesSection from "@/components/courcesSection/CourcesSection";
 import HomeFreeCourses from "@/components/freeCourses/HomeFreeCourses";
 import FaqsSection from "@/components/faqsSection/FaqsSection";
-import Features from "@/components/featuresSection/Features";
 import HeroSection from "@/components/HeroSection/HeroSection";
 import TestimonialsCarousel from "@/components/sliders/TestimonialsCarousel";
 import FadeInSection from "@/components/shared/FadeInSection";
 import GraduationProjectsSection from "@/components/studensProjects/GraduationProjectsSection";
 import { getHome } from "@/services/Home";
 import Parteners from "@/components/partners/Parteners";
+import EducationalPartners from "@/components/partners/EducationalPartners";
+
 
 export default async function HomePage() {
   let data = {};
@@ -48,6 +49,10 @@ export default async function HomePage() {
       <FadeInSection variant="fadeIn" duration={0.6}>
         <Parteners />
       </FadeInSection>
+      <FadeInSection variant="fadeIn" duration={0.6}>
+        <EducationalPartners />
+      </FadeInSection>
+
       {/* <FadeInSection>
         <Features />
       </FadeInSection> */}
