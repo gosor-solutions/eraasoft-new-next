@@ -25,27 +25,35 @@ export default function FreeCoursesClient({ pageData }) {
   const [page, setPage] = useState(1);
   const [debouncedSearch] = useDebounce(search, 300);
 
-  useEffect(() => {
-    if (!authLoading && !token) {
-      router.push("/login");
-    }
-  }, [token, authLoading, router]);
+  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const enrollParam = searchParams?.get("enroll");
 
   const { data: responseData, isLoading: isDataLoading, error } = useQuery({
     queryKey: ["free-courses", debouncedSearch, page],
     queryFn: () => getFreeCourses({ search: debouncedSearch, page, perPage: 12 }, token),
-    enabled: !!token && !authLoading,
   });
 
   const { data: enrollmentsRes, isLoading: enrollmentsLoading } = useQuery({
     queryKey: ["free-course-enrollments"],
     queryFn: () => getMyFreeCourseEnrollments(token),
-    enabled: !!token && !authLoading,
+    enabled: !!token,
   });
 
   const courses = responseData?.success ? (responseData.data || []) : [];
   const meta = responseData?.success ? (responseData.meta || null) : null;
   const enrollments = enrollmentsRes?.success ? (enrollmentsRes.data || []) : [];
+
+  useEffect(() => {
+    if (token && enrollParam && courses.length > 0) {
+      const courseId = Number(enrollParam) || enrollParam;
+      const alreadyEnrolled = enrollments.some((e) => e.course?.id === courseId);
+      if (!alreadyEnrolled) {
+        handleEnroll(courseId);
+        // Clean URL params
+        router.replace("/free-courses");
+      }
+    }
+  }, [token, enrollParam, courses, enrollments]);
 
   const enrollMutation = useMutation({
     mutationFn: (courseId) => enrollInFreeCourse(courseId, token),
@@ -68,6 +76,12 @@ export default function FreeCoursesClient({ pageData }) {
   });
 
   const handleEnroll = (courseId) => {
+    if (!token) {
+      const targetCourse = courses.find((c) => c.id === courseId);
+      const redirectPath = targetCourse ? `/free-courses?enroll=${targetCourse.id}` : "/free-courses";
+      router.push(`/login?redirect=${encodeURIComponent(redirectPath)}`);
+      return;
+    }
     if (enrollMutation.isPending) return;
     enrollMutation.mutate(courseId);
   };
@@ -77,8 +91,6 @@ export default function FreeCoursesClient({ pageData }) {
   if (authLoading) {
     return <Loading minHeight="min-h-screen bg-gray-50" />;
   }
-
-  if (!token) return null;
 
   return (
     <>

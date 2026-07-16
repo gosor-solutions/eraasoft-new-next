@@ -39,9 +39,9 @@ export default function FreeCourseDetailPage() {
 
   useEffect(() => {
     if (!authLoading && !token) {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(`/free-courses/${slug}`)}`);
     }
-  }, [token, authLoading, router]);
+  }, [token, authLoading, router, slug]);
 
   // Query: Course detail
   const { data: courseDataRes, isLoading: courseLoading } = useQuery({

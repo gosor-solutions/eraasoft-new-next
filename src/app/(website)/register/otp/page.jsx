@@ -39,7 +39,9 @@ export default function RegisterOtpPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (client) {
-      router.push("/profile");
+      const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const redirect = searchParams?.get("redirect");
+      router.push(redirect || "/profile");
     }
   }, [client, router]);
 

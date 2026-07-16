@@ -32,7 +32,9 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (client) {
-      router.push("/profile");
+      const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const redirect = searchParams?.get("redirect");
+      router.push(redirect || "/profile");
     }
   }, [client, router]);
 
@@ -76,7 +78,10 @@ export default function RegisterPage() {
       toast.success(res?.message || "تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح", { position: "top-center" });
       // Save data to sessionStorage to verify on the OTP page
       sessionStorage.setItem("register_formData", JSON.stringify(formData));
-      router.push("/register/otp");
+      const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const redirect = searchParams?.get("redirect");
+      const otpUrl = redirect ? `/register/otp?redirect=${encodeURIComponent(redirect)}` : "/register/otp";
+      router.push(otpUrl);
     } catch (err) {
       console.error(err);
       if (err?.errors) {

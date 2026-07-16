@@ -51,24 +51,34 @@ export default function AuthLayout({ mode, children }) {
 
             {/* Toggle Switcher */}
             <div className="bg-[#EAEFFD] p-1.5 rounded-full flex max-w-[340px] mx-auto mb-8 relative border border-[#D5E1FB]">
-              <Link
-                href="/login"
-                className={`flex-1 text-center py-2.5 px-6 rounded-full text-sm font-semibold transition-all duration-300 ${mode === "login"
-                  ? "bg-[#2243A4] text-white shadow-md"
-                  : "text-[#4B5563] hover:text-[#111827]"
-                  }`}
-              >
-                تسجيل الدخول
-              </Link>
-              <Link
-                href="/register"
-                className={`flex-1 text-center py-2.5 px-6 rounded-full text-sm font-semibold transition-all duration-300 ${mode === "register"
-                  ? "bg-[#2243A4] text-white shadow-md"
-                  : "text-[#4B5563] hover:text-[#111827]"
-                  }`}
-              >
-                انشاء حساب
-              </Link>
+              {(() => {
+                const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+                const redirect = searchParams?.get("redirect");
+                const loginHref = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login";
+                const registerHref = redirect ? `/register?redirect=${encodeURIComponent(redirect)}` : "/register";
+                return (
+                  <>
+                    <Link
+                      href={loginHref}
+                      className={`flex-1 text-center py-2.5 px-6 rounded-full text-sm font-semibold transition-all duration-300 ${mode === "login"
+                        ? "bg-[#2243A4] text-white shadow-md"
+                        : "text-[#4B5563] hover:text-[#111827]"
+                        }`}
+                    >
+                      تسجيل الدخول
+                    </Link>
+                    <Link
+                      href={registerHref}
+                      className={`flex-1 text-center py-2.5 px-6 rounded-full text-sm font-semibold transition-all duration-300 ${mode === "register"
+                        ? "bg-[#2243A4] text-white shadow-md"
+                        : "text-[#4B5563] hover:text-[#111827]"
+                        }`}
+                    >
+                      انشاء حساب
+                    </Link>
+                  </>
+                );
+              })()}
             </div>
 
             {/* The actual form fields and actions */}
