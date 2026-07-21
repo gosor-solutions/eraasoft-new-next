@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { getFreeCourses, getMyFreeCourseEnrollments, enrollInFreeCourse } from "@/services/FreeCourses";
-import { Search, AlertCircle, Eye, Play } from "lucide-react";
+import { Search, AlertCircle, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import EmptyState from "@/components/shared/EmptyState";

@@ -10,7 +10,7 @@ export default function Parteners() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPartners()
+    getPartners({ per_page: 12, type: "GENERAL" })
       .then((res) => {
         if (res && res.data) {
           setPartners(res.data);
