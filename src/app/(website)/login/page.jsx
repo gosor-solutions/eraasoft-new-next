@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthLayout from "@/components/shared/AuthLayout";
@@ -77,12 +78,9 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={`block w-full pr-5 pl-12 py-3.5 border ${fieldErrors.email ? "border-red-300 focus:ring-red-500 focus:border-red-500" : "border-[#D2D2D2] focus:ring-blue-500 focus:border-blue-500"
-                } rounded-[24px]   placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 text-sm`}
+                } rounded-[24px] placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-200 text-sm`}
               placeholder="البريد الالكتروني"
             />
-            {/* <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-              <Mail size={18} />
-            </div> */}
           </div>
           {fieldErrors.email && (
             <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.email[0]}</p>
@@ -103,16 +101,16 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full pr-5 pl-12 py-3.5 border border-[#D2D2D2] rounded-[24px]   placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm"
+              className="block w-full pr-5 pl-12 py-3.5 border border-[#D2D2D2] rounded-[24px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm"
               placeholder="كلمة المرور"
             />
-            {/* <button
+            <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 hover:text-gray-600"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button> */}
+            </button>
           </div>
           {fieldErrors.password && (
             <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.password[0]}</p>
@@ -130,9 +128,16 @@ export default function LoginPage() {
             />
             <span>تذكرني</span>
           </label>
-          {/* <Link href="/forgot-password" className="text-[#2243A4] underline font-bold text-xs sm:text-sm">
-            نسيت كلمة المرور؟
-          </Link> */}
+          {(() => {
+            const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+            const redirect = searchParams?.get("redirect");
+            const forgotHref = redirect ? `/forgot-password?redirect=${encodeURIComponent(redirect)}` : "/forgot-password";
+            return (
+              <Link href={forgotHref} className="text-[#2243A4] underline font-bold text-xs sm:text-sm">
+                نسيت كلمة المرور؟
+              </Link>
+            );
+          })()}
         </div>
 
         {/* Submit Button */}

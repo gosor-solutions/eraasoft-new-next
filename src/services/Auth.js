@@ -126,3 +126,67 @@ export const logoutClient = async (token) => {
   }
   return result;
 };
+
+/**
+ * Send OTP for resetting client password.
+ * @param {Object} data - { email }
+ */
+export const sendPasswordOtp = async (data) => {
+  const res = await fetch(`${BASE_URL}/client/password/send-otp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+  if (!res.ok) {
+    throw result;
+  }
+  return result;
+};
+
+/**
+ * Verify OTP for resetting client password.
+ * @param {Object} data - { email, otp }
+ */
+export const verifyPasswordOtp = async (data) => {
+  const res = await fetch(`${BASE_URL}/client/password/verify-otp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+  if (!res.ok) {
+    throw result;
+  }
+  return result;
+};
+
+/**
+ * Reset client password using OTP and new password.
+ * @param {Object} data - { email, otp, password, password_confirmation }
+ */
+export const resetPassword = async (data) => {
+  const res = await fetch(`${BASE_URL}/client/password/reset`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+  if (!res.ok) {
+    throw result;
+  }
+  return result;
+};
+
