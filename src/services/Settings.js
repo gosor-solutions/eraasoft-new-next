@@ -4,7 +4,7 @@ import { BASE_URL } from "@/lib/api";
 export const getSettings = cache(async () => {
   try {
     const res = await fetch(`${BASE_URL}/settings`, {
-      next: { revalidate: 3600 },
+      next: { cache: "no-store" },
     });
     if (!res.ok) return null;
     const json = await res.json();
@@ -17,7 +17,7 @@ export const getSettings = cache(async () => {
 export const getMaintenance = cache(async () => {
   try {
     const res = await fetch(`${BASE_URL}/maintenance`, {
-      next: { revalidate: 60 },
+      next: { cache: "no-store" },
     });
     if (!res.ok) return null;
     const json = await res.json();
