@@ -30,6 +30,28 @@ export const getFreeCourseDetail = async (slug, token) => {
 };
 
 /**
+ * Get public preview metadata and intro video link of a free course.
+ * @param {string} slug - The course slug.
+ */
+export const getFreeCoursePreview = async (slug) => {
+  return fetchWithAuth(`/free-courses/${slug}/preview`, {
+    method: "GET",
+  });
+};
+
+/**
+ * Get or unlock coupon for a completed free course.
+ * @param {number|string} freeCourseId - The ID of the free course.
+ * @param {string} token - Client authentication token.
+ */
+export const getFreeCourseCoupon = async (freeCourseId, token) => {
+  return fetchWithAuth(`/free-courses/${freeCourseId}/coupon`, {
+    method: "GET",
+    token,
+  });
+};
+
+/**
  * Enroll in a free course.
  * @param {number|string} freeCourseId - The ID of the free course.
  * @param {string} token - Client authentication token.

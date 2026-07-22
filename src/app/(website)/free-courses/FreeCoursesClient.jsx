@@ -3,8 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import { getFreeCourses, getMyFreeCourseEnrollments, enrollInFreeCourse } from "@/services/FreeCourses";
-import { Search, AlertCircle, Play } from "lucide-react";
+import {
+  getFreeCourses,
+  getMyFreeCourseEnrollments,
+  enrollInFreeCourse,
+} from "@/services/FreeCourses";
+import { Search, AlertCircle, Play, Monitor, Award } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import EmptyState from "@/components/shared/EmptyState";
@@ -16,7 +20,7 @@ import { useDebounce } from "use-debounce";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function FreeCoursesClient({ pageData }) {
+export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
   const { token, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -25,12 +29,20 @@ export default function FreeCoursesClient({ pageData }) {
   const [page, setPage] = useState(1);
   const [debouncedSearch] = useDebounce(search, 300);
 
-  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const searchParams =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search)
+      : null;
   const enrollParam = searchParams?.get("enroll");
 
-  const { data: responseData, isLoading: isDataLoading, error } = useQuery({
+  const {
+    data: responseData,
+    isLoading: isDataLoading,
+    error,
+  } = useQuery({
     queryKey: ["free-courses", debouncedSearch, page],
-    queryFn: () => getFreeCourses({ search: debouncedSearch, page, perPage: 12 }, token),
+    queryFn: () =>
+      getFreeCourses({ search: debouncedSearch, page, perPage: 12 }, token),
   });
 
   const { data: enrollmentsRes, isLoading: enrollmentsLoading } = useQuery({
@@ -39,14 +51,16 @@ export default function FreeCoursesClient({ pageData }) {
     enabled: !!token,
   });
 
-  const courses = responseData?.success ? (responseData.data || []) : [];
-  const meta = responseData?.success ? (responseData.meta || null) : null;
-  const enrollments = enrollmentsRes?.success ? (enrollmentsRes.data || []) : [];
+  const courses = responseData?.success ? responseData.data || [] : [];
+  const meta = responseData?.success ? responseData.meta || null : null;
+  const enrollments = enrollmentsRes?.success ? enrollmentsRes.data || [] : [];
 
   useEffect(() => {
     if (token && enrollParam && courses.length > 0) {
       const courseId = Number(enrollParam) || enrollParam;
-      const alreadyEnrolled = enrollments.some((e) => e.course?.id === courseId);
+      const alreadyEnrolled = enrollments.some(
+        (e) => e.course?.id === courseId,
+      );
       if (!alreadyEnrolled) {
         handleEnroll(courseId);
         // Clean URL params
@@ -60,8 +74,10 @@ export default function FreeCoursesClient({ pageData }) {
     onSuccess: (res, courseId) => {
       if (res.success) {
         toast.success("تم الاشتراك في الدورة بنجاح!");
-        queryClient.invalidateQueries({ queryKey: ["free-course-enrollments"] });
-        
+        queryClient.invalidateQueries({
+          queryKey: ["free-course-enrollments"],
+        });
+
         // Find slug to redirect user inside
         const targetCourse = courses.find((c) => c.id === courseId);
         if (targetCourse) {
@@ -72,13 +88,15 @@ export default function FreeCoursesClient({ pageData }) {
     onError: (err) => {
       console.error(err);
       toast.error(err?.message || "حدث خطأ أثناء الاشتراك في الدورة.");
-    }
+    },
   });
 
   const handleEnroll = (courseId) => {
     if (!token) {
       const targetCourse = courses.find((c) => c.id === courseId);
-      const redirectPath = targetCourse ? `/free-courses?enroll=${targetCourse.id}` : "/free-courses";
+      const redirectPath = targetCourse
+        ? `/free-courses?enroll=${targetCourse.id}`
+        : "/free-courses";
       router.push(`/login?redirect=${encodeURIComponent(redirectPath)}`);
       return;
     }
@@ -97,11 +115,85 @@ export default function FreeCoursesClient({ pageData }) {
       <ToastContainer rtl />
       <HeroCarousel
         head={pageData?.title || "الدورات التعليمية المجانية"}
-        description={pageData?.description || "تعلم البرمجة وتطوير الويب من الصفر مجاناً عبر دروس مصورة عالية الجودة."}
+        description={
+          pageData?.description ||
+          "تعلم البرمجة وتطوير الويب من الصفر مجاناً عبر دروس مصورة عالية الجودة."
+        }
         image={pageData?.image || null}
       />
 
       <section className="px-5 lg:px-13 py-10 bg-[#FAFAFA]" dir="rtl">
+        {/* Promotion Banner */}
+        <div className="max-w-7xl mx-auto mb-10 bg-[#f4f7ff] rounded-2xl p-6 lg:p-10 relative overflow-hidden shadow-sm border border-[#dbe4ff] flex flex-col md:flex-row items-center justify-between gap-8 text-center">
+          {/* Subtle grid pattern background */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]">
+            <Image
+              src="/discount.png"
+              alt="background"
+              width={1000}
+              height={400}
+              className="w-full object-contain"
+            />
+          </div>
+
+          {/* Right (First in RTL JSX): EraaSoft Logo */}
+          <div className="flex flex-col items-center justify-center z-10 h-20 md:w-1/5">
+            <Image
+              src="/logo-white.png"
+              alt="شعار إيراسوفت"
+              width={140}
+              height={25}
+              className="h-60 w-auto object-contain"
+            />
+          </div>
+
+          {/* Middle: Promotion Text */}
+          <div className="text-center z-10 flex-1">
+            <h2 className="text-2xl lg:text-6xl font-black mb-3 leading-tight tracking-wide flex flex-wrap justify-center items-center gap-2">
+              <span className="text-[#f19a1a]">خصم </span>
+              <span className="text-white">يصل إلى</span>
+              <span className="text-[#f19a1a]">{discountPercent}%</span>
+            </h2>
+            <p className="text-base lg:text-3xl text-white font-medium">
+              على أي دبلومة من دبلومات إيراسوفت
+            </p>
+          </div>
+
+          {/* Left (Last in RTL JSX): Certificate Monitor & Start button */}
+          <div className="flex flex-col items-center text-center z-10 md:w-1/5">
+            <div className="relative mb-3 group">
+              {/* Glow */}
+              <div className="absolute -inset-1.5 bg-yellow-400/20 rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-500"></div>
+              {/* Monitor wrapper */}
+              <div className="relative flex items-center justify-center w-40">
+                <Image
+                  alt="certificate"
+                  src={"/certificate-discount.png"}
+                  width={200}
+                  height={200}
+                  className="object-contain w-full"
+                />
+              </div>
+            </div>
+
+            <p className="text-xs lg:text-lg text-white mb-4 font-medium">
+              عند إكمال الكورس المجاني
+            </p>
+
+            <button
+              onClick={() => {
+                const element =
+                  document.getElementById("courses-list") ||
+                  document.querySelector(".grid");
+                element?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="cursor-pointer px-8 py-2.5 bg-[#2243A4] hover:bg-[#19327D] text-white font-bold rounded-full shadow-sm hover:shadow transition-all duration-300 transform hover:scale-105 text-sm"
+            >
+              ابدأ الآن
+            </button>
+          </div>
+        </div>
+
         {/* Search Bar */}
         <div className="max-w-md mx-auto mb-10 relative">
           <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-400">
@@ -124,15 +216,23 @@ export default function FreeCoursesClient({ pageData }) {
         ) : error ? (
           <div className="bg-red-50 border-r-4 border-red-500 p-4 rounded-xl flex items-start gap-3 max-w-lg mx-auto">
             <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
-            <div className="text-sm text-red-700 font-medium">{error?.message || "فشل تحميل الدورات المجانية. يرجى المحاولة مرة أخرى."}</div>
+            <div className="text-sm text-red-700 font-medium">
+              {error?.message ||
+                "فشل تحميل الدورات المجانية. يرجى المحاولة مرة أخرى."}
+            </div>
           </div>
         ) : courses.length > 0 ? (
           <>
             <div className="grid grid-cols-12 gap-5">
               {courses.map((course) => {
-                const isEnrolled = course.is_enrolled || enrollments.some((e) => e.course?.id === course.id);
+                const isEnrolled =
+                  course.is_enrolled ||
+                  enrollments.some((e) => e.course?.id === course.id);
                 return (
-                  <div key={course.id} className="col-span-12 md:col-span-6 lg:col-span-3 border border-[#2243A4] rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <div
+                    key={course.id}
+                    className="col-span-12 md:col-span-6 lg:col-span-3 border border-[#2243A4] rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+                  >
                     <div className="course_card p-4 flex flex-col justify-between h-full">
                       <div>
                         {/* Image container matching standard course list card */}
@@ -152,7 +252,9 @@ export default function FreeCoursesClient({ pageData }) {
                           )}
                           {course.is_featured && (
                             <div className="absolute top-3 left-3">
-                              <p className="bg-orange-500 text-white rounded-3xl px-3 py-1.5 text-xs font-semibold shadow-lg">مميز</p>
+                              <p className="bg-orange-500 text-white rounded-3xl px-3 py-1.5 text-xs font-semibold shadow-lg">
+                                مميز
+                              </p>
                             </div>
                           )}
                         </div>
@@ -161,8 +263,16 @@ export default function FreeCoursesClient({ pageData }) {
                         <div className="pt-2 pb-3">
                           <div className="flex flex-wrap items-center gap-2 mb-3">
                             <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 px-3 py-2 rounded-2xl w-fit">
-                              <Image src="/tv_icon.png" alt="" width={18} height={18} className="w-4 h-4" />
-                              <p className="text-xs text-gray-600 font-medium">{course.videos_count ?? 0} درس تعليمي</p>
+                              <Image
+                                src="/tv_icon.png"
+                                alt=""
+                                width={18}
+                                height={18}
+                                className="w-4 h-4"
+                              />
+                              <p className="text-xs text-gray-600 font-medium">
+                                {course.videos_count ?? 0} درس تعليمي
+                              </p>
                             </div>
                             <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
                               مجاني
@@ -177,15 +287,17 @@ export default function FreeCoursesClient({ pageData }) {
                               {course.title}
                             </Link>
                           ) : (
-                            <span
-                              onClick={() => handleEnroll(course.id)}
-                              className="font-semibold text-lg sm:text-xl line-clamp-2 min-h-[50px] leading-snug hover:text-[#2243A4] transition-colors block cursor-pointer"
+                            <Link
+                              href={`/free-courses/${course.slug}/preview`}
+                              className="font-semibold text-lg sm:text-xl line-clamp-2 min-h-[50px] leading-snug hover:underline hover:text-[#2243A4] transition-colors block"
                             >
                               {course.title}
-                            </span>
+                            </Link>
                           )}
 
-                          <p className="text-[#7F7F7F] text-sm line-clamp-2 mt-2 leading-relaxed">{course.short_description}</p>
+                          <p className="text-[#7F7F7F] text-sm line-clamp-2 mt-2 leading-relaxed">
+                            {course.short_description}
+                          </p>
                         </div>
                       </div>
 
@@ -196,22 +308,20 @@ export default function FreeCoursesClient({ pageData }) {
                         <div className="flex gap-2">
                           {isEnrolled ? (
                             <>
-                              <Link href={`/free-courses/${course.slug}`} className="main_button grow cursor-pointer text-sm py-3 text-center rounded-[24px] bg-[#2243A4] text-white hover:bg-[#19327D] transition-colors font-semibold">
+                              <Link
+                                href={`/free-courses/${course.slug}`}
+                                className="main_button grow cursor-pointer text-sm py-3 text-center rounded-[24px] bg-[#2243A4] text-white hover:bg-[#19327D] transition-colors font-semibold"
+                              >
                                 متابعة الدورة
                               </Link>
                             </>
                           ) : (
-                            <button
-                              onClick={() => handleEnroll(course.id)}
-                              disabled={enrollMutation.isPending && enrollMutation.variables === course.id}
-                              className="main_button grow cursor-pointer text-sm py-3 text-center rounded-[24px] bg-emerald-600 hover:bg-emerald-700 text-white transition-colors font-semibold disabled:opacity-75 flex items-center justify-center gap-1.5"
+                            <Link
+                              href={`/free-courses/${course.slug}/preview`}
+                              className="main_button grow cursor-pointer text-sm py-3 text-center rounded-[24px] bg-emerald-600 hover:bg-emerald-700 text-white transition-colors font-semibold flex items-center justify-center"
                             >
-                              {enrollMutation.isPending && enrollMutation.variables === course.id ? (
-                                <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                              ) : (
-                                "اشترك الآن مجاناً"
-                              )}
-                            </button>
+                              عرض ومعاينة الدورة
+                            </Link>
                           )}
                         </div>
                       </div>
@@ -231,18 +341,21 @@ export default function FreeCoursesClient({ pageData }) {
                   >
                     السابق
                   </button>
-                  {Array.from({ length: meta.last_page }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setPage(p)}
-                      className={`px-4 py-2 text-sm font-semibold rounded-xl border transition-colors ${page === p
-                          ? "bg-[#2243A4] border-[#2243A4] text-white"
-                          : "bg-white border-[#D2D2D2] text-gray-700 hover:bg-gray-50"
+                  {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(
+                    (p) => (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`px-4 py-2 text-sm font-semibold rounded-xl border transition-colors ${
+                          page === p
+                            ? "bg-[#2243A4] border-[#2243A4] text-white"
+                            : "bg-white border-[#D2D2D2] text-gray-700 hover:bg-gray-50"
                         }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
+                      >
+                        {p}
+                      </button>
+                    ),
+                  )}
                   <button
                     disabled={page >= meta.last_page}
                     onClick={() => setPage(page + 1)}

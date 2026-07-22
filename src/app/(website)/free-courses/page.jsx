@@ -1,13 +1,24 @@
 import JsonLd from "@/components/seo/JsonLd";
 import { getPageBySlug } from "@/services/getPages";
 import FreeCoursesClient from "./FreeCoursesClient";
+import { getSettings } from "@/services/Settings";
 
 const breadcrumb = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "الرئيسية", item: "https://eraasoft.com" },
-    { "@type": "ListItem", position: 2, name: "الدورات المجانية", item: "https://eraasoft.com/free-courses" },
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "الرئيسية",
+      item: "https://eraasoft.com",
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "الدورات المجانية",
+      item: "https://eraasoft.com/free-courses",
+    },
   ],
 };
 
@@ -16,7 +27,9 @@ export async function generateMetadata() {
     const res = await getPageBySlug("free-courses");
     const page = res?.data;
     return {
-      title: page?.seo?.meta_title ? { absolute: page.seo.meta_title } : page?.title,
+      title: page?.seo?.meta_title
+        ? { absolute: page.seo.meta_title }
+        : page?.title,
       description: page?.seo?.meta_description || page?.description,
       keywords: page?.seo?.meta_keywords,
       robots: {
@@ -37,15 +50,26 @@ export async function generateMetadata() {
 
 export default async function FreeCoursesPage() {
   let pageData = null;
+  let settings = null;
   try {
-    const res = await getPageBySlug("free-courses");
+    const [res, settingsRes] = await Promise.all([
+      getPageBySlug("free-courses"),
+      getSettings(),
+    ]);
     pageData = res?.data || null;
+    settings = settingsRes || null;
   } catch {}
+
+  const discountPercent =
+    settings?.site_info?.free_course_discount_percent ?? 30;
 
   return (
     <>
       <JsonLd schema={breadcrumb} />
-      <FreeCoursesClient pageData={pageData} />
+      <FreeCoursesClient
+        pageData={pageData}
+        discountPercent={discountPercent}
+      />
     </>
   );
 }

@@ -7,6 +7,7 @@ import {
   getFreeCourseDetail,
   getMyFreeCourseEnrollments,
   updateVideoProgress,
+  getFreeCourseCoupon,
 } from "@/services/FreeCourses";
 import {
   Play,
@@ -18,6 +19,9 @@ import {
   BookOpen,
   Star,
   CheckCircle2,
+  Gift,
+  Copy,
+  Check,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,26 +39,36 @@ function getYouTubeId(url) {
   return match && match[2].length === 11 ? match[2] : null;
 }
 
-function YouTubePlayer({ videoUrl, onProgress, activeVideoId }) {
+function YouTubePlayer({ videoUrl, onProgress, activeVideoId, isCompleted }) {
   const containerId = `yt-player-${activeVideoId}`;
   const playerRef = useRef(null);
   const intervalRef = useRef(null);
+  const isCompletedRef = useRef(isCompleted);
+
+  useEffect(() => {
+    isCompletedRef.current = isCompleted;
+    if (isCompleted && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, [isCompleted]);
 
   useEffect(() => {
     const videoId = getYouTubeId(videoUrl);
     if (!videoId) return;
 
-    // Load YouTube API
-    if (!window.YT) {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    }
-
     let player;
 
     const initializePlayer = () => {
+      if (!window.YT || !window.YT.Player) return;
+      
+      // Clean up previous player instance on this element if any
+      if (playerRef.current && typeof playerRef.current.destroy === "function") {
+        try {
+          playerRef.current.destroy();
+        } catch (e) {}
+      }
+
       player = new window.YT.Player(containerId, {
         videoId: videoId,
         width: "100%",
@@ -66,7 +80,7 @@ function YouTubePlayer({ videoUrl, onProgress, activeVideoId }) {
         },
         events: {
           onStateChange: (event) => {
-            if (event.data === 1) {
+            if (event.data === 1 && !isCompletedRef.current) {
               // 1 is PLAYING
               if (intervalRef.current) clearInterval(intervalRef.current);
               intervalRef.current = setInterval(() => {
@@ -91,14 +105,31 @@ function YouTubePlayer({ videoUrl, onProgress, activeVideoId }) {
       playerRef.current = player;
     };
 
-    if (window.YT && window.YT.Player) {
-      initializePlayer();
-    } else {
+    const checkAndInit = () => {
+      if (window.YT && window.YT.Player) {
+        initializePlayer();
+      } else if (window.YT && typeof window.YT.ready === "function") {
+        window.YT.ready(initializePlayer);
+      }
+    };
+
+    if (!window.YT) {
       const previousCallback = window.onYouTubeIframeAPIReady;
       window.onYouTubeIframeAPIReady = () => {
         if (previousCallback) previousCallback();
-        initializePlayer();
+        checkAndInit();
       };
+
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      if (firstScriptTag) {
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      } else {
+        document.head.appendChild(tag);
+      }
+    } else {
+      checkAndInit();
     }
 
     return () => {
@@ -109,7 +140,9 @@ function YouTubePlayer({ videoUrl, onProgress, activeVideoId }) {
         playerRef.current &&
         typeof playerRef.current.destroy === "function"
       ) {
-        playerRef.current.destroy();
+        try {
+          playerRef.current.destroy();
+        } catch (e) {}
       }
     };
   }, [videoUrl, activeVideoId]);
@@ -188,7 +221,7 @@ function CourseHeader({ course, sortedVideos, overallProgress, isEnrolled }) {
                 <div className="w-24 bg-white/20 h-2 rounded-full overflow-hidden">
                   <div
                     className="bg-[#22C55E] h-full rounded-full animate-pulse"
-                    style={{ width: `${overallProgress}%` }}
+                    style={{ width: `${Math.min((overallProgress / 60) * 100, 100)}%` }}
                   ></div>
                 </div>
                 <span className="font-bold text-[#22C55E]">
@@ -301,6 +334,7 @@ function VideoPlayerSection({
         <YouTubePlayer
           videoUrl={activeVideo.url}
           activeVideoId={activeVideo.id}
+          isCompleted={isCompleted}
           onProgress={(ratio) => {
             if (
               ratio >= 0.6 &&
@@ -369,18 +403,9 @@ export default function FreeCourseDetailPage() {
 
   const [activeVideo, setActiveVideo] = useState(null);
   const [hasMarkedWatched, setHasMarkedWatched] = useState(false);
-
-  useEffect(() => {
-    setHasMarkedWatched(false);
-  }, [activeVideo?.id]);
-
-  useEffect(() => {
-    if (!authLoading && !token) {
-      router.push(
-        `/login?redirect=${encodeURIComponent(`/free-courses/${slug}`)}`,
-      );
-    }
-  }, [token, authLoading, router, slug]);
+  const [unlockedCoupon, setUnlockedCoupon] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Query: Course detail
   const { data: courseDataRes, isLoading: courseLoading } = useQuery({
@@ -428,23 +453,57 @@ export default function FreeCourseDetailPage() {
     }
   }, [course, activeVideo]);
 
+  useEffect(() => {
+    setHasMarkedWatched(false);
+  }, [activeVideo?.id]);
+
+  useEffect(() => {
+    if (isEnrolled && overallProgress >= 60 && token && course?.id) {
+      getFreeCourseCoupon(course.id, token)
+        .then((couponRes) => {
+          if (couponRes.success) {
+            setUnlockedCoupon(couponRes.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isEnrolled, overallProgress, token, course?.id]);
+
+  useEffect(() => {
+    if (!authLoading && !token) {
+      router.push(
+        `/login?redirect=${encodeURIComponent(`/free-courses/${slug}`)}`,
+      );
+    }
+  }, [token, authLoading, router, slug]);
+
   // Mutations
   const updateProgressMutation = useMutation({
     mutationFn: (videoId) => updateVideoProgress(course.id, videoId, token),
     onSuccess: (res) => {
       if (res.success) {
-        toast.success("تم إكمال الدرس وتحديث تقدمك!");
         queryClient.invalidateQueries({
           queryKey: ["free-course-enrollments"],
         });
         queryClient.invalidateQueries({
           queryKey: ["free-course-detail", slug],
         });
+
+        // Query the coupon endpoint to check if coupon is now unlocked
+        getFreeCourseCoupon(course.id, token)
+          .then((couponRes) => {
+            if (couponRes.success && couponRes.data?.coupon_code) {
+              setUnlockedCoupon(couponRes.data);
+              setShowCelebration(true);
+            }
+          })
+          .catch((err) => {
+            console.log("Coupon eligibility check completed.");
+          });
       }
     },
     onError: (err) => {
       console.error(err);
-      toast.error("فشل تحديث تقدم الدرس.");
     },
   });
 
@@ -512,6 +571,83 @@ export default function FreeCourseDetailPage() {
               updateProgressMutation={updateProgressMutation}
             />
 
+            {/* Coupon Unlock/Status Section */}
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
+                <Gift size={20} className="text-[#2243A4]" />
+                كوبون خصم الدورة المجانية
+              </h2>
+              {overallProgress >= 60 ? (
+                unlockedCoupon ? (
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="space-y-1">
+                      <p className="text-emerald-800 font-bold text-base">
+                        مبروك! لقد حصلت على كوبون خصم{" "}
+                        {unlockedCoupon.discount_percent}%
+                      </p>
+                      <p className="text-gray-600 text-sm">
+                        استخدم الكود التالي عند حجز أي كورس مدفوع للاستفادة من
+                        الخصم:
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 bg-white border border-emerald-300 rounded-lg px-4 py-2 w-full sm:w-auto justify-between sm:justify-start">
+                      <code className="text-[#2243A4] font-mono font-bold text-lg select-all">
+                        {unlockedCoupon.coupon_code}
+                      </code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            unlockedCoupon.coupon_code,
+                          );
+                          setCopied(true);
+                          toast.success("تم نسخ كود الكوبون!");
+                          setTimeout(() => setCopied(false), 2000);
+                        }}
+                        className="text-gray-500 hover:text-emerald-700 transition-colors p-1"
+                        title="نسخ الكود"
+                      >
+                        {copied ? (
+                          <Check size={16} className="text-emerald-600" />
+                        ) : (
+                          <Copy size={16} />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-xl p-5">
+                    <div>
+                      <p className="text-[#2243A4] font-bold">
+                        جاري تحميل الكوبون الخاص بك...
+                      </p>
+                    </div>
+                  </div>
+                )
+              ) : (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                  <div className="space-y-1">
+                    <p className="text-gray-700 font-bold text-sm sm:text-base">
+                      احصل على كوبون خصم مميز
+                    </p>
+                    <p className="text-gray-500 text-xs sm:text-sm">
+                      شاهد 60% من محاضرات الدورة المجانية لفتح الكوبون تلقائياً.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="w-24 bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-emerald-500 h-full"
+                        style={{ width: `${Math.min((overallProgress / 60) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-xs font-bold text-gray-600">
+                      {Math.round(overallProgress)}% / 60%
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Course Description */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-4">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
@@ -526,6 +662,73 @@ export default function FreeCourseDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Celebration Modal */}
+      {showCelebration && unlockedCoupon && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-gray-100 shadow-2xl text-center space-y-6 animate-scale-up relative">
+            <div className="absolute top-4 right-4">
+              <button
+                onClick={() => setShowCelebration(false)}
+                className="text-gray-400 hover:text-gray-600 text-lg font-bold p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto animate-bounce">
+              <Gift className="text-emerald-600 w-10 h-10" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-2xl font-black text-gray-900">
+                تهانينا الحارة! 🎉
+              </h3>
+              <p className="text-gray-600 text-sm sm:text-base">
+                لقد أنجزت مشاهدة 60% من محاضرات الدورة بنجاح. تقديراً لجهودك، تم
+                فتح كوبون خصم بقيمة{" "}
+                <span className="font-bold text-emerald-600 text-lg">
+                  {unlockedCoupon.discount_percent}%
+                </span>
+                !
+              </p>
+            </div>
+
+            <div className="bg-gray-50 border border-dashed border-emerald-300 rounded-2xl p-4 flex items-center justify-between">
+              <span className="text-xs text-gray-500 font-bold">
+                كود الكوبون:
+              </span>
+              <div className="flex items-center gap-2">
+                <code className="text-[#2243A4] font-mono font-bold text-xl select-all">
+                  {unlockedCoupon.coupon_code}
+                </code>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(unlockedCoupon.coupon_code);
+                    setCopied(true);
+                    toast.success("تم نسخ كود الكوبون!");
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  className="text-gray-500 hover:text-emerald-700 transition-colors p-1"
+                >
+                  {copied ? (
+                    <Check size={16} className="text-emerald-600" />
+                  ) : (
+                    <Copy size={16} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowCelebration(false)}
+              className="w-full py-3.5 bg-[#2243A4] hover:bg-[#19327D] text-white font-bold rounded-2xl text-sm transition-colors"
+            >
+              متابعة التعلم
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,7 +7,9 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { enrollInCourse } from "@/services/Enrollment";
+import { enrollInCourse, verifyCoupon } from "@/services/Enrollment";
+import { useAuth } from "@/providers/AuthProvider";
+import { Check, AlertCircle } from "lucide-react";
 
 const CustomSelect = dynamic(() => import("@/components/shared/CustomSelect"), { ssr: false });
 
@@ -48,6 +50,7 @@ function parseZodErrors(error) {
 }
 
 export default function EnrollForm({ courses = [] }) {
+  const { token } = useAuth();
   const [formData, setFormData] = useState({
     course_id: "",
     name: "",
@@ -61,9 +64,35 @@ export default function EnrollForm({ courses = [] }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Coupon States
+  const [couponCode, setCouponCode] = useState("");
+  const [verifiedCoupon, setVerifiedCoupon] = useState(null);
+  const [verifying, setVerifying] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
   const setField = (field) => (value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+
+  const handleVerifyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setVerifying(true);
+    setCouponError("");
+    try {
+      const res = await verifyCoupon(couponCode.trim(), token);
+      if (res?.success) {
+        setVerifiedCoupon(res.data);
+        toast.success("تم تطبيق الكوبون بنجاح!");
+      } else {
+        setCouponError(res?.message || "الكوبون غير صحيح");
+      }
+    } catch (err) {
+      const msg = err?.errors?.coupon_code?.[0] || err?.errors?.coupon?.[0] || err?.message || "فشل التحقق من الكوبون";
+      setCouponError(msg);
+    } finally {
+      setVerifying(false);
+    }
   };
 
   const selectedCourseName = courses.find((c) => c.value === formData.course_id)?.label ?? "";
@@ -87,8 +116,9 @@ export default function EnrollForm({ courses = [] }) {
         attendance_location: formData.attendance_location,
         branch: formData.branch,
         payment_method: "CASH",
-        website: formData.website,
-      });
+        coupon_code: verifiedCoupon?.coupon_code || null,
+        website: formData.website || null,
+      }, token);
 
       if (res?.success) {
         router.push(`/booking/success?course=${encodeURIComponent(selectedCourseName)}`);
@@ -96,8 +126,8 @@ export default function EnrollForm({ courses = [] }) {
       } else {
         toast.error(res?.message || "حدث خطأ، يرجى المحاولة مجدداً.", { position: "top-center" });
       }
-    } catch {
-      toast.error("حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
+    } catch (err) {
+      toast.error(err?.message || "حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
     } finally {
       setLoading(false);
     }
@@ -190,6 +220,60 @@ export default function EnrollForm({ courses = [] }) {
               error={fieldErrors.branch}
             />
           </Field>
+
+          {/* Coupon Code Section */}
+          <div className="flex flex-col gap-2">
+            <label className="text-base sm:text-lg font-semibold">هل لديك كوبون خصم؟</label>
+            {verifiedCoupon ? (
+              <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3.5">
+                <div className="flex items-center gap-2">
+                  <Check size={16} className="text-emerald-600" />
+                  <span className="text-sm font-semibold text-emerald-800">
+                    تم تطبيق الكوبون: <code className="font-bold">{verifiedCoupon.coupon_code}</code> ({verifiedCoupon.discount_percent}%)
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVerifiedCoupon(null);
+                    setCouponCode("");
+                  }}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  حذف
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="أدخل كود الكوبون"
+                    value={couponCode}
+                    onChange={(e) => {
+                      setCouponCode(e.target.value);
+                      setCouponError("");
+                    }}
+                    className="grow outline-none border border-[#D2D2D2] focus:border-[#2243A4] py-3 px-5 rounded-full text-sm bg-white"
+                  />
+                  <button
+                    type="button"
+                    disabled={verifying || !couponCode.trim()}
+                    onClick={handleVerifyCoupon}
+                    className="bg-[#2243A4] hover:bg-[#19327D] text-white px-6 py-3 rounded-full text-sm font-semibold disabled:opacity-50 transition-colors shrink-0"
+                  >
+                    {verifying ? "جاري التحقق..." : "تطبيق"}
+                  </button>
+                </div>
+                {couponError && (
+                  <div className="flex items-center gap-1.5 text-xs text-red-500 pr-4">
+                    <AlertCircle size={12} />
+                    <span>{couponError}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           <button
             type="submit"

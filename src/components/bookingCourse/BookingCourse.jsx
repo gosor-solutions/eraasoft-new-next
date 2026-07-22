@@ -8,8 +8,9 @@ import "react-phone-number-input/style.css";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight } from "lucide-react";
-import { enrollInCourse } from "@/services/Enrollment";
+import { ChevronRight, Check, AlertCircle } from "lucide-react";
+import { enrollInCourse, verifyCoupon } from "@/services/Enrollment";
+import { useAuth } from "@/providers/AuthProvider";
 
 const CustomSelect = dynamic(() => import("../shared/CustomSelect"), { ssr: false });
 
@@ -53,6 +54,7 @@ function parseZodErrors(error) {
 
 
 export default function BookingCourse({ course }) {
+  const { token } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -65,11 +67,46 @@ export default function BookingCourse({ course }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const discount = (course?.price ?? 0) - (course?.final_price ?? 0);
+  // Coupon States
+  const [couponCode, setCouponCode] = useState("");
+  const [verifiedCoupon, setVerifiedCoupon] = useState(null);
+  const [verifying, setVerifying] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
+  const basePrice = course?.price ?? 0;
+  const courseFinalPrice = course?.final_price ?? 0;
+  const originalDiscount = basePrice - courseFinalPrice;
+  
+  let couponDiscountAmount = 0;
+  if (verifiedCoupon) {
+    couponDiscountAmount = Math.round(courseFinalPrice * (verifiedCoupon.discount_percent / 100));
+  }
+
+  const finalPrice = Math.max(0, courseFinalPrice - couponDiscountAmount);
 
   const setField = (field) => (value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+
+  const handleVerifyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setVerifying(true);
+    setCouponError("");
+    try {
+      const res = await verifyCoupon(couponCode.trim(), token);
+      if (res?.success) {
+        setVerifiedCoupon(res.data);
+        toast.success("تم تطبيق الكوبون بنجاح!");
+      } else {
+        setCouponError(res?.message || "الكوبون غير صحيح");
+      }
+    } catch (err) {
+      const msg = err?.errors?.coupon_code?.[0] || err?.errors?.coupon?.[0] || err?.message || "فشل التحقق من الكوبون";
+      setCouponError(msg);
+    } finally {
+      setVerifying(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -91,8 +128,9 @@ export default function BookingCourse({ course }) {
         attendance_location: formData.attendance_location,
         branch: formData.branch,
         payment_method: "CASH",
-        website: formData.website,
-      });
+        coupon_code: verifiedCoupon?.coupon_code || null,
+        website: formData.website || null,
+      }, token);
 
       if (res?.success) {
         router.push(`/booking/success?course=${encodeURIComponent(course?.title ?? "")}`);
@@ -100,8 +138,8 @@ export default function BookingCourse({ course }) {
       } else {
         toast.error(res?.message || "حدث خطأ، يرجى المحاولة مجدداً.", { position: "top-center" });
       }
-    } catch {
-      toast.error("حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
+    } catch (err) {
+      toast.error(err?.message || "حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
     } finally {
       setLoading(false);
     }
@@ -193,22 +231,82 @@ export default function BookingCourse({ course }) {
               <p className="text-sm text-[#606060] leading-7 line-clamp-4">{course?.description}</p>
             </div>
 
+            {/* Coupon Code Section */}
+            <div className="py-4 border-b border-[#BECBF2] my-3">
+              <h5 className="font-bold text-sm text-gray-700 mb-2">هل لديك كوبون خصم؟</h5>
+              {verifiedCoupon ? (
+                <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                  <div className="flex items-center gap-2">
+                    <Check size={16} className="text-emerald-600" />
+                    <span className="text-xs sm:text-sm font-semibold text-emerald-800">
+                      تم تطبيق الكوبون: <code className="font-bold">{verifiedCoupon.coupon_code}</code> ({verifiedCoupon.discount_percent}%)
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVerifiedCoupon(null);
+                      setCouponCode("");
+                    }}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    حذف
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="أدخل كود الكوبون"
+                      value={couponCode}
+                      onChange={(e) => {
+                        setCouponCode(e.target.value);
+                        setCouponError("");
+                      }}
+                      className="grow outline-none border border-[#D2D2D2] focus:border-[#2243A4] py-2.5 px-4 rounded-full text-sm bg-white"
+                    />
+                    <button
+                      type="button"
+                      disabled={verifying || !couponCode.trim()}
+                      onClick={handleVerifyCoupon}
+                      className="bg-[#2243A4] hover:bg-[#19327D] text-white px-5 py-2.5 rounded-full text-xs font-semibold disabled:opacity-50 transition-colors shrink-0"
+                    >
+                      {verifying ? "جاري التحقق..." : "تطبيق"}
+                    </button>
+                  </div>
+                  {couponError && (
+                    <div className="flex items-center gap-1.5 text-xs text-red-500 pr-2">
+                      <AlertCircle size={12} />
+                      <span>{couponError}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="py-4 border-b border-[#BECBF2] my-3 flex flex-col gap-3">
               <div className="flex justify-between items-center">
                 <h5 className="font-semibold text-[#4A5565] text-sm sm:text-base">سعر الاشتراك</h5>
-                <p className="font-bold text-base sm:text-lg">{course?.price?.toLocaleString("ar-EG")} ج.م</p>
+                <p className="font-bold text-base sm:text-lg">{basePrice.toLocaleString("ar-EG")} ج.م</p>
               </div>
-              {discount > 0 && (
+              {originalDiscount > 0 && (
                 <div className="flex justify-between items-center">
-                  <h5 className="text-[#BC9A18] text-sm sm:text-base">قيمة الخصم</h5>
-                  <p className="font-bold text-base sm:text-lg text-[#BC9A18]">- {discount.toLocaleString("ar-EG")} ج.م</p>
+                  <h5 className="text-[#BC9A18] text-sm sm:text-base">خصم الكورس</h5>
+                  <p className="font-bold text-base sm:text-lg text-[#BC9A18]">- {originalDiscount.toLocaleString("ar-EG")} ج.م</p>
+                </div>
+              )}
+              {couponDiscountAmount > 0 && (
+                <div className="flex justify-between items-center">
+                  <h5 className="text-emerald-600 text-sm sm:text-base">خصم الكوبون ({verifiedCoupon?.discount_percent}%)</h5>
+                  <p className="font-bold text-base sm:text-lg text-emerald-600">- {couponDiscountAmount.toLocaleString("ar-EG")} ج.م</p>
                 </div>
               )}
             </div>
 
             <div className="flex justify-between items-center">
               <h6 className="font-bold text-lg sm:text-xl">الإجمالي</h6>
-              <p className="text-(--primary-color) text-lg sm:text-xl font-bold">{course?.final_price?.toLocaleString("ar-EG")} ج.م</p>
+              <p className="text-(--primary-color) text-lg sm:text-xl font-bold">{finalPrice.toLocaleString("ar-EG")} ج.m</p>
             </div>
           </div>
         </div>
