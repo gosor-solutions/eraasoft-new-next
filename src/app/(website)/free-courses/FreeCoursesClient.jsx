@@ -124,48 +124,48 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
 
       <section className="px-5 lg:px-13 py-10 bg-[#FAFAFA]" dir="rtl">
         {/* Promotion Banner */}
-        <div className="max-w-7xl mx-auto mb-10 bg-[#f4f7ff] rounded-2xl p-6 lg:p-10 relative overflow-hidden shadow-sm border border-[#dbe4ff] flex flex-col md:flex-row items-center justify-between gap-8 text-center">
+        <div className="max-w-7xl mx-auto mb-10 bg-[#f4f7ff] rounded-2xl p-6 md:p-8 lg:p-10 relative overflow-hidden shadow-sm border border-[#dbe4ff] flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 text-center">
           {/* Subtle grid pattern background */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]">
             <Image
               src="/discount.png"
               alt="background"
-              width={1000}
-              height={400}
-              className="w-full object-contain"
+              fill
+              priority
+              className="object-cover"
             />
           </div>
 
           {/* Right (First in RTL JSX): EraaSoft Logo */}
-          <div className="flex flex-col items-center justify-center z-10 h-20 md:w-1/5">
+          <div className="flex flex-col items-center justify-center z-10 h-16 md:h-20 md:w-1/5">
             <Image
               src="/logo-white.png"
               alt="شعار إيراسوفت"
               width={140}
               height={25}
-              className="h-60 w-auto object-contain"
+              className="h-40 md:h-56 w-auto object-contain"
             />
           </div>
 
           {/* Middle: Promotion Text */}
           <div className="text-center z-10 flex-1">
-            <h2 className="text-2xl lg:text-6xl font-black mb-3 leading-tight tracking-wide flex flex-wrap justify-center items-center gap-2">
+            <h2 className="text-2xl sm:text-2xl md:text-3xl lg:text-6xl font-black mb-3 leading-tight tracking-wide flex flex-wrap justify-center items-center gap-2">
               <span className="text-[#f19a1a]">خصم </span>
               <span className="text-white">يصل إلى</span>
               <span className="text-[#f19a1a]">{discountPercent}%</span>
             </h2>
-            <p className="text-base lg:text-3xl text-white font-medium">
+            <p className="text-sm sm:text-base md:text-lg lg:text-3xl text-white font-medium">
               على أي دبلومة من دبلومات إيراسوفت
             </p>
           </div>
 
           {/* Left (Last in RTL JSX): Certificate Monitor & Start button */}
-          <div className="flex flex-col items-center text-center z-10 md:w-1/5">
+          <div className="flex flex-col items-center text-center z-10 w-full md:w-1/5">
             <div className="relative mb-3 group">
               {/* Glow */}
               <div className="absolute -inset-1.5 bg-yellow-400/20 rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-500"></div>
               {/* Monitor wrapper */}
-              <div className="relative flex items-center justify-center w-40">
+              <div className="relative flex items-center justify-center w-44 md:w-40">
                 <Image
                   alt="certificate"
                   src={"/certificate-discount.png"}
@@ -176,7 +176,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
               </div>
             </div>
 
-            <p className="text-xs lg:text-lg text-white mb-4 font-medium">
+            <p className="text-xs sm:text-sm md:text-base text-white mb-4 font-medium">
               عند إكمال الكورس المجاني
             </p>
 
@@ -187,7 +187,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
                   document.querySelector(".grid");
                 element?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="cursor-pointer px-8 py-2.5 bg-[#2243A4] hover:bg-[#19327D] text-white font-bold rounded-full shadow-sm hover:shadow transition-all duration-300 transform hover:scale-105 text-sm"
+              className="cursor-pointer px-6 py-2 md:px-8 md:py-2.5 bg-[#2243A4] hover:bg-[#19327D] text-white font-bold rounded-full shadow-sm hover:shadow transition-all duration-300 transform hover:scale-105 text-xs sm:text-sm"
             >
               ابدأ الآن
             </button>
