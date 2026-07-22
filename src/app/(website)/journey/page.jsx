@@ -44,9 +44,6 @@ export default async function JourneyPage() {
       getPageBySlug("journey"),
       getLearningJourneys()
     ]);
-
-    console.log("journeysRes",journeysRes);
-    
     pageData = pageRes?.data || null;
     stages = journeysRes?.success ? (journeysRes.data || []) : [];
   } catch {}
