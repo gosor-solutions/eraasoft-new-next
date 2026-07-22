@@ -22,11 +22,13 @@ import {
   Gift,
   Copy,
   Check,
+  Award,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CertificateViewer from "@/components/eraaCertificate/CertificateViewer";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/shared/Loading";
@@ -44,6 +46,11 @@ function YouTubePlayer({ videoUrl, onProgress, activeVideoId, isCompleted }) {
   const playerRef = useRef(null);
   const intervalRef = useRef(null);
   const isCompletedRef = useRef(isCompleted);
+  const onProgressRef = useRef(onProgress);
+
+  useEffect(() => {
+    onProgressRef.current = onProgress;
+  }, [onProgress]);
 
   useEffect(() => {
     isCompletedRef.current = isCompleted;
@@ -89,7 +96,7 @@ function YouTubePlayer({ videoUrl, onProgress, activeVideoId, isCompleted }) {
                   const duration = player.getDuration();
                   const progressRatio = currentTime / (duration || 1);
                   if (duration > 0) {
-                    onProgress(progressRatio);
+                    onProgressRef.current(progressRatio);
                   }
                 }
               }, 1000);
@@ -494,7 +501,14 @@ export default function FreeCourseDetailPage() {
           .then((couponRes) => {
             if (couponRes.success && couponRes.data?.coupon_code) {
               setUnlockedCoupon(couponRes.data);
-              setShowCelebration(true);
+              if (typeof window !== "undefined") {
+                const shownCoupons = JSON.parse(localStorage.getItem("shown_coupons") || "{}");
+                if (!shownCoupons[course.id]) {
+                  setShowCelebration(true);
+                  shownCoupons[course.id] = true;
+                  localStorage.setItem("shown_coupons", JSON.stringify(shownCoupons));
+                }
+              }
             }
           })
           .catch((err) => {
@@ -647,6 +661,22 @@ export default function FreeCourseDetailPage() {
                 </div>
               )}
             </div>
+
+            {/* Certificate Section */}
+            {(overallProgress === 100 || matchedEnrollment?.certificate) && (
+              <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
+                  <Award size={20} className="text-[#2243A4]" />
+                  شهادة إتمام الدورة
+                </h2>
+                <CertificateViewer
+                  studentName={matchedEnrollment?.certificate?.student_name || "اسم الطالب"}
+                  courseName={course?.title || "اسم الدورة التدريبية"}
+                  serialNumber={matchedEnrollment?.certificate?.serial_number || "ERA-FC-XXXX-XXXXXXXX"}
+                  issuedDate={matchedEnrollment?.certificate?.formatted_issued_date || ""}
+                />
+              </div>
+            )}
 
             {/* Course Description */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-4">
