@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import { getFreeCoursePreview } from "@/services/FreeCourses";
+import { getFreeCoursePreview, enrollInFreeCourse } from "@/services/FreeCourses";
 import {
   Play,
   Clock,
@@ -17,7 +17,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Loading from "@/components/shared/Loading";
 
 function getYouTubeId(url) {
@@ -92,6 +94,23 @@ export default function FreeCoursePreviewPage() {
   const params = useParams();
   const slug = params?.slug;
 
+  const queryClient = useQueryClient();
+
+  const enrollMutation = useMutation({
+    mutationFn: () => enrollInFreeCourse(course.id, token),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: ["free-course-enrollments"],
+      });
+      toast.success("تم الاشتراك في الدورة بنجاح!");
+      router.push(`/free-courses/${slug}`);
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error(err?.message || "حدث خطأ أثناء الاشتراك في الدورة.");
+    },
+  });
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -150,8 +169,7 @@ export default function FreeCoursePreviewPage() {
 
   const handleEnrollClick = () => {
     if (token) {
-      // If logged in, go to main course detail page to enroll/play
-      router.push(`/free-courses/${slug}`);
+      enrollMutation.mutate();
     } else {
       router.push(
         `/login?redirect=${encodeURIComponent(`/free-courses/${slug}`)}`,
@@ -161,6 +179,8 @@ export default function FreeCoursePreviewPage() {
 
   return (
     <div dir="rtl" className="bg-[#FAFAFA] min-h-screen">
+      <ToastContainer rtl position="top-center" />
+
       {/* Course Header */}
       <div className="relative w-full overflow-hidden min-h-[40vh]">
         {course.background_image ? (
@@ -264,10 +284,17 @@ export default function FreeCoursePreviewPage() {
               <div className="p-4 bg-blue-50/50 border-t border-gray-100">
                 <button
                   onClick={handleEnrollClick}
-                  className="w-full cursor-pointer py-3 bg-[#2243A4] hover:bg-[#19327D] text-white rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                  disabled={enrollMutation.isPending}
+                  className="w-full cursor-pointer py-3 bg-[#2243A4] hover:bg-[#19327D] text-white rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <LogIn size={16} />
-                  <span>سجل الآن لمشاهدة الدورة كاملة</span>
+                  {enrollMutation.isPending ? (
+                    <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      <LogIn size={16} />
+                      <span>سجل الآن لمشاهدة الدورة كاملة</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -297,9 +324,14 @@ export default function FreeCoursePreviewPage() {
                 </div>
                 <button
                   onClick={handleEnrollClick}
-                  className="main_button px-6 py-3 text-sm font-bold flex items-center gap-2"
+                  disabled={enrollMutation.isPending}
+                  className="main_button px-6 py-3 text-sm font-bold flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  <span>اشترك بالدورة مجاناً</span>
+                  {enrollMutation.isPending ? (
+                    <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <span>اشترك بالدورة مجاناً</span>
+                  )}
                 </button>
               </div>
             </div>
