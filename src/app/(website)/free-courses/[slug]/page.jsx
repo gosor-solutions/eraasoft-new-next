@@ -68,9 +68,11 @@ function YouTubePlayer({ videoUrl, onProgress, activeVideoId, isCompleted }) {
 
     const initializePlayer = () => {
       if (!window.YT || !window.YT.Player) return;
-      
       // Clean up previous player instance on this element if any
-      if (playerRef.current && typeof playerRef.current.destroy === "function") {
+      if (
+        playerRef.current &&
+        typeof playerRef.current.destroy === "function"
+      ) {
         try {
           playerRef.current.destroy();
         } catch (e) {}
@@ -228,7 +230,9 @@ function CourseHeader({ course, sortedVideos, overallProgress, isEnrolled }) {
                 <div className="w-24 bg-white/20 h-2 rounded-full overflow-hidden">
                   <div
                     className="bg-[#22C55E] h-full rounded-full animate-pulse"
-                    style={{ width: `${Math.min((overallProgress / 60) * 100, 100)}%` }}
+                    style={{
+                      width: `${Math.min((overallProgress / 60) * 100, 100)}%`,
+                    }}
                   ></div>
                 </div>
                 <span className="font-bold text-[#22C55E]">
@@ -321,6 +325,7 @@ function VideoPlayerSection({
   hasMarkedWatched,
   setHasMarkedWatched,
   updateProgressMutation,
+  isEnrollmentActive = true,
 }) {
   if (!activeVideo) {
     return (
@@ -338,12 +343,25 @@ function VideoPlayerSection({
   return (
     <div className="space-y-5">
       <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-black border border-gray-100">
+        {!isEnrollmentActive && (
+          <div className="absolute inset-0 z-30 bg-black/85 backdrop-blur-sm flex flex-col items-center justify-center text-center p-6 space-y-3">
+            <AlertCircle size={48} className="text-amber-500 animate-bounce" />
+            <h3 className="text-white text-lg font-bold">
+              الاشتراك غير مفعل حالياً
+            </h3>
+            <p className="text-gray-300 text-sm max-w-md">
+              هذا الكورس غير مفعل حالياً. لا يمكنك مشاهدة هذا الفيديو في الوقت
+              الحالي.
+            </p>
+          </div>
+        )}
         <YouTubePlayer
           videoUrl={activeVideo.url}
           activeVideoId={activeVideo.id}
           isCompleted={isCompleted}
           onProgress={(ratio) => {
             if (
+              isEnrollmentActive &&
               ratio >= 0.6 &&
               !hasMarkedWatched &&
               !isCompleted &&
@@ -435,6 +453,9 @@ export default function FreeCourseDetailPage() {
     ? enrollments.find((e) => e.course?.id === course.id)
     : null;
   const isEnrolled = !!(course?.is_enrolled || matchedEnrollment);
+  const isEnrollmentActive = matchedEnrollment
+    ? matchedEnrollment.is_active !== false
+    : true;
   const overallProgress = matchedEnrollment?.progress_percent || 0;
 
   const sortedVideos = course?.videos
@@ -502,11 +523,16 @@ export default function FreeCourseDetailPage() {
             if (couponRes.success && couponRes.data?.coupon_code) {
               setUnlockedCoupon(couponRes.data);
               if (typeof window !== "undefined") {
-                const shownCoupons = JSON.parse(localStorage.getItem("shown_coupons") || "{}");
+                const shownCoupons = JSON.parse(
+                  localStorage.getItem("shown_coupons") || "{}",
+                );
                 if (!shownCoupons[course.id]) {
                   setShowCelebration(true);
                   shownCoupons[course.id] = true;
-                  localStorage.setItem("shown_coupons", JSON.stringify(shownCoupons));
+                  localStorage.setItem(
+                    "shown_coupons",
+                    JSON.stringify(shownCoupons),
+                  );
                 }
               }
             }
@@ -518,6 +544,9 @@ export default function FreeCourseDetailPage() {
     },
     onError: (err) => {
       console.error(err);
+      toast.error(err?.message || "هذا الكورس غير مفعل حالياً", {
+        position: "top-center",
+      });
     },
   });
 
@@ -563,6 +592,26 @@ export default function FreeCourseDetailPage() {
 
       {/* Main Content Layout */}
       <section className="px-5 lg:px-13 py-10">
+        {!isEnrollmentActive && (
+          <div className="mb-6 bg-amber-50 border-r-4 border-amber-500 p-4 rounded-xl flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="text-amber-600 shrink-0" size={22} />
+              <div>
+                <h4 className="font-bold text-amber-900 text-sm">
+                  الاشتراك غير مفعل حالياً
+                </h4>
+                <p className="text-amber-700 text-xs mt-0.5">
+                  هذا الكورس غير مفعل حالياً. لا يمكنك مشاهدة الدروس أو تسجيل
+                  التقدم.
+                </p>
+              </div>
+            </div>
+            <span className="px-3 py-1 bg-amber-200/80 text-amber-900 text-xs font-bold rounded-full shrink-0">
+              غير مفعل
+            </span>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Right Area: Playlist Index */}
           <div className="lg:col-span-1 space-y-6">
@@ -583,6 +632,7 @@ export default function FreeCourseDetailPage() {
               hasMarkedWatched={hasMarkedWatched}
               setHasMarkedWatched={setHasMarkedWatched}
               updateProgressMutation={updateProgressMutation}
+              isEnrollmentActive={isEnrollmentActive}
             />
 
             {/* Coupon Unlock/Status Section */}
@@ -651,7 +701,9 @@ export default function FreeCourseDetailPage() {
                     <div className="w-24 bg-gray-200 h-2.5 rounded-full overflow-hidden">
                       <div
                         className="bg-emerald-500 h-full"
-                        style={{ width: `${Math.min((overallProgress / 60) * 100, 100)}%` }}
+                        style={{
+                          width: `${Math.min((overallProgress / 60) * 100, 100)}%`,
+                        }}
                       ></div>
                     </div>
                     <span className="text-xs font-bold text-gray-600">
@@ -670,10 +722,17 @@ export default function FreeCourseDetailPage() {
                   شهادة إتمام الدورة
                 </h2>
                 <CertificateViewer
-                  studentName={matchedEnrollment?.certificate?.student_name || "اسم الطالب"}
+                  studentName={
+                    matchedEnrollment?.certificate?.student_name || "اسم الطالب"
+                  }
                   courseName={course?.title || "اسم الدورة التدريبية"}
-                  serialNumber={matchedEnrollment?.certificate?.serial_number || "ERA-FC-XXXX-XXXXXXXX"}
-                  issuedDate={matchedEnrollment?.certificate?.formatted_issued_date || ""}
+                  serialNumber={
+                    matchedEnrollment?.certificate?.serial_number ||
+                    "ERA-FC-XXXX-XXXXXXXX"
+                  }
+                  issuedDate={
+                    matchedEnrollment?.certificate?.formatted_issued_date || ""
+                  }
                 />
               </div>
             )}

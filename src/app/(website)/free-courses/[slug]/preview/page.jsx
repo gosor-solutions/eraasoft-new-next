@@ -96,7 +96,11 @@ export default function FreeCoursePreviewPage() {
     setIsMounted(true);
   }, []);
 
-  const { data: previewDataRes, isLoading: previewLoading, error } = useQuery({
+  const {
+    data: previewDataRes,
+    isLoading: previewLoading,
+    error,
+  } = useQuery({
     queryKey: ["free-course-preview", slug],
     queryFn: () => getFreeCoursePreview(slug),
     enabled: !!slug,
@@ -119,9 +123,14 @@ export default function FreeCoursePreviewPage() {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50" dir="rtl">
+      <div
+        className="min-h-screen flex items-center justify-center bg-gray-50"
+        dir="rtl"
+      >
         <div className="text-center space-y-4 p-8 bg-white rounded-2xl shadow-sm border border-gray-250">
-          <p className="text-lg font-bold text-red-500">حدث خطأ أو الدورة غير موجودة.</p>
+          <p className="text-lg font-bold text-red-500">
+            حدث خطأ أو الدورة غير موجودة.
+          </p>
           <Link href="/free-courses" className="main_button px-6 py-2">
             العودة للدورات المجانية
           </Link>
@@ -130,20 +139,23 @@ export default function FreeCoursePreviewPage() {
     );
   }
 
-  const videosCount = course.videos_count || 0;
-  // Generate list structure skeleton/mock representing course lectures
-  const mockVideos = Array.from({ length: Math.min(videosCount, 6) }, (_, idx) => ({
-    id: idx,
-    title: `المحاضرة ${idx + 1}: تفاصيل الدرس والأساسيات`,
-    duration: 15 + (idx * 3),
-  }));
+  const videosCount = course.videos_count || course.videos?.length || 0;
+  const displayVideos = (course.videos && course.videos.length > 0)
+    ? [...course.videos].sort((a, b) => (a.order || 0) - (b.order || 0))
+    : Array.from({ length: videosCount }, (_, idx) => ({
+        id: idx + 1,
+        title: `المحاضرة ${idx + 1}`,
+        duration: null,
+      }));
 
   const handleEnrollClick = () => {
     if (token) {
       // If logged in, go to main course detail page to enroll/play
       router.push(`/free-courses/${slug}`);
     } else {
-      router.push(`/login?redirect=${encodeURIComponent(`/free-courses/${slug}`)}`);
+      router.push(
+        `/login?redirect=${encodeURIComponent(`/free-courses/${slug}`)}`,
+      );
     }
   };
 
@@ -167,11 +179,16 @@ export default function FreeCoursePreviewPage() {
         <div className="relative z-10 flex flex-col justify-center min-h-[40vh] px-5 sm:px-8 lg:px-13">
           <div className="flex flex-col max-w-3xl py-8">
             <div className="flex items-center gap-2 text-sm text-gray-300 font-medium mb-4">
-              <Link href="/free-courses" className="hover:text-white transition-colors">
+              <Link
+                href="/free-courses"
+                className="hover:text-white transition-colors"
+              >
                 الدورات المجانية
               </Link>
               <ChevronRight size={14} />
-              <span className="text-white font-semibold line-clamp-1">{course.title}</span>
+              <span className="text-white font-semibold line-clamp-1">
+                {course.title}
+              </span>
             </div>
 
             <h1 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-snug mb-4">
@@ -186,11 +203,18 @@ export default function FreeCoursePreviewPage() {
               <div className="inline-flex divide-x divide-x-reverse divide-white/20 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden w-fit">
                 <div className="flex items-center gap-2 px-4 py-2.5">
                   <BookOpen className="text-white/75 w-4 h-4" />
-                  <span className="text-gray-300 text-xs font-medium">{videosCount} درس</span>
+                  <span className="text-gray-300 text-xs font-medium">
+                    {videosCount} درس
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2.5">
-                  <Star className="text-yellow-400 w-4 h-4" fill="currentColor" />
-                  <span className="text-emerald-400 text-xs font-bold">معاينة مجانية</span>
+                  <Star
+                    className="text-yellow-400 w-4 h-4"
+                    fill="currentColor"
+                  />
+                  <span className="text-emerald-400 text-xs font-bold">
+                    معاينة مجانية
+                  </span>
                 </div>
               </div>
             </div>
@@ -207,30 +231,34 @@ export default function FreeCoursePreviewPage() {
               <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <ListVideo size={18} className="text-[#2243A4]" />
-                  <h2 className="font-bold text-gray-900 text-base">بنية الدورة ({videosCount} درس)</h2>
+                  <h2 className="font-bold text-gray-900 text-base">
+                    دروس الدورة ({videosCount})
+                  </h2>
                 </div>
               </div>
 
-              <div className="divide-y divide-gray-100 opacity-60">
-                {mockVideos.map((video, idx) => (
-                  <div key={video.id} className="p-4 flex items-start gap-3 bg-gray-50/30">
+              <div className="max-h-[500px] overflow-y-auto divide-y divide-gray-100 opacity-80">
+                {displayVideos.map((video, idx) => (
+                  <div
+                    key={video.id || idx}
+                    className="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold bg-gray-100 text-gray-500">
                       <Lock size={12} className="text-gray-400" />
                     </div>
                     <div className="min-w-0 flex-1 space-y-1">
-                      <p className="text-sm font-semibold text-gray-600 truncate">{video.title}</p>
-                      <span className="inline-flex items-center gap-1 text-[11px] text-gray-400">
-                        <Clock size={10} />
-                        {video.duration} دقيقة
-                      </span>
+                      <p className="text-sm font-semibold text-gray-700 leading-snug">
+                        {video.title}
+                      </p>
+                      {video.duration && (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-gray-400">
+                          <Clock size={10} />
+                          {video.duration} دقيقة
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
-                {videosCount > mockVideos.length && (
-                  <div className="p-4 text-center text-xs text-gray-400 font-medium">
-                    + {videosCount - mockVideos.length} دروس أخرى
-                  </div>
-                )}
               </div>
 
               <div className="p-4 bg-blue-50/50 border-t border-gray-100">
@@ -260,8 +288,12 @@ export default function FreeCoursePreviewPage() {
 
               <div className="bg-white p-5 rounded-2xl border border-gray-250 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <span className="text-xs font-semibold text-[#2243A4] bg-blue-55 px-2.5 py-1 rounded-md">فيديو المعاينة</span>
-                  <h3 className="text-lg font-bold text-gray-900 mt-2">مقدمة وتعريف بالدورة</h3>
+                  <span className="text-xs font-semibold text-[#2243A4] bg-blue-55 px-2.5 py-1 rounded-md">
+                    فيديو المعاينة
+                  </span>
+                  <h3 className="text-lg font-bold text-gray-900 mt-2">
+                    مقدمة وتعريف بالدورة
+                  </h3>
                 </div>
                 <button
                   onClick={handleEnrollClick}

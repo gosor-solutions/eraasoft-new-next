@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, X, User, LogOut, BookOpen, Settings as SettingsIcon } from "lucide-react";
+import { Menu, X, User, LogOut, Settings as SettingsIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,7 +16,11 @@ function WhatsAppIcon() {
   );
 }
 
-export default function Navbar({ logo = null, contactPhone = null }) {
+export default function Navbar({
+  logo = null,
+  contactPhone = null,
+  navbarTitles = null,
+}) {
   const pathName = usePathname();
   const [openModal, setOpenModal] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -35,14 +39,28 @@ export default function Navbar({ logo = null, contactPhone = null }) {
 
   return (
     <>
-      <header className="px-6 py-4 flex justify-between items-center bg-white shadow-sm sticky top-0 z-50" dir="rtl">
+      <header
+        className="px-6 py-4 flex justify-between items-center bg-white shadow-sm sticky top-0 z-50"
+        dir="rtl"
+      >
         {/* اليمين: اللوجو */}
         <Link href="/" className="flex items-center">
-          <Image src={logo ?? "/logo.png"} alt="شعار إيراسوفت" width={120} height={40} className="h-10 w-auto" />
+          <Image
+            src={logo ?? "/logo.png"}
+            alt="شعار إيراسوفت"
+            width={120}
+            height={40}
+            className="h-10 w-auto"
+          />
         </Link>
 
         {/* الوسط: اللينكات */}
-        <NavLinks pathName={pathName} state={openModal} setOpenModal={setOpenModal} />
+        <NavLinks
+          pathName={pathName}
+          state={openModal}
+          setOpenModal={setOpenModal}
+          navbarTitles={navbarTitles}
+        />
 
         {/* اليسار: أدوات العميل والتواصل */}
         <div className="flex items-center gap-3">
@@ -87,7 +105,9 @@ export default function Navbar({ logo = null, contactPhone = null }) {
                   <div className="absolute left-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="px-4 py-2 border-b border-gray-50">
                       <p className="text-xs text-gray-400">مرحباً بك</p>
-                      <p className="text-sm font-semibold text-gray-800 truncate">{client.full_name}</p>
+                      <p className="text-sm font-semibold text-gray-800 truncate">
+                        {client.full_name}
+                      </p>
                     </div>
                     <Link
                       href="/profile"
@@ -133,7 +153,12 @@ export default function Navbar({ logo = null, contactPhone = null }) {
         </div>
       </header>
 
-      {openModal && <div className="fixed inset-0 bg-black/30 z-40 md:hidden" onClick={() => setOpenModal(false)} />}
+      {openModal && (
+        <div
+          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          onClick={() => setOpenModal(false)}
+        />
+      )}
     </>
   );
 }

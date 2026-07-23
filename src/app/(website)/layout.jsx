@@ -8,7 +8,11 @@ export default async function WebsiteLayout({ children }) {
 
   return (
     <>
-      <Navbar logo={settings?.site_info?.site_logo ?? null} contactPhone={settings?.contact?.phone ?? null} />
+      <Navbar
+        logo={settings?.site_info?.site_logo ?? null}
+        contactPhone={settings?.contact?.phone ?? null}
+        navbarTitles={settings?.navbar_titles ?? null}
+      />
       {children}
       <Footer settings={settings} />
       <ScrollToTop contactPhone={settings?.contact?.phone ?? null} />

@@ -127,6 +127,14 @@ export default function EnrollForm({ courses = [] }) {
         toast.error(res?.message || "حدث خطأ، يرجى المحاولة مجدداً.", { position: "top-center" });
       }
     } catch (err) {
+      console.error(err);
+      if (err?.errors) {
+        const backendErrors = {};
+        Object.keys(err.errors).forEach((key) => {
+          backendErrors[key] = Array.isArray(err.errors[key]) ? err.errors[key][0] : err.errors[key];
+        });
+        setFieldErrors((prev) => ({ ...prev, ...backendErrors }));
+      }
       toast.error(err?.message || "حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
     } finally {
       setLoading(false);

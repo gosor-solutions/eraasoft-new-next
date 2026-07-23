@@ -1,4 +1,5 @@
 import ArticleListCard from "@/components/articles/ArticleListCard";
+import ArticleFilterBar from "@/components/articles/ArticleFilterBar";
 import HeroCarousel from "@/components/shared/HeroCarusel";
 import Pagination from "@/components/shared/Pagination";
 import EmptyState from "@/components/shared/EmptyState";
@@ -30,14 +31,25 @@ export async function generateMetadata() {
 }
 
 export default async function ArticlesPage({ searchParams }) {
-  const { page = "1" } = await searchParams;
+  const resolvedSearchParams = await searchParams;
+  const { page = "1", search, category, tag, per_page } = resolvedSearchParams || {};
   const currentPage = Math.max(1, parseInt(page, 10) || 1);
 
   let articles = [];
   let meta = null;
   let pageData = null;
+
   try {
-    const [data, pageRes] = await Promise.all([getArticles(currentPage), getPageBySlug("articles")]);
+    const [data, pageRes] = await Promise.all([
+      getArticles({
+        page: currentPage,
+        search,
+        category,
+        tag,
+        per_page,
+      }),
+      getPageBySlug("articles"),
+    ]);
     articles = data?.data || [];
     meta = data?.meta || null;
     pageData = pageRes?.data || null;
@@ -51,6 +63,8 @@ export default async function ArticlesPage({ searchParams }) {
         image={pageData?.image || null}
       />
       <section className="px-5 sm:px-8 lg:px-13 py-10 sm:py-14" dir="rtl">
+        <ArticleFilterBar />
+
         {articles.length > 0 ? (
           <>
             <div className="grid grid-cols-12 gap-6">

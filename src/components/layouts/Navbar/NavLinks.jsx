@@ -5,27 +5,38 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
 
-const baseLinks = [
-  { label: "الرئيسية", href: "/" },
-  { label: "الدورات", href: "/courses" },
-  { label: "الرحلة التعليمية", href: "/journey" },
-  { label: "اراء الطلاب", href: "/reviews" },
-  { label: "الدورات المجانية", href: "/free-courses" },
-  { label: "المقالات", href: "/articles" },
-  { label: "من نحن", href: "/about" },
-  { label: "تواصل معنا", href: "/contact" },
-];
+const defaultTitles = {
+  home: "الرئيسية",
+  courses: "الدورات",
+  learning_journey: "الرحلة التعليمية",
+  testimonials: "اراء الطلاب",
+  free_courses: "الدورات المجانية",
+  articles: "المقالات",
+  about_us: "من نحن",
+  contact_us: "تواصل معنا",
+};
 
-export default function NavLinks({ pathName, state, setOpenModal }) {
+export default function NavLinks({ pathName, state, setOpenModal, navbarTitles }) {
   const { client, logout } = useAuth();
+
+  const links = [
+    { label: navbarTitles?.home || defaultTitles.home, href: "/" },
+    { label: navbarTitles?.courses || defaultTitles.courses, href: "/courses" },
+    { label: navbarTitles?.learning_journey || defaultTitles.learning_journey, href: "/journey" },
+    { label: navbarTitles?.testimonials || defaultTitles.testimonials, href: "/reviews" },
+    { label: navbarTitles?.free_courses || defaultTitles.free_courses, href: "/free-courses" },
+    { label: navbarTitles?.articles || defaultTitles.articles, href: "/articles" },
+    { label: navbarTitles?.about_us || defaultTitles.about_us, href: "/about" },
+    { label: navbarTitles?.contact_us || defaultTitles.contact_us, href: "/contact" },
+  ];
 
   return (
     <>
       {/* Desktop Navigation */}
       <nav className="hidden md:block">
         <ul className="flex gap-6 flex-row">
-          {baseLinks.map((link) => (
-            <li key={link.label}>
+          {links.map((link) => (
+            <li key={link.href}>
               <Link
                 href={link.href}
                 className={`text-[16px] font-medium transition-colors hover:text-(--primary-color) ${pathName === link.href ? "text-(--primary-color) font-semibold" : "text-gray-700"
@@ -72,8 +83,8 @@ export default function NavLinks({ pathName, state, setOpenModal }) {
         {/* Navigation Links */}
         <nav className="flex-1 overflow-y-auto p-4">
           <ul className="flex flex-col gap-1">
-            {baseLinks.map((link) => (
-              <li key={link.label}>
+            {links.map((link) => (
+              <li key={link.href}>
                 <Link
                   href={link.href}
                   onClick={() => setOpenModal(false)}
