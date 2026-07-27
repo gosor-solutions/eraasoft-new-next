@@ -139,6 +139,14 @@ export default function BookingCourse({ course }) {
         toast.error(res?.message || "حدث خطأ، يرجى المحاولة مجدداً.", { position: "top-center" });
       }
     } catch (err) {
+      console.error(err);
+      if (err?.errors) {
+        const backendErrors = {};
+        Object.keys(err.errors).forEach((key) => {
+          backendErrors[key] = Array.isArray(err.errors[key]) ? err.errors[key][0] : err.errors[key];
+        });
+        setFieldErrors((prev) => ({ ...prev, ...backendErrors }));
+      }
       toast.error(err?.message || "حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
     } finally {
       setLoading(false);
@@ -235,23 +243,31 @@ export default function BookingCourse({ course }) {
             <div className="py-4 border-b border-[#BECBF2] my-3">
               <h5 className="font-bold text-sm text-gray-700 mb-2">هل لديك كوبون خصم؟</h5>
               {verifiedCoupon ? (
-                <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3">
-                  <div className="flex items-center gap-2">
-                    <Check size={16} className="text-emerald-600" />
-                    <span className="text-xs sm:text-sm font-semibold text-emerald-800">
-                      تم تطبيق الكوبون: <code className="font-bold">{verifiedCoupon.coupon_code}</code> ({verifiedCoupon.discount_percent}%)
-                    </span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                    <div className="flex items-center gap-2">
+                      <Check size={16} className="text-emerald-600" />
+                      <span className="text-xs sm:text-sm font-semibold text-emerald-800">
+                        تم تطبيق الكوبون: <code className="font-bold">{verifiedCoupon.coupon_code}</code> ({verifiedCoupon.discount_percent}%)
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setVerifiedCoupon(null);
+                        setCouponCode("");
+                      }}
+                      className="text-xs text-red-500 hover:underline"
+                    >
+                      حذف
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setVerifiedCoupon(null);
-                      setCouponCode("");
-                    }}
-                    className="text-xs text-red-500 hover:underline"
-                  >
-                    حذف
-                  </button>
+                  {fieldErrors.coupon_code && (
+                    <div className="flex items-center gap-1.5 text-xs text-red-500 pr-2">
+                      <AlertCircle size={12} />
+                      <span>{fieldErrors.coupon_code}</span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -275,10 +291,10 @@ export default function BookingCourse({ course }) {
                       {verifying ? "جاري التحقق..." : "تطبيق"}
                     </button>
                   </div>
-                  {couponError && (
+                  {(couponError || fieldErrors.coupon_code) && (
                     <div className="flex items-center gap-1.5 text-xs text-red-500 pr-2">
                       <AlertCircle size={12} />
-                      <span>{couponError}</span>
+                      <span>{couponError || fieldErrors.coupon_code}</span>
                     </div>
                   )}
                 </div>

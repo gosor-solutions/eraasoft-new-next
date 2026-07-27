@@ -218,7 +218,9 @@ function CourseHeader({ course, sortedVideos, overallProgress, isEnrolled }) {
                 <Star className="text-yellow-400 w-4 h-4" fill="currentColor" />
                 <div>
                   <p className="text-emerald-400 text-xs font-bold">
-                    مجاني بالكامل
+                    {course.is_free
+                      ? "مجاني بالكامل"
+                      : `(${Number(course.price || 0).toLocaleString("ar-EG")} ج.م)`}
                   </p>
                 </div>
               </div>
@@ -734,6 +736,27 @@ export default function FreeCourseDetailPage() {
                     matchedEnrollment?.certificate?.formatted_issued_date || ""
                   }
                 />
+              </div>
+            )}
+
+            {/* Outcomes Section */}
+            {course.out_comes && course.out_comes.length > 0 && (
+              <div className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-4">
+                  <CheckCircle2 size={20} className="text-[#2243A4]" />
+                  مخرجات التعلم
+                </h2>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {course.out_comes.map((outcome, idx) => (
+                    <li
+                      key={idx}
+                      className="flex items-start gap-2.5 text-gray-700 text-sm sm:text-base"
+                    >
+                      <CheckCircle2 className="text-emerald-600 shrink-0 mt-1 w-4 h-4" />
+                      <span>{outcome}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 

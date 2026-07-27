@@ -233,23 +233,31 @@ export default function EnrollForm({ courses = [] }) {
           <div className="flex flex-col gap-2">
             <label className="text-base sm:text-lg font-semibold">هل لديك كوبون خصم؟</label>
             {verifiedCoupon ? (
-              <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3.5">
-                <div className="flex items-center gap-2">
-                  <Check size={16} className="text-emerald-600" />
-                  <span className="text-sm font-semibold text-emerald-800">
-                    تم تطبيق الكوبون: <code className="font-bold">{verifiedCoupon.coupon_code}</code> ({verifiedCoupon.discount_percent}%)
-                  </span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3.5">
+                  <div className="flex items-center gap-2">
+                    <Check size={16} className="text-emerald-600" />
+                    <span className="text-sm font-semibold text-emerald-800">
+                      تم تطبيق الكوبون: <code className="font-bold">{verifiedCoupon.coupon_code}</code> ({verifiedCoupon.discount_percent}%)
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVerifiedCoupon(null);
+                      setCouponCode("");
+                    }}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    حذف
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setVerifiedCoupon(null);
-                    setCouponCode("");
-                  }}
-                  className="text-xs text-red-500 hover:underline"
-                >
-                  حذف
-                </button>
+                {fieldErrors.coupon_code && (
+                  <div className="flex items-center gap-1.5 text-xs text-red-500 pr-4">
+                    <AlertCircle size={12} />
+                    <span>{fieldErrors.coupon_code}</span>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="space-y-2">
@@ -273,10 +281,10 @@ export default function EnrollForm({ courses = [] }) {
                     {verifying ? "جاري التحقق..." : "تطبيق"}
                   </button>
                 </div>
-                {couponError && (
+                {(couponError || fieldErrors.coupon_code) && (
                   <div className="flex items-center gap-1.5 text-xs text-red-500 pr-4">
                     <AlertCircle size={12} />
-                    <span>{couponError}</span>
+                    <span>{couponError || fieldErrors.coupon_code}</span>
                   </div>
                 )}
               </div>

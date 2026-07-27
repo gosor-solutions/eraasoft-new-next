@@ -6,12 +6,7 @@ const nextConfig = {
     }
     return config;
   },
-  turbopack: (config, { dev }) => {
-    if (dev) {
-      config.devtool = false;
-    }
-    return config;
-  },
+  turbopack: {},
   experimental: {
     webpackMemoryOptimizations: true,
   },
