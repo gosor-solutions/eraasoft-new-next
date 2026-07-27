@@ -228,6 +228,10 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
                 const isEnrolled =
                   course.is_enrolled ||
                   enrollments.some((e) => e.course?.id === course.id);
+                const isFree =
+                  course.is_free ||
+                  Number(course.price) === 0 ||
+                  !course.price;
                 return (
                   <div
                     key={course.id}
@@ -274,7 +278,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
                                 {course.videos_count ?? 0} درس تعليمي
                               </p>
                             </div>
-                            {course.is_free ? (
+                            {isFree ? (
                               <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
                                 مجاني
                               </span>
@@ -309,7 +313,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
 
                       <div className="pt-4 border-t border-gray-50">
                         <div className="mb-3">
-                          {course.is_free ? (
+                          {isFree ? (
                             <span className="text-emerald-600 text-sm font-bold">
                               دورة مجانية
                             </span>

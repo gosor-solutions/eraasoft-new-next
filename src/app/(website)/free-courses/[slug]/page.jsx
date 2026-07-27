@@ -218,9 +218,7 @@ function CourseHeader({ course, sortedVideos, overallProgress, isEnrolled }) {
                 <Star className="text-yellow-400 w-4 h-4" fill="currentColor" />
                 <div>
                   <p className="text-emerald-400 text-xs font-bold">
-                    {course.is_free
-                      ? "مجاني بالكامل"
-                      : `(${Number(course.price || 0).toLocaleString("ar-EG")} ج.م)`}
+                    {(course.is_free || Number(course.price || 0) === 0 || !course.price) ? "مجاني بالكامل" : `مدفوع (${Number(course.price || 0).toLocaleString("ar-EG")} ج.م)`}
                   </p>
                 </div>
               </div>
@@ -422,7 +420,7 @@ export default function FreeCourseDetailPage() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  const { token, isLoading: authLoading } = useAuth();
+  const { token, client, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const params = useParams();
   const slug = params?.slug;
@@ -525,14 +523,16 @@ export default function FreeCourseDetailPage() {
             if (couponRes.success && couponRes.data?.coupon_code) {
               setUnlockedCoupon(couponRes.data);
               if (typeof window !== "undefined") {
+                const clientId = client?.id || "guest";
+                const storageKey = `shown_coupons_${clientId}`;
                 const shownCoupons = JSON.parse(
-                  localStorage.getItem("shown_coupons") || "{}",
+                  localStorage.getItem(storageKey) || "{}",
                 );
                 if (!shownCoupons[course.id]) {
                   setShowCelebration(true);
                   shownCoupons[course.id] = true;
                   localStorage.setItem(
-                    "shown_coupons",
+                    storageKey,
                     JSON.stringify(shownCoupons),
                   );
                 }
