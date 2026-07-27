@@ -133,6 +133,7 @@ export default function FreeCoursePreviewPage() {
   });
 
   const course = previewDataRes?.success ? previewDataRes.data : null;
+  const isFree = course ? (course.is_free || Number(course.price || 0) === 0 || !course.price) : true;
 
   // Set document title
   useEffect(() => {
@@ -241,7 +242,7 @@ export default function FreeCoursePreviewPage() {
                     fill="currentColor"
                   />
                   <span className="text-emerald-400 text-xs font-bold">
-                    {course.is_free ? "معاينة مجانية" : `(${Number(course.price || 0).toLocaleString("ar-EG")} ج.م)`}
+                    {isFree ? "معاينة مجانية" : `(${Number(course.price || 0).toLocaleString("ar-EG")} ج.م)`}
                   </span>
                 </div>
               </div>
@@ -290,7 +291,7 @@ export default function FreeCoursePreviewPage() {
               </div>
 
               <div className="p-4 bg-blue-50/50 border-t border-gray-100 space-y-3">
-                {!course.is_free && (
+                {!isFree && (
                   <div className="space-y-1">
                     <label className="text-xs font-semibold text-gray-700">كوبون الخصم (مطلوب 100% للتسجيل)</label>
                     <input
@@ -310,7 +311,7 @@ export default function FreeCoursePreviewPage() {
                 )}
                 <button
                   onClick={handleEnrollClick}
-                  disabled={enrollMutation.isPending || (!course.is_free && !couponCode.trim())}
+                  disabled={enrollMutation.isPending || (!isFree && !couponCode.trim())}
                   className="w-full cursor-pointer py-3 bg-[#2243A4] hover:bg-[#19327D] text-white rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {enrollMutation.isPending ? (
@@ -318,7 +319,7 @@ export default function FreeCoursePreviewPage() {
                   ) : (
                     <>
                       <LogIn size={16} />
-                      <span>{course.is_free ? "سجل الآن لمشاهدة الدورة كاملة" : "تفعيل وتسجيل بالدورة"}</span>
+                      <span>{isFree ? "سجل الآن لمشاهدة الدورة كاملة" : "تفعيل وتسجيل بالدورة"}</span>
                     </>
                   )}
                 </button>
@@ -350,13 +351,13 @@ export default function FreeCoursePreviewPage() {
                 </div>
                 <button
                   onClick={handleEnrollClick}
-                  disabled={enrollMutation.isPending || (!course.is_free && !couponCode.trim())}
+                  disabled={enrollMutation.isPending || (!isFree && !couponCode.trim())}
                   className="main_button px-6 py-3 text-sm font-bold flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {enrollMutation.isPending ? (
                     <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
-                    <span>{course.is_free ? "اشترك بالدورة مجاناً" : "تفعيل وتسجيل بالدورة"}</span>
+                    <span>{isFree ? "اشترك بالدورة مجاناً" : "تفعيل وتسجيل بالدورة"}</span>
                   )}
                 </button>
               </div>

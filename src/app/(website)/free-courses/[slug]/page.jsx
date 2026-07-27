@@ -218,9 +218,7 @@ function CourseHeader({ course, sortedVideos, overallProgress, isEnrolled }) {
                 <Star className="text-yellow-400 w-4 h-4" fill="currentColor" />
                 <div>
                   <p className="text-emerald-400 text-xs font-bold">
-                    {course.is_free
-                      ? "مجاني بالكامل"
-                      : `(${Number(course.price || 0).toLocaleString("ar-EG")} ج.م)`}
+                    {(course.is_free || Number(course.price || 0) === 0 || !course.price) ? "مجاني بالكامل" : `مدفوع (${Number(course.price || 0).toLocaleString("ar-EG")} ج.م)`}
                   </p>
                 </div>
               </div>
