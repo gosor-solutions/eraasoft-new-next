@@ -66,6 +66,25 @@ export default function AuthProvider({ children }) {
     initializeAuth();
   }, []);
 
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setToken(null);
+      setClient(null);
+      localStorage.removeItem("client_token");
+      localStorage.removeItem("client_data");
+      router.push("/login");
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("auth_unauthorized", handleUnauthorized);
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("auth_unauthorized", handleUnauthorized);
+      }
+    };
+  }, [router]);
+
   const login = async (email, password) => {
     setIsLoading(true);
     try {

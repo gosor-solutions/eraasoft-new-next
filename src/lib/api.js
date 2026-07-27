@@ -25,6 +25,14 @@ export const fetchWithAuth = async (endpoint, options = {}) => {
     headers,
   });
 
+  if (res.status === 401) {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("client_token");
+      localStorage.removeItem("client_data");
+      window.dispatchEvent(new Event("auth_unauthorized"));
+    }
+  }
+
   const result = await res.json();
   if (!res.ok) {
     throw result;
