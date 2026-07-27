@@ -61,13 +61,11 @@ export const enrollInFreeCourse = async (freeCourseId, token, couponCode) => {
   const options = {
     method: "POST",
     token,
-  };
-  if (couponCode) {
-    options.headers = {
+    headers: {
       "Content-Type": "application/json",
-    };
-    options.body = JSON.stringify({ coupon_code: couponCode });
-  }
+    },
+    body: JSON.stringify({ coupon_code: couponCode || "" }),
+  };
   return fetchWithAuth(`/recorded-courses/${freeCourseId}/enroll`, options);
 };
 

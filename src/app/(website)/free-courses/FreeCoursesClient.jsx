@@ -8,7 +8,7 @@ import {
   getMyFreeCourseEnrollments,
   enrollInFreeCourse,
 } from "@/services/FreeCourses";
-import { Search, AlertCircle, Play, Monitor, Award } from "lucide-react";
+import { Search, AlertCircle, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import EmptyState from "@/components/shared/EmptyState";
@@ -70,8 +70,9 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
   }, [token, enrollParam, courses, enrollments]);
 
   const enrollMutation = useMutation({
-    mutationFn: (courseId) => enrollInFreeCourse(courseId, token),
-    onSuccess: (res, courseId) => {
+    mutationFn: ({ courseId, couponCode }) =>
+      enrollInFreeCourse(courseId, token, couponCode),
+    onSuccess: (res, { courseId }) => {
       if (res.success) {
         toast.success("تم الاشتراك في الدورة بنجاح!");
         queryClient.invalidateQueries({
@@ -92,8 +93,8 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
   });
 
   const handleEnroll = (courseId) => {
+    const targetCourse = courses.find((c) => c.id === courseId);
     if (!token) {
-      const targetCourse = courses.find((c) => c.id === courseId);
       const redirectPath = targetCourse
         ? `/free-courses?enroll=${targetCourse.id}`
         : "/free-courses";
@@ -101,7 +102,21 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
       return;
     }
     if (enrollMutation.isPending) return;
-    enrollMutation.mutate(courseId);
+
+    if (targetCourse) {
+      const isFree =
+        targetCourse.is_free ||
+        Number(targetCourse.price || 0) === 0 ||
+        !targetCourse.price;
+      if (isFree) {
+        enrollMutation.mutate({
+          courseId,
+          couponCode: targetCourse.coupon_code,
+        });
+      } else {
+        router.push(`/free-courses/${targetCourse.slug}/preview`);
+      }
+    }
   };
 
   const isLoadingAll = isDataLoading || enrollmentsLoading;
@@ -229,9 +244,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
                   course.is_enrolled ||
                   enrollments.some((e) => e.course?.id === course.id);
                 const isFree =
-                  course.is_free ||
-                  Number(course.price) === 0 ||
-                  !course.price;
+                  course.is_free || Number(course.price) === 0 || !course.price;
                 return (
                   <div
                     key={course.id}
