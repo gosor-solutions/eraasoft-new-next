@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-<<<<<<< HEAD
-=======
   webpack: (config, { dev }) => {
     if (dev) {
       config.devtool = false;
@@ -12,7 +10,6 @@ const nextConfig = {
   experimental: {
     webpackMemoryOptimizations: true,
   },
->>>>>>> 0bfbd42 (some changes)
   images: {
     remotePatterns: [
       {
