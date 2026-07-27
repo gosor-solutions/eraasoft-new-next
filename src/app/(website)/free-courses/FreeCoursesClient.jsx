@@ -274,9 +274,15 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
                                 {course.videos_count ?? 0} درس تعليمي
                               </p>
                             </div>
-                            <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                              مجاني
-                            </span>
+                            {course.is_free ? (
+                              <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                مجاني
+                              </span>
+                            ) : (
+                              <span className="bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                مدفوع
+                              </span>
+                            )}
                           </div>
 
                           {isEnrolled ? (
@@ -302,8 +308,20 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
                       </div>
 
                       <div className="pt-4 border-t border-gray-50">
-                        {/* Price Section removed */}
-                        <div className="mb-3 h-[32px]"></div>
+                        <div className="mb-3">
+                          {course.is_free ? (
+                            <span className="text-emerald-600 text-sm font-bold">
+                              دورة مجانية
+                            </span>
+                          ) : (
+                            <span className="text-[#2243A4] text-sm font-bold">
+                              {Number(course.price || 0).toLocaleString(
+                                "ar-EG",
+                              )}{" "}
+                              ج.م
+                            </span>
+                          )}
+                        </div>
 
                         <div className="flex gap-2">
                           {isEnrolled ? (

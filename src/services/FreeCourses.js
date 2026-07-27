@@ -11,7 +11,7 @@ export const getFreeCourses = async ({ search = "", perPage = 12, page = 1 } = {
   if (perPage) params.append("per_page", perPage);
   if (page) params.append("page", page);
 
-  return fetchWithAuth(`/free-courses?${params.toString()}`, {
+  return fetchWithAuth(`/recorded-courses?${params.toString()}`, {
     method: "GET",
     token,
   });
@@ -23,7 +23,7 @@ export const getFreeCourses = async ({ search = "", perPage = 12, page = 1 } = {
  * @param {string} token - Client authentication token.
  */
 export const getFreeCourseDetail = async (slug, token) => {
-  return fetchWithAuth(`/free-courses/${slug}`, {
+  return fetchWithAuth(`/recorded-courses/${slug}`, {
     method: "GET",
     token,
   });
@@ -34,7 +34,7 @@ export const getFreeCourseDetail = async (slug, token) => {
  * @param {string} slug - The course slug.
  */
 export const getFreeCoursePreview = async (slug) => {
-  return fetchWithAuth(`/free-courses/${slug}/preview`, {
+  return fetchWithAuth(`/recorded-courses/${slug}/preview`, {
     method: "GET",
   });
 };
@@ -45,7 +45,7 @@ export const getFreeCoursePreview = async (slug) => {
  * @param {string} token - Client authentication token.
  */
 export const getFreeCourseCoupon = async (freeCourseId, token) => {
-  return fetchWithAuth(`/free-courses/${freeCourseId}/coupon`, {
+  return fetchWithAuth(`/recorded-courses/${freeCourseId}/coupon`, {
     method: "GET",
     token,
   });
@@ -55,12 +55,20 @@ export const getFreeCourseCoupon = async (freeCourseId, token) => {
  * Enroll in a free course.
  * @param {number|string} freeCourseId - The ID of the free course.
  * @param {string} token - Client authentication token.
+ * @param {string} [couponCode] - Optional coupon code for paid courses.
  */
-export const enrollInFreeCourse = async (freeCourseId, token) => {
-  return fetchWithAuth(`/free-courses/${freeCourseId}/enroll`, {
+export const enrollInFreeCourse = async (freeCourseId, token, couponCode) => {
+  const options = {
     method: "POST",
     token,
-  });
+  };
+  if (couponCode) {
+    options.headers = {
+      "Content-Type": "application/json",
+    };
+    options.body = JSON.stringify({ coupon_code: couponCode });
+  }
+  return fetchWithAuth(`/recorded-courses/${freeCourseId}/enroll`, options);
 };
 
 /**
@@ -68,7 +76,7 @@ export const enrollInFreeCourse = async (freeCourseId, token) => {
  * @param {string} token - Client authentication token.
  */
 export const getMyFreeCourseEnrollments = async (token) => {
-  return fetchWithAuth(`/free-courses/my-enrollments`, {
+  return fetchWithAuth(`/recorded-courses/my-enrollments`, {
     method: "GET",
     token,
   });
@@ -81,7 +89,7 @@ export const getMyFreeCourseEnrollments = async (token) => {
  * @param {string} token - Client authentication token.
  */
 export const updateVideoProgress = async (freeCourseId, videoId, token) => {
-  return fetchWithAuth(`/free-courses/${freeCourseId}/progress/${videoId}`, {
+  return fetchWithAuth(`/recorded-courses/${freeCourseId}/progress/${videoId}`, {
     method: "POST",
     token,
   });
