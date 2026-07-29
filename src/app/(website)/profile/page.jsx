@@ -36,7 +36,7 @@ export default function ProfilePage() {
     isLoading: loadingCourses,
     error: coursesError,
   } = useQuery({
-    queryKey: ["free-course-enrollments"],
+    queryKey: ["free-course-enrollments", token],
     queryFn: () => getMyFreeCourseEnrollments(token),
     enabled: activeTab === "courses" && !!token,
   });
@@ -52,7 +52,7 @@ export default function ProfilePage() {
     isLoading: loadingCerts,
     error: certsError,
   } = useQuery({
-    queryKey: ["my-certificates"],
+    queryKey: ["my-certificates", token],
     queryFn: () => getMyCertificates(token),
     enabled: activeTab === "certificates" && !!token,
   });

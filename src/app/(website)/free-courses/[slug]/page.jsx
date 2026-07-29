@@ -231,7 +231,7 @@ function CourseHeader({ course, sortedVideos, overallProgress, isEnrolled }) {
                   <div
                     className="bg-[#22C55E] h-full rounded-full animate-pulse"
                     style={{
-                      width: `${Math.min((overallProgress / 60) * 100, 100)}%`,
+                      width: `${Math.min(overallProgress, 100)}%`,
                     }}
                   ></div>
                 </div>
@@ -434,7 +434,7 @@ export default function FreeCourseDetailPage() {
 
   // Query: Course detail
   const { data: courseDataRes, isLoading: courseLoading } = useQuery({
-    queryKey: ["free-course-detail", slug],
+    queryKey: ["free-course-detail", slug, token],
     queryFn: () => getFreeCourseDetail(slug, token),
     enabled: !!slug && !!token && !authLoading,
   });
@@ -443,20 +443,19 @@ export default function FreeCourseDetailPage() {
 
   // Query: My enrollments to check progress
   const { data: enrollmentsRes, isLoading: enrollmentsLoading } = useQuery({
-    queryKey: ["free-course-enrollments"],
+    queryKey: ["free-course-enrollments", token],
     queryFn: () => getMyFreeCourseEnrollments(token),
     enabled: !!token && !authLoading,
   });
   const enrollments = enrollmentsRes?.success ? enrollmentsRes.data || [] : [];
 
   const matchedEnrollment = course
-    ? enrollments.find((e) => e.course?.id === course.id)
+    ? enrollments.find((e) => String(e.course?.id) === String(course.id))
     : null;
   const isEnrolled = !!(course?.is_enrolled || matchedEnrollment);
   const isEnrollmentActive = matchedEnrollment
     ? matchedEnrollment.is_active !== false
     : true;
-  const overallProgress = matchedEnrollment?.progress_percent || 0;
 
   const sortedVideos = course?.videos
     ? [...course.videos].sort((a, b) => a.order - b.order)
@@ -465,6 +464,11 @@ export default function FreeCourseDetailPage() {
   const completedVideoIds = sortedVideos
     .filter((v) => v.is_completed || v.completed || v.is_watched || v.watched)
     .map((v) => v.id);
+
+  const totalVideos = sortedVideos.length;
+  const completedVideosCount = completedVideoIds.length;
+  const calculatedProgress = totalVideos > 0 ? (completedVideosCount / totalVideos) * 100 : 0;
+  const overallProgress = Math.max(matchedEnrollment?.progress_percent || 0, calculatedProgress);
 
   // Set initial active video and document title on course load
   useEffect(() => {

@@ -46,7 +46,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
   });
 
   const { data: enrollmentsRes, isLoading: enrollmentsLoading } = useQuery({
-    queryKey: ["free-course-enrollments"],
+    queryKey: ["free-course-enrollments", token],
     queryFn: () => getMyFreeCourseEnrollments(token),
     enabled: !!token,
   });
