@@ -14,6 +14,7 @@ const defaultTitles = {
   articles: "المقالات",
   about_us: "من نحن",
   contact_us: "تواصل معنا",
+  training_services: "تدريب الشركات",
 };
 
 export default function NavLinks({ pathName, state, setOpenModal, navbarTitles }) {
@@ -25,6 +26,7 @@ export default function NavLinks({ pathName, state, setOpenModal, navbarTitles }
     { label: navbarTitles?.learning_journey || defaultTitles.learning_journey, href: "/journey" },
     { label: navbarTitles?.testimonials || defaultTitles.testimonials, href: "/reviews" },
     { label: navbarTitles?.free_courses || defaultTitles.free_courses, href: "/free-courses" },
+    { label: navbarTitles?.training_services || defaultTitles.training_services, href: "/training-services" },
     { label: navbarTitles?.articles || defaultTitles.articles, href: "/articles" },
     { label: navbarTitles?.about_us || defaultTitles.about_us, href: "/about" },
     { label: navbarTitles?.contact_us || defaultTitles.contact_us, href: "/contact" },

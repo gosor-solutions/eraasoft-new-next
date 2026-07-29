@@ -9,7 +9,6 @@ import MaintenancePage from "@/components/maintenance/MaintenancePage";
 
 export async function generateMetadata() {
   const settings = await getSettings();
-  console.log("settings", settings);
   if (!settings) {
     return {
       title: { default: "إيراسوفت", template: "%s | إيراسوفت" },
@@ -73,8 +72,6 @@ export default async function RootLayout({ children }) {
   const gaId = settings?.tracking?.google_analytics_id ?? null;
   const gtmId = settings?.tracking?.google_tag_manager_id ?? null;
   const microsoft_clarity_id = settings?.tracking?.microsoft_clarity_id ?? null;
-
-  console.log("microsoft", microsoft_clarity_id);
 
   const organizationSchema = settings
     ? {

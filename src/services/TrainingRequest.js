@@ -1,10 +1,9 @@
-import { BASE_URL } from "@/lib/api";
+import { fetchWithAuth } from "@/lib/api";
 
 export const sendTrainingRequest = async (data) => {
-  const res = await fetch(`${BASE_URL}/company-training`, {
+  return fetchWithAuth("/company-training", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return await res.json();
 };

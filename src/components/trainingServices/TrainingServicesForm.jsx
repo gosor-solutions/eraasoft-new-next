@@ -30,8 +30,8 @@ const schema = z.object({
   employeeCount: z.string().min(1, "يرجى اختيار عدد الموظفين"),
   companyWebsite: z
     .string()
-    .optional()
-    .refine((v) => !v || /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w\-./?%&=]*)?$/.test(v), "صيغة الموقع الالكتروني غير صحيحة"),
+    .min(1, "الموقع الالكتروني للشركة مطلوب")
+    .refine((v) => /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/[\w\-./?%&=]*)?$/.test(v), "صيغة الموقع الالكتروني غير صحيحة"),
 });
 
 function parseZodErrors(error) {
@@ -76,12 +76,12 @@ export default function TrainingServicesForm() {
         email: formData.companyEmail.trim(),
         phone: formData.phone,
         employee_number: formData.employeeCount,
-        website: formData.companyWebsite.trim() || null,
+        website: formData.companyWebsite.trim(),
         honeypot: formData.honeypot,
       });
 
       if (res?.success) {
-        toast.success(res.message || "تم إرسال طلبك بنجاح، سنتواصل معك قريباً!", {
+        toast.success("تم إرسال طلبك بنجاح، سنتواصل معك قريباً!", {
           position: "top-center",
         });
         setFormData({
@@ -98,8 +98,22 @@ export default function TrainingServicesForm() {
           position: "top-center",
         });
       }
-    } catch {
-      toast.error("حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
+    } catch (err) {
+      console.error(err);
+      if (err?.errors) {
+        const backendErrors = {};
+        Object.keys(err.errors).forEach((key) => {
+          let frontendKey = key;
+          if (key === "company_name") frontendKey = "companyName";
+          if (key === "email") frontendKey = "companyEmail";
+          if (key === "employee_number") frontendKey = "employeeCount";
+          if (key === "website") frontendKey = "companyWebsite";
+          
+          backendErrors[frontendKey] = Array.isArray(err.errors[key]) ? err.errors[key][0] : err.errors[key];
+        });
+        setFieldErrors((prev) => ({ ...prev, ...backendErrors }));
+      }
+      toast.error(err?.message || "حدث خطأ في الاتصال، يرجى المحاولة مجدداً.", { position: "top-center" });
     } finally {
       setLoading(false);
     }
@@ -109,7 +123,7 @@ export default function TrainingServicesForm() {
     <section className="bg-[#FAFAFA] px-5 lg:px-13 py-10" dir="rtl">
       <ToastContainer rtl />
 
-      <div className="max-w-2xl">
+      <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-[#0A0A0A] mb-3">تدريب الشركات</h1>
           <p className="text-[#606060] text-sm sm:text-base leading-7">نقدم حلول تدريبية متخصصة تلبي احتياجات فريقك. أرسل بياناتك وسنتواصل معك لتصميم برنامج تدريبي مخصص لشركتك.</p>
@@ -163,7 +177,7 @@ export default function TrainingServicesForm() {
               />
             </Field>
 
-            <Field label="الموقع الالكتروني للشركة (اختياري)" error={fieldErrors.companyWebsite}>
+            <Field label="الموقع الالكتروني للشركة" error={fieldErrors.companyWebsite}>
               <input
                 type="url"
                 placeholder="https://example.com"
