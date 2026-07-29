@@ -9,6 +9,7 @@ import MaintenancePage from "@/components/maintenance/MaintenancePage";
 
 export async function generateMetadata() {
   const settings = await getSettings();
+  console.log("settings", settings);
   if (!settings) {
     return {
       title: { default: "إيراسوفت", template: "%s | إيراسوفت" },
@@ -17,7 +18,9 @@ export async function generateMetadata() {
   }
 
   return {
-    metadataBase: new URL(settings?.seo?.canonical_url ?? "https://eraasoft.com"),
+    metadataBase: new URL(
+      settings?.seo?.canonical_url ?? "https://eraasoft.com",
+    ),
     title: {
       default: settings?.seo?.meta_title,
       template: `%s | ${settings?.site_info?.site_name}`,
@@ -27,32 +30,51 @@ export async function generateMetadata() {
     openGraph: {
       type: "website",
       locale: settings?.open_graph?.og_locale,
-      siteName: settings?.open_graph?.og_site_name ?? settings?.site_info?.site_name,
+      siteName:
+        settings?.open_graph?.og_site_name ?? settings?.site_info?.site_name,
       title: settings?.seo?.meta_title,
       description: settings?.seo?.meta_description,
-      images: [{ url: settings?.open_graph?.og_image, width: 1200, height: 630, alt: settings?.site_info?.site_name }],
+      images: [
+        {
+          url: settings?.open_graph?.og_image,
+          width: 1200,
+          height: 630,
+          alt: settings?.site_info?.site_name,
+        },
+      ],
     },
-    // twitter: {
-    //   card: "summary_large_image",
-    //   title: settings.meta_title,
-    //   description: settings.meta_description,
-    //   images: [settings.og_image],
-    // },
-    icons: { icon: settings?.site_info?.site_favicon, shortcut: settings?.site_info?.site_favicon },
-    alternates: { canonical: settings?.seo?.canonical_url, languages: settings?.seo?.hreflang_regions },
+    icons: {
+      icon: settings?.site_info?.site_favicon,
+      shortcut: settings?.site_info?.site_favicon,
+    },
+    alternates: {
+      canonical: settings?.seo?.canonical_url,
+      languages: settings?.seo?.hreflang_regions,
+    },
     robots: {
       index: true,
       follow: true,
-      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
 
 export default async function RootLayout({ children }) {
-  const [settings, maintenance] = await Promise.all([getSettings(), getMaintenance()]);
+  const [settings, maintenance] = await Promise.all([
+    getSettings(),
+    getMaintenance(),
+  ]);
 
   const gaId = settings?.tracking?.google_analytics_id ?? null;
   const gtmId = settings?.tracking?.google_tag_manager_id ?? null;
+  const microsoft_clarity_id = settings?.tracking?.microsoft_clarity_id ?? null;
+
+  console.log("microsoft", microsoft_clarity_id);
 
   const organizationSchema = settings
     ? {
@@ -63,7 +85,11 @@ export default async function RootLayout({ children }) {
         logo: { "@type": "ImageObject", url: settings?.site_info?.site_logo },
         email: settings?.contact?.email,
         telephone: settings?.contact?.phone,
-        address: { "@type": "PostalAddress", addressLocality: settings?.contact?.address, addressCountry: "EG" },
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: settings?.contact?.address,
+          addressCountry: "EG",
+        },
         sameAs: Object.values(settings?.social_links ?? {}),
       }
     : null;
@@ -98,7 +124,12 @@ export default async function RootLayout({ children }) {
       <body className={`${cairo.className}`}>
         {gtmId && (
           <noscript>
-            <iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`} height="0" width="0" style={{ display: "none", visibility: "hidden" }} />
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
           </noscript>
         )}
 
@@ -121,7 +152,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
         {gaId && (
           <>
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
             <Script id="google-analytics" strategy="afterInteractive">
               {`
                 window.dataLayer = window.dataLayer || [];
@@ -129,6 +163,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 gtag('js', new Date());
                 gtag('config', '${gaId}');
               `}
+            </Script>
+          </>
+        )}
+        {microsoft_clarity_id && (
+          <>
+            <Script id="microsoft-clarity" strategy="afterInteractive">
+              {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];
+                y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", '${microsoft_clarity_id}');
+          `}
             </Script>
           </>
         )}
