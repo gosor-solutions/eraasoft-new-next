@@ -198,22 +198,38 @@ export default function BookingCourse({ course }) {
                 options={attendanceOptions}
                 value={formData.attendance_location}
                 placeholder="اختر طريقة الحضور"
-                onChange={setField("attendance_location")}
+                onChange={(value) => {
+                  setFormData((prev) => {
+                    const next = { ...prev, attendance_location: value };
+                    if (value === "ONLINE") {
+                      next.branch = "ONLINE";
+                    } else if (prev.branch === "ONLINE") {
+                      next.branch = "";
+                    }
+                    return next;
+                  });
+                  setFieldErrors((prev) => ({
+                    ...prev,
+                    attendance_location: undefined,
+                    branch: value === "ONLINE" ? undefined : prev.branch,
+                  }));
+                }}
                 error={fieldErrors.attendance_location}
               />
             </Field>
 
-          
-            <Field error={fieldErrors.branch}>
-              <CustomSelect
-                label="اختر الفرع المناسب ليك"
-                options={branchOptions}
-                value={formData.branch}
-                placeholder="اختر الفرع المناسب ليك"
-                onChange={setField("branch")}
-                error={fieldErrors.branch}
-              />
-            </Field>
+            {formData.attendance_location !== "ONLINE" && (
+              <Field error={fieldErrors.branch}>
+                <CustomSelect
+                  label="اختر الفرع المناسب ليك"
+                  options={branchOptions.filter((opt) => opt.value !== "ONLINE")}
+                  value={formData.branch}
+                  placeholder="اختر الفرع المناسب ليك"
+                  onChange={setField("branch")}
+                  error={fieldErrors.branch}
+                />
+              </Field>
+            )}
 
             <button type="submit" disabled={loading} className="main_button w-full py-4 text-base sm:text-lg disabled:opacity-60 disabled:cursor-not-allowed">
               {loading ? "جاري الحجز..." : "اتمام الحجز"}

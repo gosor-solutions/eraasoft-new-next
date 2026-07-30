@@ -10,6 +10,7 @@ import StudentProjectsCarusel from "@/components/studensProjects/StudentProjects
 import JsonLd from "@/components/seo/JsonLd";
 import { BASE_URL } from "@/lib/api";
 import FadeInSection from "@/components/shared/FadeInSection";
+import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
   try {
@@ -63,7 +64,10 @@ export default async function CourseDetailPage({ params }) {
       .catch(() => ({ data: [] })),
   ]);
 
-  const courceDetails = cource.data;
+  const courceDetails = cource?.data;
+  if (!courceDetails) {
+    notFound();
+  }
   const testimonials = testimonialsRes?.data || [];
 
   const courseSchema = {
