@@ -68,7 +68,7 @@ export default async function ArticlesPage({ searchParams }) {
         {articles.length > 0 ? (
           <>
             <div className="grid grid-cols-12 gap-6">
-              {articles.map((article) => (
+              {articles?.map((article) => (
                 <ArticleListCard key={article.id} article={article} />
               ))}
             </div>

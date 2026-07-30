@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 export async function generateStaticParams() {
   try {
     const res = await getPages();
-    return (res?.data || []).map((page) => ({ slug: page.slug }));
+    return (res?.data || [])?.map((page) => ({ slug: page.slug }));
   } catch {
     return [];
   }
@@ -49,8 +49,18 @@ export default async function PageDetailPage({ params }) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "الرئيسية", item: "https://eraasoft.com" },
-      { "@type": "ListItem", position: 2, name: page.title, item: `https://eraasoft.com/pages/${slug}` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "الرئيسية",
+        item: "https://eraasoft.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: page.title,
+        item: `https://eraasoft.com/pages/${slug}`,
+      },
     ],
   };
 
@@ -58,7 +68,10 @@ export default async function PageDetailPage({ params }) {
     <>
       <JsonLd schema={breadcrumb} />
 
-      <section className="bg-[#FAFAFA] py-10 sm:py-14 px-5 sm:px-8 lg:px-13" dir="rtl">
+      <section
+        className="bg-[#FAFAFA] py-10 sm:py-14 px-5 sm:px-8 lg:px-13"
+        dir="rtl"
+      >
         <div className="max-w-4xl mx-auto">
           {page.image && (
             <img

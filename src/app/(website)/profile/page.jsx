@@ -549,7 +549,7 @@ export default function ProfilePage() {
                   </div>
                 ) : enrolledCourses.length > 0 ? (
                   <div className="grid grid-cols-1 gap-6">
-                    {enrolledCourses.map((enrollment) => {
+                    {enrolledCourses?.map((enrollment) => {
                       const course = enrollment.course;
                       const progress = enrollment.progress_percent || 0;
                       return (
@@ -680,7 +680,7 @@ export default function ProfilePage() {
                   </div>
                 ) : myCertificates.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {myCertificates.map((cert) => (
+                    {myCertificates?.map((cert) => (
                       <div
                         key={cert.id}
                         className="bg-white rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition-all p-5 flex flex-col justify-between gap-4"
@@ -706,7 +706,7 @@ export default function ProfilePage() {
                           className="w-full py-2.5 px-4 bg-[#2243A4] hover:bg-[#19327D] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-colors"
                         >
                           <span>عرض وتوثيق الشهادة</span>
-                          <ExternalLink size={14} className="rotate-y-180"/>
+                          <ExternalLink size={14} className="rotate-y-180" />
                         </Link>
                       </div>
                     ))}

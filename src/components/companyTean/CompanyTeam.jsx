@@ -17,7 +17,7 @@ export default function CompanyTeam({ employees = [] }) {
   return (
     <div className="my-10">
       <CarsoulComponent>
-        {employees.map((employee) => (
+        {employees?.map((employee) => (
           <EmployeeCard key={employee.id} employee={employee} />
         ))}
       </CarsoulComponent>

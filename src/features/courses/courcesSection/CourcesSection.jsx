@@ -8,11 +8,18 @@ export default function CourcesSection({ courses = [], meta }) {
       {courses.length > 0 ? (
         <>
           <div className="grid grid-cols-12 gap-3">
-            {courses.map((course, index) => (
-              <CourceCard course={course} key={course.id} delay={(index % 4) * 0.08} />
+            {courses?.map((course, index) => (
+              <CourceCard
+                course={course}
+                key={course.id}
+                delay={(index % 4) * 0.08}
+              />
             ))}
           </div>
-          <Pagination currentPage={meta?.current_page ?? 1} lastPage={meta?.last_page ?? 1} />
+          <Pagination
+            currentPage={meta?.current_page ?? 1}
+            lastPage={meta?.last_page ?? 1}
+          />
         </>
       ) : (
         <EmptyState title="لا توجد دورات متاحة حالياً" />

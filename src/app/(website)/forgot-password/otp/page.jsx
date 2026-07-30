@@ -155,7 +155,7 @@ export default function ForgotPasswordOtpPage() {
             اكتب رمز التحقق
           </label>
           <div className="flex justify-center gap-2 sm:gap-3" style={{ direction: "ltr" }}>
-            {otp.map((digit, index) => (
+            {otp?.map((digit, index) => (
               <input
                 key={index}
                 ref={(el) => (inputRefs.current[index] = el)}

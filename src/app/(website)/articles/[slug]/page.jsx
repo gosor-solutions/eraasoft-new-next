@@ -8,7 +8,7 @@ export async function generateStaticParams() {
   try {
     const res = await fetch(`${BASE_URL}/articles`);
     const data = await res.json();
-    return (data?.data || []).map((article) => ({ slug: article.slug }));
+    return (data?.data || [])?.map((article) => ({ slug: article.slug }));
   } catch {
     return [];
   }
@@ -87,7 +87,7 @@ export default async function ArticleDetailPage({ params }) {
           {/* Tags */}
           {article?.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-8">
-              {article.tags.map((tag) => (
+              {article.tags?.map((tag) => (
                 <span
                   key={tag?.id ?? tag}
                   className="flex items-center gap-1 text-xs sm:text-sm bg-[#2243A41A] text-(--primary-color) px-3 py-1.5 rounded-full font-medium"

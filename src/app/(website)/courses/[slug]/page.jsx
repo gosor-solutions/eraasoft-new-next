@@ -15,7 +15,7 @@ export async function generateStaticParams() {
   try {
     const res = await fetch(`${BASE_URL}/courses`);
     const data = await res.json();
-    return (data?.data || []).map((course) => ({ slug: course.slug }));
+    return (data?.data || [])?.map((course) => ({ slug: course.slug }));
   } catch {
     return [];
   }
@@ -29,13 +29,24 @@ export async function generateMetadata({ params }) {
     return {
       title: details?.title,
       description: details?.description,
-      keywords: details?.category?.title ? [details.category.title, "كورسات", "إيراسوفت"] : undefined,
+      keywords: details?.category?.title
+        ? [details.category.title, "كورسات", "إيراسوفت"]
+        : undefined,
       robots: { index: true, follow: true },
       alternates: { canonical: `https://eraasoft.com/courses/${slug.slug}` },
       openGraph: {
         title: details?.title,
         description: details?.description,
-        images: details?.image ? [{ url: details.image, width: 1200, height: 630, alt: details.title }] : [],
+        images: details?.image
+          ? [
+              {
+                url: details.image,
+                width: 1200,
+                height: 630,
+                alt: details.title,
+              },
+            ]
+          : [],
       },
     };
   } catch {
@@ -51,6 +62,7 @@ export default async function CourseDetailPage({ params }) {
       .then((r) => r.json())
       .catch(() => ({ data: [] })),
   ]);
+
   const courceDetails = cource.data;
   const testimonials = testimonialsRes?.data || [];
 
@@ -86,9 +98,24 @@ export default async function CourseDetailPage({ params }) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "الرئيسية", item: "https://eraasoft.com" },
-      { "@type": "ListItem", position: 2, name: "الدورات", item: "https://eraasoft.com/courses" },
-      { "@type": "ListItem", position: 3, name: courceDetails?.title, item: `https://eraasoft.com/courses/${slug.slug}` },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "الرئيسية",
+        item: "https://eraasoft.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "الدورات",
+        item: "https://eraasoft.com/courses",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: courceDetails?.title,
+        item: `https://eraasoft.com/courses/${slug.slug}`,
+      },
     ],
   };
 
@@ -105,7 +132,9 @@ export default async function CourseDetailPage({ params }) {
           <CourceContent content={courceDetails?.content} />
         </FadeInSection>
         <FadeInSection>
-          <StudentProjectsCarusel courceVideos={courceDetails?.projects_videos} />
+          <StudentProjectsCarusel
+            courceVideos={courceDetails?.projects_videos}
+          />
         </FadeInSection>
         {/* <Features /> */}
       </section>

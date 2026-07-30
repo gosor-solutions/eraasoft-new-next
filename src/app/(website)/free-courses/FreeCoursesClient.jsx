@@ -239,7 +239,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
         ) : courses.length > 0 ? (
           <>
             <div className="grid grid-cols-12 gap-5">
-              {courses.map((course) => {
+              {courses?.map((course) => {
                 const isEnrolled =
                   course.is_enrolled ||
                   enrollments.some((e) => e.course?.id === course.id);
@@ -376,7 +376,7 @@ export default function FreeCoursesClient({ pageData, discountPercent = 30 }) {
                   >
                     السابق
                   </button>
-                  {Array.from({ length: meta.last_page }, (_, i) => i + 1).map(
+                  {Array.from({ length: meta.last_page }, (_, i) => i + 1)?.map(
                     (p) => (
                       <button
                         key={p}

@@ -209,9 +209,12 @@ export default function FreeCoursePreviewPage() {
     if (!isFree && !couponCode.trim()) {
       const contactPhone = settings?.contact?.phone || "201099796489";
       const message = encodeURIComponent(
-        `أهلاً إيراسوفت، أريد التسجيل في الدورة المسجلة: "${course?.title}"، يرجى تزويدي بكوبون التفعيل 100%.`
+        `أهلاً إيراسوفت، أريد التسجيل في الدورة المسجلة: "${course?.title}"، يرجى تزويدي بكوبون التفعيل 100%.`,
       );
-      window.open(`https://wa.me/${contactPhone.replace(/\D/g, "")}?text=${message}`, "_blank");
+      window.open(
+        `https://wa.me/${contactPhone.replace(/\D/g, "")}?text=${message}`,
+        "_blank",
+      );
       return;
     }
 
@@ -316,7 +319,7 @@ export default function FreeCoursePreviewPage() {
               </div>
 
               <div className="max-h-[500px] overflow-y-auto divide-y divide-gray-100 opacity-80">
-                {displayVideos.map((video, idx) => (
+                {displayVideos?.map((video, idx) => (
                   <div
                     key={video.id || idx}
                     className="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors"
@@ -368,7 +371,7 @@ export default function FreeCoursePreviewPage() {
                     </p>
                   )}
                 </div>
-                 <button
+                <button
                   onClick={handleEnrollClick}
                   disabled={enrollMutation.isPending}
                   className="w-full cursor-pointer py-3 bg-[#2243A4] hover:bg-[#19327D] text-white rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
@@ -381,7 +384,9 @@ export default function FreeCoursePreviewPage() {
                       <span>
                         {isFree
                           ? "سجل الآن لمشاهدة الدورة كاملة"
-                          : (couponCode.trim() ? "تفعيل وتسجيل بالدورة" : "طلب كود التفعيل عبر واتساب")}
+                          : couponCode.trim()
+                            ? "تفعيل وتسجيل بالدورة"
+                            : "طلب كود التفعيل عبر واتساب"}
                       </span>
                     </>
                   )}
@@ -412,7 +417,7 @@ export default function FreeCoursePreviewPage() {
                     مقدمة وتعريف بالدورة
                   </h3>
                 </div>
-                 <button
+                <button
                   onClick={handleEnrollClick}
                   disabled={enrollMutation.isPending}
                   className="main_button px-6 py-3 text-sm font-bold flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
@@ -423,7 +428,9 @@ export default function FreeCoursePreviewPage() {
                     <span>
                       {isFree
                         ? "اشترك بالدورة مجاناً"
-                        : (couponCode.trim() ? "تفعيل وتسجيل بالدورة" : "طلب كود التفعيل عبر واتساب")}
+                        : couponCode.trim()
+                          ? "تفعيل وتسجيل بالدورة"
+                          : "طلب كود التفعيل عبر واتساب"}
                     </span>
                   )}
                 </button>
@@ -438,7 +445,7 @@ export default function FreeCoursePreviewPage() {
                   ماذا ستتعلم في هذه الدورة؟
                 </h2>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {course.out_comes.map((outcome, idx) => (
+                  {course.out_comes?.map((outcome, idx) => (
                     <li
                       key={idx}
                       className="flex items-start gap-2.5 text-gray-700 text-sm sm:text-base"

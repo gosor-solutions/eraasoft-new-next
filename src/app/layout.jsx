@@ -25,7 +25,7 @@ export async function generateMetadata() {
       template: `%s | ${settings?.site_info?.site_name}`,
     },
     description: settings?.seo?.meta_description,
-    keywords: settings?.seo?.meta_keywords?.split(",").map((k) => k.trim()),
+    keywords: settings?.seo?.meta_keywords?.split(",")?.map((k) => k.trim()),
     openGraph: {
       type: "website",
       locale: settings?.open_graph?.og_locale,

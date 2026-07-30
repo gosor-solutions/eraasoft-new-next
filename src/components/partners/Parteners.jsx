@@ -28,7 +28,7 @@ export default function Parteners() {
     return (
       <section className="px-5 md:px-8 lg:px-13 py-13">
         <div className="grid grid-cols-12 gap-6">
-          {Array.from({ length: 12 }).map((_, idx) => (
+          {Array.from({ length: 12 })?.map((_, idx) => (
             <div key={idx} className="col-span-6 md:col-span-4 lg:col-span-3">
               <div className="bg-white rounded-xl p-4 flex items-center justify-center h-44 sm:h-48 animate-pulse">
                 <div className="w-40 h-24 bg-gray-200 rounded"></div>
@@ -50,13 +50,23 @@ export default function Parteners() {
         <span className="inline-flex flex-col items-center">
           <span>شركاء النجاح</span>
           <div className="-translate-x-16">
-            <LineSvg colorOne="#2243A4" colorTwo="#2243A4" svgId="paint_partners_success" svgWidth="160" svgHeight="40" strokeWidth="6" />
-          </div> 
-          </span>
+            <LineSvg
+              colorOne="#2243A4"
+              colorTwo="#2243A4"
+              svgId="paint_partners_success"
+              svgWidth="160"
+              svgHeight="40"
+              strokeWidth="6"
+            />
+          </div>
+        </span>
       </h2>
       <div className="grid grid-cols-12 gap-6">
-        {partners.map((partner) => (
-          <div key={partner.id} className="col-span-6 md:col-span-4 lg:col-span-3">
+        {partners?.map((partner) => (
+          <div
+            key={partner.id}
+            className="col-span-6 md:col-span-4 lg:col-span-3"
+          >
             <div className="bg-white rounded-xl p-4 flex items-center justify-center h-44 sm:h-48 grayscale hover:grayscale-0 transition-all duration-300">
               <Image
                 src={partner.image}
@@ -72,4 +82,3 @@ export default function Parteners() {
     </section>
   );
 }
-

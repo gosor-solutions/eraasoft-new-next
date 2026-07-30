@@ -4,7 +4,12 @@ function getPageNumbers(current, last) {
   if (last <= 7) return Array.from({ length: last }, (_, i) => i + 1);
 
   const core = new Set([1, last]);
-  for (let p = Math.max(2, current - 1); p <= Math.min(last - 1, current + 1); p++) core.add(p);
+  for (
+    let p = Math.max(2, current - 1);
+    p <= Math.min(last - 1, current + 1);
+    p++
+  )
+    core.add(p);
 
   const sorted = [...core].sort((a, b) => a - b);
   const result = [];
@@ -32,7 +37,10 @@ export default function Pagination({ currentPage, lastPage }) {
     "px-4 sm:px-5 py-2 rounded-full text-sm font-medium border border-[#D2D2D2] text-[#D2D2D2] cursor-not-allowed select-none";
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-10 flex-wrap" dir="rtl">
+    <div
+      className="flex items-center justify-center gap-2 mt-10 flex-wrap"
+      dir="rtl"
+    >
       {hasPrev ? (
         <Link href={`?page=${currentPage - 1}`} scroll className={navBtn}>
           السابق
@@ -41,9 +49,12 @@ export default function Pagination({ currentPage, lastPage }) {
         <span className={disabledNavBtn}>السابق</span>
       )}
 
-      {pages.map((p, i) =>
+      {pages?.map((p, i) =>
         p === "..." ? (
-          <span key={`dots-${i}`} className="w-8 text-center text-[#606060] text-sm select-none">
+          <span
+            key={`dots-${i}`}
+            className="w-8 text-center text-[#606060] text-sm select-none"
+          >
             ...
           </span>
         ) : (
@@ -55,7 +66,7 @@ export default function Pagination({ currentPage, lastPage }) {
           >
             {p}
           </Link>
-        )
+        ),
       )}
 
       {hasNext ? (

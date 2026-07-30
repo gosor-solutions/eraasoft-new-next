@@ -11,15 +11,21 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
   if (!freeCourses || freeCourses.length === 0) return null;
 
   return (
-    <section className="px-4 lg:px-15 py-12 bg-gradient-to-b from-blue-50/20 via-white to-transparent rounded-3xl" dir="rtl">
+    <section
+      className="px-4 lg:px-15 py-12 bg-gradient-to-b from-blue-50/20 via-white to-transparent rounded-3xl"
+      dir="rtl"
+    >
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div className="space-y-2">
           <span className="text-sm font-bold text-(--primary-color) tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full">
             تعلم مجاناً
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">الدورات المجانية</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+            الدورات المجانية
+          </h2>
           <p className="text-gray-500 text-sm sm:text-base max-w-xl">
-            تعلم البرمجة وتطوير الويب من الصفر مجاناً عبر سلسلة دروس مميزة وعالية الجودة.
+            تعلم البرمجة وتطوير الويب من الصفر مجاناً عبر سلسلة دروس مميزة
+            وعالية الجودة.
           </p>
         </div>
         <Link
@@ -27,12 +33,15 @@ export default function HomeFreeCourses({ freeCourses = [] }) {
           className="inline-flex items-center gap-2 font-bold text-sm text-(--primary-color) hover:text-blue-700 transition-colors group cursor-pointer"
         >
           <span>عرض جميع الدورات المجانية</span>
-          <ArrowLeft size={16} className="transform group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft
+            size={16}
+            className="transform group-hover:-translate-x-1 transition-transform"
+          />
         </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {freeCourses.slice(0, 6).map((course) => (
+        {freeCourses.slice(0, 6)?.map((course) => (
           <div
             key={course.id}
             className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-all duration-300"

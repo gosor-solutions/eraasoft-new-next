@@ -48,7 +48,7 @@ export default async function BookingSuccessPage({ searchParams }) {
               { icon: <Check size={16} />,    color: "bg-green-100 text-green-600",      text: "تم استلام طلبك بنجاح"                        },
               { icon: <Phone size={16} />,    color: "bg-[#2243A4]/10 text-[#2243A4]",   text: "سيتصل بك فريقنا خلال 24 ساعة لتأكيد الحجز" },
               { icon: <Rocket size={16} />,   color: "bg-amber-100 text-amber-600",      text: "ابدأ رحلتك التعليمية مع إيراسوفت"            },
-            ].map((step, i) => (
+            ]?.map((step, i) => (
               <div key={i} className="flex items-center gap-3 bg-[#FAFAFA] rounded-2xl px-4 py-3">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${step.color}`}>
                   {step.icon}

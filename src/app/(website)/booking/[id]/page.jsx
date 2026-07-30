@@ -6,7 +6,7 @@ export async function generateStaticParams() {
   try {
     const res = await fetch(`${BASE_URL}/courses`);
     const data = await res.json();
-    return (data?.data || []).map((course) => ({ id: course.slug }));
+    return (data?.data || [])?.map((course) => ({ id: course.slug }));
   } catch {
     return [];
   }

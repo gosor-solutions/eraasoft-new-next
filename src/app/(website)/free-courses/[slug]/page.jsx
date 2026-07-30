@@ -265,7 +265,7 @@ function PlaylistSidebar({
       </div>
 
       <div className="max-h-[480px] overflow-y-auto divide-y divide-gray-100">
-        {sortedVideos.map((video, idx) => {
+        {sortedVideos?.map((video, idx) => {
           const isActive = activeVideo?.id === video.id;
           const isCompleted = completedVideoIds.includes(video.id);
 
@@ -463,7 +463,7 @@ export default function FreeCourseDetailPage() {
 
   const completedVideoIds = sortedVideos
     .filter((v) => v.is_completed || v.completed || v.is_watched || v.watched)
-    .map((v) => v.id);
+    ?.map((v) => v.id);
 
   const totalVideos = sortedVideos.length;
   const completedVideosCount = completedVideoIds.length;
@@ -751,7 +751,7 @@ export default function FreeCourseDetailPage() {
                   مخرجات التعلم
                 </h2>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {course.out_comes.map((outcome, idx) => (
+                  {course.out_comes?.map((outcome, idx) => (
                     <li
                       key={idx}
                       className="flex items-start gap-2.5 text-gray-700 text-sm sm:text-base"

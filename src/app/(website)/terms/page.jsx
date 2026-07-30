@@ -2,7 +2,8 @@ import HeroCarousel from "@/components/shared/HeroCarusel";
 
 export const metadata = {
   title: "الشروط والأحكام",
-  description: "اقرأ الشروط والأحكام الخاصة باستخدام خدمات EraaSoft التعليمية والتقنية.",
+  description:
+    "اقرأ الشروط والأحكام الخاصة باستخدام خدمات EraaSoft التعليمية والتقنية.",
 };
 
 const terms = [
@@ -69,19 +70,32 @@ export default function TermsPage() {
     <div className="bg-[#FAFAFA]" dir="rtl">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="bg-[#EEF2FF] border border-[#2243A4]/20 rounded-2xl p-5 mb-10">
-          <p className="text-[#2243A4] font-semibold text-sm sm:text-base leading-relaxed">آخر تحديث: يونيو 2025 — باستخدامك لخدمات EraaSoft فإنك توافق على جميع البنود الواردة في هذه الوثيقة.</p>
+          <p className="text-[#2243A4] font-semibold text-sm sm:text-base leading-relaxed">
+            آخر تحديث: يونيو 2025 — باستخدامك لخدمات EraaSoft فإنك توافق على
+            جميع البنود الواردة في هذه الوثيقة.
+          </p>
         </div>
 
         <div className="flex flex-col gap-8">
-          {terms.map((term, index) => (
-            <section key={term.title} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          {terms?.map((term, index) => (
+            <section
+              key={term.title}
+              className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6"
+            >
               <div className="flex items-center gap-3 mb-5">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#2243A4] text-white text-sm font-bold shrink-0">{index + 1}</span>
-                <h2 className="text-lg sm:text-xl font-bold text-[#0C1739]">{term.title}</h2>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#2243A4] text-white text-sm font-bold shrink-0">
+                  {index + 1}
+                </span>
+                <h2 className="text-lg sm:text-xl font-bold text-[#0C1739]">
+                  {term.title}
+                </h2>
               </div>
               <ul className="flex flex-col gap-3">
-                {term.items.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-gray-700 text-sm sm:text-base leading-relaxed">
+                {term.items?.map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-3 text-gray-700 text-sm sm:text-base leading-relaxed"
+                  >
                     <span className="mt-1.5 w-2 h-2 rounded-full bg-[#2243A4] shrink-0" />
                     {item}
                   </li>
@@ -92,9 +106,16 @@ export default function TermsPage() {
         </div>
 
         <div className="bg-[#0C1739] rounded-2xl p-6 sm:p-8 text-center mt-10">
-          <h3 className="text-[#BECBF2] text-lg font-bold mb-2">هل لديك استفسار؟</h3>
-          <p className="text-white text-sm sm:text-base mb-4">للتواصل بخصوص أي بند من هذه الشروط، يرجى مراسلتنا على:</p>
-          <a href="mailto:info@eraasoft.com" className="inline-block bg-[#2243A4] text-white font-semibold px-6 py-3 rounded-xl hover:opacity-90 transition-opacity text-sm sm:text-base">
+          <h3 className="text-[#BECBF2] text-lg font-bold mb-2">
+            هل لديك استفسار؟
+          </h3>
+          <p className="text-white text-sm sm:text-base mb-4">
+            للتواصل بخصوص أي بند من هذه الشروط، يرجى مراسلتنا على:
+          </p>
+          <a
+            href="mailto:info@eraasoft.com"
+            className="inline-block bg-[#2243A4] text-white font-semibold px-6 py-3 rounded-xl hover:opacity-90 transition-opacity text-sm sm:text-base"
+          >
             info@eraasoft.com
           </a>
         </div>

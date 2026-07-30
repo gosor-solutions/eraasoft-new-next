@@ -11,7 +11,7 @@ export default async function EnrollPage() {
   let courses = [];
   try {
     const result = await getAllCources();
-    courses = (result?.data || []).map((c) => ({ value: String(c.id), label: c.title }));
+    courses = (result?.data || [])?.map((c) => ({ value: String(c.id), label: c.title }));
   } catch {}
 
   return (
