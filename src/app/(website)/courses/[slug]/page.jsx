@@ -12,15 +12,7 @@ import { BASE_URL } from "@/lib/api";
 import FadeInSection from "@/components/shared/FadeInSection";
 import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(`${BASE_URL}/courses`);
-    const data = await res.json();
-    return (data?.data || [])?.map((course) => ({ slug: course.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   try {

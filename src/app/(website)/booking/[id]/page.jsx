@@ -3,15 +3,7 @@ import getCourceDetails from "@/services/CourceDetails";
 import { BASE_URL } from "@/lib/api";
 import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(`${BASE_URL}/courses`);
-    const data = await res.json();
-    return (data?.data || [])?.map((course) => ({ id: course.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   try {

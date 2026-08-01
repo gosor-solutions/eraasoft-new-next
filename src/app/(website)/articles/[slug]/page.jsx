@@ -4,15 +4,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { Tag } from "lucide-react";
 import { BASE_URL } from "@/lib/api";
 
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(`${BASE_URL}/articles`);
-    const data = await res.json();
-    return (data?.data || [])?.map((article) => ({ slug: article.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   try {

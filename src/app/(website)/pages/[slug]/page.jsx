@@ -2,14 +2,7 @@ import { getPageBySlug, getPages } from "@/services/getPages";
 import JsonLd from "@/components/seo/JsonLd";
 import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  try {
-    const res = await getPages();
-    return (res?.data || [])?.map((page) => ({ slug: page.slug }));
-  } catch {
-    return [];
-  }
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   try {
