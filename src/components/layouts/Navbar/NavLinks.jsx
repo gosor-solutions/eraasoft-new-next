@@ -14,7 +14,6 @@ const defaultTitles = {
   articles: "المقالات",
   about_us: "من نحن",
   contact_us: "تواصل معنا",
-  training_services: "تدريب الشركات",
 };
 
 export default function NavLinks({
@@ -39,10 +38,6 @@ export default function NavLinks({
     {
       label: navbarTitles?.free_courses || defaultTitles.free_courses,
       href: "/free-courses",
-    },
-    {
-      label: navbarTitles?.training_services || defaultTitles.training_services,
-      href: "/training-services",
     },
     {
       label: navbarTitles?.articles || defaultTitles.articles,

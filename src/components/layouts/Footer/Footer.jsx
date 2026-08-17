@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
 
 const liClass = `
   relative
@@ -20,19 +19,6 @@ const liClass = `
   before:to-[#2243A4]
 `;
 
-const navLinks = [
-  { href: "/courses", label: "الدورات" },
-  { href: "/enroll", label: "سجّل الآن" },
-  { href: "/reviews", label: "آراء الطلاب" },
-  { href: "/about", label: "عن إيراسوفت" },
-];
-
-const navLinks2 = [
-  { href: "/instructors", label: "فريق العمل " },
-  { href: "/articles", label: "المقالات" },
-  { href: "/contact", label: "تواصل معنا" },
-];
-
 export default function Footer({ settings = null }) {
   const logo = settings?.site_info?.site_logo ?? "/footer_logo.png";
   const social = settings?.social_links ?? {};
@@ -41,12 +27,40 @@ export default function Footer({ settings = null }) {
     settings?.seo?.meta_description ??
     "ايراسوفت هي شركة رائدة في مجال الحلول البرمجية المتقدمة والتدريب المتخصص، تأسست بهدف تقديم خدمات شاملة ومبتكرة تلبي احتياجات الأفراد والشركات في عالم البرمجة وعلوم الكمبيوتر.";
 
+  const navLinks = [
+    { href: "/courses", label: settings?.navbar_titles?.courses ?? "الدورات" },
+    { href: "/enroll", label: "سجّل الآن" },
+    {
+      href: "/reviews",
+      label: settings?.navbar_titles?.testimonials ?? "آراء الطلاب",
+    },
+    {
+      href: "/about",
+      label: settings?.navbar_titles?.about_us ?? "عن إيراسوفت",
+    },
+  ];
+
+  const navLinks2 = [
+    { href: "/instructors", label: "فريق العمل " },
+    {
+      href: "/articles",
+      label: settings?.navbar_titles?.articles ?? "المقالات",
+    },
+    {
+      href: "/training-services",
+      label: settings?.navbar_titles?.training_services ?? "تدريب الشركات",
+    },
+    {
+      href: "/contact",
+      label: settings?.navbar_titles?.contact_us ?? "تواصل معنا",
+    },
+  ];
+
   const socialIcons = [
     { href: social.facebook, icon: <FaFacebook />, label: "فيسبوك" },
     { href: social.youtube, icon: <FaYoutube />, label: "يوتيوب" },
     { href: social.linkedin, icon: <FaLinkedin />, label: "لينكدإن" },
     { href: social.instagram, icon: <FaInstagram />, label: "إنستجرام" },
-    // { href: social.x, icon: <FaXTwitter />, label: "إكس" },
   ].filter((s) => Boolean(s.href));
 
   return (
