@@ -11,7 +11,9 @@ export async function generateMetadata() {
     const res = await getPageBySlug("articles");
     const page = res?.data;
     return {
-      title: page?.seo?.meta_title ? { absolute: page.seo.meta_title } : page?.title,
+      title: page?.seo?.meta_title
+        ? { absolute: page.seo.meta_title }
+        : page?.title,
       description: page?.seo?.meta_description || page?.description,
       keywords: page?.seo?.meta_keywords,
       robots: {
@@ -32,7 +34,13 @@ export async function generateMetadata() {
 
 export default async function ArticlesPage({ searchParams }) {
   const resolvedSearchParams = await searchParams;
-  const { page = "1", search, category, tag, per_page } = resolvedSearchParams || {};
+  const {
+    page = "1",
+    search,
+    category,
+    tag,
+    per_page,
+  } = resolvedSearchParams || {};
   const currentPage = Math.max(1, parseInt(page, 10) || 1);
 
   let articles = [];
@@ -59,6 +67,7 @@ export default async function ArticlesPage({ searchParams }) {
     <div className="bg-[#FAFAFA]">
       <HeroCarousel
         head={pageData?.title || "المقالات"}
+        headDir="rtl"
         description={pageData?.description || ""}
         image={pageData?.image || null}
       />
@@ -72,7 +81,10 @@ export default async function ArticlesPage({ searchParams }) {
                 <ArticleListCard key={article.id} article={article} />
               ))}
             </div>
-            <Pagination currentPage={meta?.current_page ?? 1} lastPage={meta?.last_page ?? 1} />
+            <Pagination
+              currentPage={meta?.current_page ?? 1}
+              lastPage={meta?.last_page ?? 1}
+            />
           </>
         ) : (
           <EmptyState title="لا توجد مقالات حالياً" />

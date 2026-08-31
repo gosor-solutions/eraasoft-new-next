@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import { Calendar, User, Eye } from "lucide-react";
+import { useState } from "react";
 
 export default function ArticleBanner({ article }) {
+  const [imgSrc, setImgSrc] = useState(article?.image || "/default_bg.webp");
   const date = article?.published_at
     ? new Date(article.published_at).toLocaleDateString("ar-EG", {
         year: "numeric",
@@ -16,11 +20,12 @@ export default function ArticleBanner({ article }) {
       dir="rtl"
     >
       <Image
-        src={article?.image}
+        src={imgSrc}
         alt={article?.title || "صورة المقال"}
         fill
         className="object-cover"
         priority
+        onError={() => setImgSrc("/default_bg.webp")}
       />
       <div className="absolute inset-0 bg-black/55" />
 

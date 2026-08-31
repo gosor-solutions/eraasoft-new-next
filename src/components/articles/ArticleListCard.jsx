@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, User } from "lucide-react";
+import { useState } from "react";
 
 export default function ArticleListCard({ article }) {
+  const [imgSrc, setImgSrc] = useState(article?.image || "/default_bg.webp");
   const date = article?.published_at ? new Date(article.published_at).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" }) : null;
 
   return (
@@ -10,7 +14,13 @@ export default function ArticleListCard({ article }) {
       <div className="p-3 sm:p-4 rounded-xl bg-white h-full flex flex-col">
         {/* Image */}
         <div className="relative h-52 sm:h-60 rounded-xl overflow-hidden shrink-0">
-          <Image src={article?.image} alt={article?.title} fill className="object-cover" />
+          <Image 
+            src={imgSrc} 
+            alt={article?.title || "صورة المقال"} 
+            fill 
+            className="object-cover" 
+            onError={() => setImgSrc("/default_bg.webp")}
+          />
           {date && (
             <div className="absolute top-3 left-3">
               <p className="bg-[#00000066] text-white rounded-3xl px-3 py-1.5 text-xs">{date}</p>
@@ -46,3 +56,4 @@ export default function ArticleListCard({ article }) {
     </div>
   );
 }
+

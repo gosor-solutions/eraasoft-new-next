@@ -1,5 +1,7 @@
 import ArticleBanner from "@/components/articles/ArticleBanner";
 import getArticleDetails from "@/services/getArticleDetails";
+import { getArticles } from "@/services/getArticles";
+import ArticleListCard from "@/components/articles/ArticleListCard";
 import JsonLd from "@/components/seo/JsonLd";
 import { Tag } from "lucide-react";
 import { BASE_URL } from "@/lib/api";
@@ -37,6 +39,32 @@ export default async function ArticleDetailPage({ params }) {
   const { slug } = await params;
   const res = await getArticleDetails({ slug });
   const article = res?.data;
+
+  // Fetch related articles
+  let relatedArticles = [];
+  try {
+    const categorySlug = article?.categories?.[0]?.slug;
+    const articlesRes = await getArticles({
+      category: categorySlug || undefined,
+      per_page: 4,
+    });
+    relatedArticles = (articlesRes?.data || [])
+      .filter((item) => item.id !== article?.id)
+      .slice(0, 3);
+
+    if (relatedArticles.length < 3) {
+      const fallbackRes = await getArticles({ per_page: 6 });
+      const fallbackList = (fallbackRes?.data || [])
+        .filter(
+          (item) =>
+            item.id !== article?.id &&
+            !relatedArticles.some((r) => r.id === item.id)
+        );
+      relatedArticles = [...relatedArticles, ...fallbackList].slice(0, 3);
+    }
+  } catch (err) {
+    console.error("Failed to fetch related articles:", err);
+  }
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -101,6 +129,21 @@ export default async function ArticleDetailPage({ params }) {
 
         </div>
       </section>
+
+      {/* Related Articles Section */}
+      {relatedArticles?.length > 0 && (
+        <section className="bg-white py-12 px-5 sm:px-8 lg:px-13 border-t border-gray-100" dir="rtl">
+          <div className="max-w-7xl mx-auto">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-8">مقالات ذات صلة</h3>
+            <div className="grid grid-cols-12 gap-6">
+              {relatedArticles.map((item) => (
+                <ArticleListCard key={item.id} article={item} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }
+

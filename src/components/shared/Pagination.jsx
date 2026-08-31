@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 function getPageNumbers(current, last) {
   if (last <= 7) return Array.from({ length: last }, (_, i) => i + 1);
@@ -21,11 +24,20 @@ function getPageNumbers(current, last) {
 }
 
 export default function Pagination({ currentPage, lastPage }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   if (!lastPage || lastPage <= 1) return null;
 
   const pages = getPageNumbers(currentPage, lastPage);
   const hasPrev = currentPage > 1;
   const hasNext = currentPage < lastPage;
+
+  const createPageUrl = (pageNumber) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+  };
 
   const activeBtn =
     "w-10 h-10 flex items-center justify-center rounded-full text-sm font-bold bg-(--primary-color) text-white";
@@ -42,7 +54,7 @@ export default function Pagination({ currentPage, lastPage }) {
       dir="rtl"
     >
       {hasPrev ? (
-        <Link href={`?page=${currentPage - 1}`} scroll className={navBtn}>
+        <Link href={createPageUrl(currentPage - 1)} scroll className={navBtn}>
           السابق
         </Link>
       ) : (
@@ -60,7 +72,7 @@ export default function Pagination({ currentPage, lastPage }) {
         ) : (
           <Link
             key={p}
-            href={`?page=${p}`}
+            href={createPageUrl(p)}
             scroll
             className={p === currentPage ? activeBtn : idleBtn}
           >
@@ -70,7 +82,7 @@ export default function Pagination({ currentPage, lastPage }) {
       )}
 
       {hasNext ? (
-        <Link href={`?page=${currentPage + 1}`} scroll className={navBtn}>
+        <Link href={createPageUrl(currentPage + 1)} scroll className={navBtn}>
           التالي
         </Link>
       ) : (
@@ -79,3 +91,4 @@ export default function Pagination({ currentPage, lastPage }) {
     </div>
   );
 }
+

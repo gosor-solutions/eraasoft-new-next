@@ -1,14 +1,25 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function ArticleCard({ title, excerpt, image, slug, isOpen, onHover }) {
+  const [imgSrc, setImgSrc] = useState(image || "/default_bg.webp");
+
   return (
     <div
       className={`flex overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-500 ease-in-out cursor-pointer h-64 ${isOpen ? "flex-[2.5]" : "flex-1"}`}
       onMouseEnter={onHover}>
       {/* Image */}
       <div className="relative shrink-0 w-80 h-full">
-        <Image src={image} alt={title} fill className="object-cover" />
+        <Image 
+          src={imgSrc} 
+          alt={title} 
+          fill 
+          className="object-cover" 
+          onError={() => setImgSrc("/default_bg.webp")}
+        />
       </div>
 
       {/* Text - only visible when open */}

@@ -1,11 +1,22 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function MobileArticleCard({ title, excerpt, image, slug }) {
+  const [imgSrc, setImgSrc] = useState(image || "/default_bg.webp");
+
   return (
     <div className="rounded-2xl overflow-hidden border border-gray-200 bg-white">
       <div className="relative w-full h-40 sm:h-48">
-        <Image src={image} alt={title} fill className="object-cover" />
+        <Image 
+          src={imgSrc} 
+          alt={title} 
+          fill 
+          className="object-cover" 
+          onError={() => setImgSrc("/default_bg.webp")}
+        />
       </div>
       <div className="p-4">
         <Link href={`/articles/${slug}`} className="font-semibold text-sm sm:text-base text-gray-900 mb-2 line-clamp-2 hover:underline block">
