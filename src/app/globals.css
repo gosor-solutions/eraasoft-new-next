@@ -24,9 +24,45 @@
     hero-float 4s ease-in-out 1.2s infinite;
 }
 
+@theme {
+  --color-primary: #2243a4;
+  --color-primary-dark: #193799;
+  --color-primary-light: #2950c4;
+}
+
 :root {
   --background: #ffffff;
   --primary-color: #2243a4;
+}
+
+/* ── Custom Branded Scrollbars ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2243a4;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #193799;
+}
+
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0;
+  height: 0;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2243a4 transparent;
 }
 
 html,

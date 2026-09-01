@@ -1,8 +1,8 @@
+import CourceInfo from "@/components/courceInfo/CourceInfo";
 import CourceContent from "@/components/courceInfo/CourceContent";
 import CourseBanner from "@/components/courceInfo/CourseBanner";
-import DiplomaHighlights from "@/components/courceInfo/DiplomaHighlights";
-import LearningJourney from "@/components/courceInfo/LearningJourney";
 import getCourceDetails from "@/services/CourceDetails";
+import Features from "@/components/featuresSection/Features";
 import TestimonialsCarousel from "@/components/sliders/TestimonialsCarousel";
 import EraaCertificate from "@/components/eraaCertificate/EraaCertificate";
 import RelatedCources from "@/components/courceInfo/RelatedCources";
@@ -120,24 +120,19 @@ export default async function CourseDetailPage({ params }) {
       <JsonLd schema={courseSchema} />
       <JsonLd schema={breadcrumb} />
       <CourseBanner course={courceDetails} />
-      <FadeInSection>
-        <DiplomaHighlights />
-      </FadeInSection>
-      <FadeInSection>
-        <CourceContent
-          content={courceDetails?.content}
-          course={courceDetails}
-        />
-      </FadeInSection>
-      <FadeInSection>
-        <LearningJourney />
-      </FadeInSection>
       <section dir="rtl" className="px-5 lg:px-13 py-5 bg-[#FAFAFA]">
+        <FadeInSection>
+          <CourceInfo course={courceDetails} />
+        </FadeInSection>
+        <FadeInSection>
+          <CourceContent content={courceDetails?.content} />
+        </FadeInSection>
         <FadeInSection>
           <StudentProjectsCarusel
             courceVideos={courceDetails?.projects_videos}
           />
         </FadeInSection>
+        {/* <Features /> */}
       </section>
       <section className="py-5 bg-[#FAFAFA]">
         <FadeInSection>
