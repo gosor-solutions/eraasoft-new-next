@@ -118,14 +118,16 @@ export default function CourseBanner({ course }) {
                 ابدأ التعلم الآن
               </Link>
 
-              <button
-                type="button"
-                onClick={() => setIsVideoModalOpen(true)}
-                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-950/60 hover:bg-blue-900/80 border border-blue-500/30 text-white font-bold text-sm sm:text-base transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              >
-                <span>الفيديو التعريفي</span>
-                <ArrowLeft className="w-4 h-4 text-blue-300" />
-              </button>
+              {course?.video_preview_link && (
+                <button
+                  type="button"
+                  onClick={() => setIsVideoModalOpen(true)}
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-950/60 hover:bg-blue-900/80 border border-blue-500/30 text-white font-bold text-sm sm:text-base transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  <span>الفيديو التعريفي</span>
+                  <ArrowLeft className="w-4 h-4 text-blue-300" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -224,12 +226,14 @@ export default function CourseBanner({ course }) {
       </div>
 
       {/* Video Modal Preview */}
-      <VideoModal
-        isOpen={isVideoModalOpen}
-        onClose={() => setIsVideoModalOpen(false)}
-        videoUrl={course?.video_preview_link}
-        course={course}
-      />
+      {course?.video_preview_link && (
+        <VideoModal
+          isOpen={isVideoModalOpen}
+          onClose={() => setIsVideoModalOpen(false)}
+          videoUrl={course?.video_preview_link}
+          course={course}
+        />
+      )}
     </section>
   );
 }

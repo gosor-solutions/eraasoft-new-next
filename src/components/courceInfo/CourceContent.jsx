@@ -17,9 +17,63 @@ export function formatSectionsCount(count) {
   return `${n} قسم`;
 }
 
+function SubTopicCard({ index, subTopic }) {
+  return (
+    <div className="bg-[#F8FAFC] rounded-2xl p-4 sm:p-5 border border-slate-100/90 hover:border-blue-200 transition-all text-left h-auto">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="w-7 h-7 rounded-lg bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">
+          {String(index + 1).padStart(2, "0")}
+        </div>
+        <h4 className="font-bold text-sm sm:text-base text-[#0B1527]">
+          {subTopic.title}
+        </h4>
+      </div>
+      <ul className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+        {subTopic.items?.map((item, itemIdx) => (
+          <li key={itemIdx} className="flex items-start gap-2">
+            <span className="text-primary font-bold text-sm leading-none mt-0.5">
+              •
+            </span>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function CourseStatsCard({ totalSessions, durationWeeks, totalHours }) {
+  return (
+    <div
+      className="shrink-0 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm"
+      dir="rtl"
+    >
+      <div className="flex items-center justify-between py-2 border-b border-slate-100 text-xs sm:text-sm text-slate-600">
+        <span>إجمالي السيشنات</span>
+        <span className="font-bold text-[#0B1527] text-sm sm:text-base">
+          {totalSessions}
+        </span>
+      </div>
+      <div className="flex items-center justify-between py-2 border-b border-slate-100 text-xs sm:text-sm text-slate-600">
+        <span>مدة الدبلومة</span>
+        <span className="font-bold text-[#0B1527] text-sm sm:text-base">
+          {durationWeeks} أسبوع
+        </span>
+      </div>
+      <div className="flex items-center justify-between pt-3 text-xs sm:text-sm">
+        <span className="font-bold text-primary">إجمالي الساعات</span>
+        <span className="font-black text-primary text-sm sm:text-base">
+          {totalHours} ساعة
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function CourceContent({ content = [], course }) {
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [openMobileIndex, setOpenMobileIndex] = useState(0);
 
   const modules =
     content && content.length > 0
@@ -90,8 +144,104 @@ export default function CourceContent({ content = [], course }) {
           </p>
         </div>
 
-        {/* Main 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Mobile View: Single-Column Accordion */}
+        <div className="flex lg:hidden flex-col gap-3">
+          {modules.map((m, idx) => {
+            const isOpen = openMobileIndex === idx;
+            return (
+              <div
+                key={idx}
+                className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden ${
+                  isOpen
+                    ? "border-primary/40 shadow-sm"
+                    : "border-slate-200/80 hover:border-slate-300"
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenMobileIndex(isOpen ? null : idx)}
+                  className="w-full p-4 flex items-center justify-between gap-3 text-left cursor-pointer"
+                  dir="ltr"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div
+                      className={`w-9 h-9 rounded-xl font-bold text-sm flex items-center justify-center shrink-0 transition-colors ${
+                        isOpen
+                          ? "bg-primary text-white shadow-md"
+                          : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      {String(idx + 1).padStart(2, "0")}
+                    </div>
+                    <div className="min-w-0">
+                      <span
+                        dir="rtl"
+                        className="text-[11px] font-semibold text-primary block truncate"
+                      >
+                        {m.phase}
+                      </span>
+                      <h4 className="font-bold text-sm sm:text-base text-[#0B1527] truncate">
+                        {m.title.replace(/^Module \d+:\s*/, "")}
+                      </h4>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${
+                      isOpen ? "rotate-180 text-primary" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Accordion Content */}
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="p-4 pt-0 border-t border-slate-100 flex flex-col gap-3">
+                      {/* Badges */}
+                      <div
+                        className="flex items-center gap-2 pt-3"
+                        dir="rtl"
+                      >
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-blue-50/80 text-primary text-xs font-semibold border border-blue-100">
+                          <BookOpen className="w-3.5 h-3.5" />
+                          <span>{formatSectionsCount(m.lessons_count || 5)}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50/80 text-primary text-xs font-semibold border border-blue-100">
+                          <span>{m.sessions_count || 10} سيشن</span>
+                        </span>
+                      </div>
+
+                      {/* Sub-Topics List */}
+                      <div className="flex flex-col gap-3 mt-1" dir="ltr">
+                        {m.sub_topics?.map((subTopic, sIdx) => (
+                          <SubTopicCard
+                            key={sIdx}
+                            index={sIdx}
+                            subTopic={subTopic}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          <div className="mt-2">
+            <CourseStatsCard
+              totalSessions={totalSessions}
+              durationWeeks={durationWeeks}
+              totalHours={totalHours}
+            />
+          </div>
+        </div>
+
+        {/* Desktop View: 2-Column Layout */}
+        <div className="hidden lg:grid grid-cols-12 gap-6 items-start">
           <div className="lg:col-span-4 flex flex-col gap-4 h-fit">
             {/* Modules List Stack */}
             <div
@@ -141,30 +291,13 @@ export default function CourceContent({ content = [], course }) {
             </div>
 
             {/* Bottom Stats Card */}
-            <div
-              className="shrink-0 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm"
-              dir="rtl"
-            >
-              <div className="flex items-center justify-between py-2 border-b border-slate-100 text-xs sm:text-sm text-slate-600">
-                <span>إجمالي السيشنات</span>
-                <span className="font-bold text-[#0B1527] text-sm sm:text-base">
-                  {totalSessions}
-                </span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b border-slate-100 text-xs sm:text-sm text-slate-600">
-                <span>مدة الدبلومة</span>
-                <span className="font-bold text-[#0B1527] text-sm sm:text-base">
-                  {durationWeeks} أسبوع
-                </span>
-              </div>
-              <div className="flex items-center justify-between pt-3 text-xs sm:text-sm">
-                <span className="font-bold text-primary">إجمالي الساعات</span>
-                <span className="font-black text-primary text-sm sm:text-base">
-                  {totalHours} ساعة
-                </span>
-              </div>
-            </div>
+            <CourseStatsCard
+              totalSessions={totalSessions}
+              durationWeeks={durationWeeks}
+              totalHours={totalHours}
+            />
           </div>
+
           <div className="lg:col-span-8">
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-blue-200/80 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)] transition-all duration-300 flex flex-col h-fit max-h-[640px] overflow-hidden">
               {/* Module Header Bar */}
@@ -218,29 +351,7 @@ export default function CourceContent({ content = [], course }) {
                   dir="ltr"
                 >
                   {activeModule.sub_topics?.map((subTopic, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-[#F8FAFC] rounded-2xl p-5 border border-slate-100/90 hover:border-blue-200 transition-all text-left h-auto"
-                    >
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className="w-7 h-7 rounded-lg bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">
-                          {String(idx + 1).padStart(2, "0")}
-                        </div>
-                        <h4 className="font-bold text-sm sm:text-base text-[#0B1527]">
-                          {subTopic.title}
-                        </h4>
-                      </div>
-                      <ul className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        {subTopic.items?.map((item, itemIdx) => (
-                          <li key={itemIdx} className="flex items-start gap-2">
-                            <span className="text-primary font-bold text-sm leading-none mt-0.5">
-                              •
-                            </span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    <SubTopicCard key={idx} index={idx} subTopic={subTopic} />
                   ))}
                 </div>
               )}
