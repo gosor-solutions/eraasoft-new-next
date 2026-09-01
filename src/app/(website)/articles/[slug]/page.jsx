@@ -1,4 +1,5 @@
 import ArticleBanner from "@/components/articles/ArticleBanner";
+import ArticleShare from "@/components/articles/ArticleShare";
 import getArticleDetails from "@/services/getArticleDetails";
 import { getArticles } from "@/services/getArticles";
 import ArticleListCard from "@/components/articles/ArticleListCard";
@@ -103,6 +104,15 @@ export default async function ArticleDetailPage({ params }) {
       {/* Content */}
       <section className="bg-[#FAFAFA] py-10 sm:py-14 px-5 sm:px-8 lg:px-13" dir="rtl">
         <div className="max-w-4xl mx-auto">
+
+          {/* Social Share Section */}
+          <div className="mb-8">
+            <ArticleShare
+              title={article?.title}
+              description={article?.excerpt}
+              variant="inline"
+            />
+          </div>
 
           {/* Tags */}
           {article?.tags?.length > 0 && (
