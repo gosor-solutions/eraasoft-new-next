@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import FadeInSection from "@/components/shared/FadeInSection";
+import {
+  formatWeeksCount,
+  formatHoursCount,
+  formatProjectsCount,
+} from "@/lib/formatters";
 
 export default function CourceCard({ course, delay = 0 }) {
   return (
@@ -20,15 +25,27 @@ export default function CourceCard({ course, delay = 0 }) {
           <div className="w-full flex justify-between absolute -top-5 sm:-top-7 bg-white shadow-lg px-2 sm:px-3 py-2 sm:py-3 rounded-2xl">
             <div className="flex items-center gap-1 sm:gap-2">
               <Image src="/tv_icon.png" alt="" width={24} height={24} className="w-4 h-4 sm:w-6 sm:h-6" />
-              <p className="text-xs sm:text-sm whitespace-nowrap">{course?.weeks_number} أسبوع</p>
+              <p className="text-xs sm:text-sm whitespace-nowrap">
+                {course?.weeks_number != null
+                  ? formatWeeksCount(course.weeks_number)
+                  : ""}
+              </p>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <Image src="/clock_icon.png" alt="" width={24} height={24} className="w-4 h-4 sm:w-6 sm:h-6" />
-              <p className="text-xs sm:text-sm whitespace-nowrap">{course?.hours_number} ساعة</p>
+              <p className="text-xs sm:text-sm whitespace-nowrap">
+                {course?.hours_number != null
+                  ? formatHoursCount(course.hours_number)
+                  : ""}
+              </p>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <Image src="/code_icon.png" alt="" width={24} height={24} className="w-4 h-4 sm:w-6 sm:h-6" />
-              <p className="text-xs sm:text-sm">{course?.course_projects_number}</p>
+              <p className="text-xs sm:text-sm">
+                {course?.course_projects_number != null
+                  ? formatProjectsCount(course.course_projects_number)
+                  : ""}
+              </p>
             </div>
           </div>
 

@@ -115,38 +115,52 @@ export default async function CourseDetailPage({ params }) {
     ],
   };
 
+  console.log("course", cource);
+
+  const projectVideos = (courceDetails?.projects_videos ?? []).filter(Boolean);
+
   return (
     <>
       <JsonLd schema={courseSchema} />
       <JsonLd schema={breadcrumb} />
       <CourseBanner course={courceDetails} />
-      <FadeInSection>
-        <DiplomaHighlights />
-      </FadeInSection>
-      <FadeInSection>
-        <CourceContent
-          content={courceDetails?.content}
-          course={courceDetails}
-        />
-      </FadeInSection>
+      {courceDetails?.features?.length > 0 && (
+        <FadeInSection>
+          <DiplomaHighlights course={courceDetails} />
+        </FadeInSection>
+      )}
+      {courceDetails?.content?.length > 0 && (
+        <FadeInSection>
+          <CourceContent
+            content={courceDetails?.content}
+            course={courceDetails}
+          />
+        </FadeInSection>
+      )}
       <FadeInSection>
         <LearningJourney />
       </FadeInSection>
-      <section dir="rtl" className="px-5 lg:px-13 py-5 bg-[#FAFAFA]">
-        <FadeInSection>
-          <StudentProjectsCarusel
-            courceVideos={courceDetails?.projects_videos}
-          />
-        </FadeInSection>
-      </section>
+      {projectVideos.length > 0 && (
+        <section dir="rtl" className="px-5 lg:px-13 py-5 bg-[#FAFAFA]">
+          <FadeInSection>
+            <StudentProjectsCarusel
+              courceVideos={courceDetails?.projects_videos}
+            />
+          </FadeInSection>
+        </section>
+      )}
       <section className="py-5 bg-[#FAFAFA]">
-        <FadeInSection>
-          <TestimonialsCarousel testimonials={testimonials} />
-        </FadeInSection>
+        {testimonials.length > 0 && (
+          <FadeInSection>
+            <TestimonialsCarousel testimonials={testimonials} />
+          </FadeInSection>
+        )}
         <FadeInSection>
           <EraaCertificate />
         </FadeInSection>
-        <RelatedCources relatedCources={courceDetails?.related_courses} />
+        {courceDetails?.related_courses?.length > 0 && (
+          <RelatedCources relatedCources={courceDetails?.related_courses} />
+        )}
       </section>
     </>
   );
