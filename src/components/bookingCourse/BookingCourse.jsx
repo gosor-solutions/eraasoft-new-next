@@ -17,9 +17,9 @@ const CustomSelect = dynamic(() => import("../shared/CustomSelect"), { ssr: fals
 
 const branchOptions = [
   { value: "DOKKI", label: "الدقي" },
-  { value: "NASR_CITY", label: "مدينة نصر" },
-  { value: "ONLINE", label: "اونلاين" },
-  { value: "ALEXANDRIA", label: "اسكندريه" },
+  // { value: "NASR_CITY", label: "مدينة نصر" },
+  // { value: "ONLINE", label: "اونلاين" },
+  // { value: "ALEXANDRIA", label: "اسكندريه" },
 ];
 
 const attendanceOptions = [
