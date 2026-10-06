@@ -21,7 +21,7 @@ const branchOptions = [
 ];
 
 const attendanceOptions = [
-  { value: "ONLINE", label: "اونلاين" },
+  // { value: "ONLINE", label: "اونلاين" },
   { value: "OFFLINE", label: "اوفلاين" },
 ];
 
