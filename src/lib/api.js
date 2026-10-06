@@ -1,3 +1,4 @@
+// export const BASE_URL = "http://localhost:8000/api";
 export const BASE_URL = "https://panel.eraasoft.com/api";
 
 /**
@@ -7,10 +8,14 @@ export const BASE_URL = "https://panel.eraasoft.com/api";
  */
 export const fetchWithAuth = async (endpoint, options = {}) => {
   const { token, ...restOptions } = options;
-  const activeToken = token || (typeof window !== "undefined" ? localStorage.getItem("client_token") : null);
+  const activeToken =
+    token ||
+    (typeof window !== "undefined"
+      ? localStorage.getItem("client_token")
+      : null);
 
   const headers = {
-    "Accept": "application/json",
+    Accept: "application/json",
     ...restOptions.headers,
   };
 

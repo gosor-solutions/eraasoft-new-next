@@ -10,20 +10,9 @@ import { useRouter } from "next/navigation";
 import { enrollInCourse, verifyCoupon } from "@/services/Enrollment";
 import { useAuth } from "@/providers/AuthProvider";
 import { Check, AlertCircle } from "lucide-react";
+import useBranches from "@/hooks/UseBranches";
 
 const CustomSelect = dynamic(() => import("@/components/shared/CustomSelect"), { ssr: false });
-
-const branchOptions = [
-  { value: "DOKKI", label: "الدقي" },
-  // { value: "NASR_CITY", label: "مدينة نصر" },
-  // { value: "ONLINE", label: "اونلاين" },
-  // { value: "ALEXANDRIA", label: "اسكندريه" },
-];
-
-const attendanceOptions = [
-  // { value: "ONLINE", label: "اونلاين" },
-  { value: "OFFLINE", label: "اوفلاين" },
-];
 
 const schema = z.object({
   course_id: z.string().min(1, "يرجى اختيار الكورس"),
@@ -37,7 +26,6 @@ const schema = z.object({
     .min(1, "رقم التليفون مطلوب")
     .refine((v) => isValidPhoneNumber(v), "رقم التليفون غير صحيح"),
   branch: z.string().min(1, "يرجى اختيار الفرع"),
-  attendance_location: z.string().min(1, "يرجى اختيار طريقة الحضور"),
 });
 
 function parseZodErrors(error) {
@@ -51,13 +39,13 @@ function parseZodErrors(error) {
 
 export default function EnrollForm({ courses = [] }) {
   const { token } = useAuth();
+  const { branchOptions = [] } = useBranches();
   const [formData, setFormData] = useState({
     course_id: "",
     name: "",
     email: "",
     phone: "",
     branch: "",
-    attendance_location: "",
     website: "",
   });
   const [fieldErrors, setFieldErrors] = useState({});
@@ -113,7 +101,6 @@ export default function EnrollForm({ courses = [] }) {
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone,
-        attendance_location: formData.attendance_location,
         branch: formData.branch,
         payment_method: "CASH",
         coupon_code: verifiedCoupon?.coupon_code || null,
@@ -205,17 +192,6 @@ export default function EnrollForm({ courses = [] }) {
                 onChange={(value) => setField("phone")(value ?? "")}
               />
             </div>
-          </Field>
-
-          <Field error={fieldErrors.attendance_location}>
-            <CustomSelect
-              label="طريقة الحضور"
-              options={attendanceOptions}
-              value={formData.attendance_location}
-              placeholder="اختر طريقة الحضور"
-              onChange={setField("attendance_location")}
-              error={fieldErrors.attendance_location}
-            />
           </Field>
 
           <Field error={fieldErrors.branch}>

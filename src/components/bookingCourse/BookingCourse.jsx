@@ -11,22 +11,9 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, Check, AlertCircle } from "lucide-react";
 import { enrollInCourse, verifyCoupon } from "@/services/Enrollment";
 import { useAuth } from "@/providers/AuthProvider";
+import useBranches from "@/hooks/UseBranches";
 
 const CustomSelect = dynamic(() => import("../shared/CustomSelect"), { ssr: false });
-
-
-const branchOptions = [
-  { value: "DOKKI", label: "الدقي" },
-  // { value: "NASR_CITY", label: "مدينة نصر" },
-  // { value: "ONLINE", label: "اونلاين" },
-  // { value: "ALEXANDRIA", label: "اسكندريه" },
-];
-
-const attendanceOptions = [
-  // { value: "ONLINE", label: "اونلاين" },
-  { value: "OFFLINE", label: "اوفلاين" },
-];
-
 
 const schema = z.object({
   name: z.string().min(1, "الاسم مطلوب").min(3, "الاسم يجب أن يكون 3 أحرف على الأقل"),
@@ -39,7 +26,6 @@ const schema = z.object({
     .min(1, "رقم التليفون مطلوب")
     .refine((v) => isValidPhoneNumber(v), "رقم التليفون غير صحيح"),
   branch: z.string().min(1, "يرجى اختيار الفرع"),
-  attendance_location: z.string().min(1, "يرجى اختيار طريقة الحضور"),
 });
 
 
@@ -55,12 +41,12 @@ function parseZodErrors(error) {
 
 export default function BookingCourse({ course }) {
   const { token } = useAuth();
+  const { branchOptions = [] } = useBranches();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     branch: "",
-    attendance_location: "",
     website: "",
   });
   const [fieldErrors, setFieldErrors] = useState({});
@@ -125,7 +111,6 @@ export default function BookingCourse({ course }) {
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone,
-        attendance_location: formData.attendance_location,
         branch: formData.branch,
         payment_method: "CASH",
         coupon_code: verifiedCoupon?.coupon_code || null,
@@ -191,45 +176,16 @@ export default function BookingCourse({ course }) {
               </div>
             </Field>
 
-         
-            <Field error={fieldErrors.attendance_location}>
+            <Field error={fieldErrors.branch}>
               <CustomSelect
-                label="طريقة الحضور"
-                options={attendanceOptions}
-                value={formData.attendance_location}
-                placeholder="اختر طريقة الحضور"
-                onChange={(value) => {
-                  setFormData((prev) => {
-                    const next = { ...prev, attendance_location: value };
-                    if (value === "ONLINE") {
-                      next.branch = "ONLINE";
-                    } else if (prev.branch === "ONLINE") {
-                      next.branch = "";
-                    }
-                    return next;
-                  });
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    attendance_location: undefined,
-                    branch: value === "ONLINE" ? undefined : prev.branch,
-                  }));
-                }}
-                error={fieldErrors.attendance_location}
+                label="اختر الفرع المناسب ليك"
+                options={branchOptions}
+                value={formData.branch}
+                placeholder="اختر الفرع المناسب ليك"
+                onChange={setField("branch")}
+                error={fieldErrors.branch}
               />
             </Field>
-
-            {formData.attendance_location !== "ONLINE" && (
-              <Field error={fieldErrors.branch}>
-                <CustomSelect
-                  label="اختر الفرع المناسب ليك"
-                  options={branchOptions.filter((opt) => opt.value !== "ONLINE")}
-                  value={formData.branch}
-                  placeholder="اختر الفرع المناسب ليك"
-                  onChange={setField("branch")}
-                  error={fieldErrors.branch}
-                />
-              </Field>
-            )}
 
             <button type="submit" disabled={loading} className="main_button w-full py-4 text-base sm:text-lg disabled:opacity-60 disabled:cursor-not-allowed">
               {loading ? "جاري الحجز..." : "اتمام الحجز"}
