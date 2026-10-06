@@ -2,6 +2,7 @@ import EnrollForm from "@/components/enrollForm/EnrollForm";
 import HeroCarousel from "@/components/shared/HeroCarusel";
 import { getAllCources } from "@/services/Cources";
 
+
 export const metadata = {
   title: "سجّل الآن",
   description: "سجّل في الكورس المناسب ليك وابدأ رحلتك التعليمية مع إيراسوفت.",
