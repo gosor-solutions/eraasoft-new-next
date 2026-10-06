@@ -65,14 +65,14 @@ export default function CourceCard({ course, delay = 0 }) {
           <p className="text-[#7F7F7F] text-sm sm:text-base md:text-[16px] line-clamp-2 mt-1">{course?.description}</p>
 
           {/* Price */}
-          {!(course?.is_free || Number(course?.final_price) === 0 || !course?.final_price) ? (
+          {/* {!(course?.is_free || Number(course?.final_price) === 0 || !course?.final_price) ? (
             <p className="text-(--primary-color) text-2xl sm:text-3xl lg:text-[32px] font-bold mt-3 mb-6">{course?.final_price} ج.م</p>
           ) : (
             <div className="my-6 h-[48px] flex items-center"></div>
-          )}
+          )} */}
 
           {/* Actions */}
-          <div className="flex gap-2 sm:gap-3">
+          <div className="flex gap-2 sm:gap-3 pt-8">
             <Link href={`/booking/${course?.slug}`} className="main_button p-[1px] booking-btn grow cursor-pointer text-sm sm:text-base py-2 relative z-20">
               اشترك الآن
             </Link>
